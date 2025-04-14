@@ -23,4 +23,9 @@ class STDHash : public IHashFunction {
 
             return hashValue; // Return the final hash value
         }
+
+        // Clone method for deep copying the hash function
+        IHashFunction* clone() const override {
+            return new STDHash(numOfTimes);
+        }
 };

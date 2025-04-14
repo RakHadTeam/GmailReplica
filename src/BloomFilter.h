@@ -15,7 +15,12 @@ class BloomFilter {
 
         // Copy constructor: Creates a deep copy of another BloomFilter object
         BloomFilter(const BloomFilter& other)
-            : bitArray(other.bitArray), hashFunctions(other.hashFunctions) {}
+            : bitArray(other.bitArray) {
+            // Deep copy of hash functions
+            for (auto* func : other.hashFunctions) {
+            hashFunctions.push_back(func->clone());
+            }
+        }
 
         // Copy assignment operator: Assigns the state of another BloomFilter object
         BloomFilter& operator=(const BloomFilter& other) {
