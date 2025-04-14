@@ -9,7 +9,10 @@ COPY . /usr/src/APProject
 WORKDIR /usr/src/APProject
 
 # Build the project
-RUN if [ ! -d "/build" ]; then mkdir /build; fi
+# Remove the existing build directory if it exists, then create a new one
+RUN if [ -d "/build" ]; then rm -rf /build; fi && mkdir /build
+
+# Set the working directory to the newly created build directory
 WORKDIR /usr/src/APProject/build
 
 # Install build dependencies
