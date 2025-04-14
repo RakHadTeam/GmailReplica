@@ -9,7 +9,7 @@ COPY . /usr/src/APProject
 WORKDIR /usr/src/APProject
 
 # Build the project
-RUN mkdir /usr/src/APProject/build 
+RUN if [ ! -d "/build" ]; then mkdir /build; fi
 WORKDIR /usr/src/APProject/build
 
 # Install build dependencies
