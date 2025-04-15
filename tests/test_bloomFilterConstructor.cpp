@@ -6,14 +6,16 @@ class SimpleHashFunction : public IHashFunction
 {
 public:
     SimpleHashFunction(size_t mod) : mod_(mod) {}
-    
-    size_t hash(const std::string& key) const override {
+
+    size_t hash(const std::string &key) const override
+    {
         std::hash<std::string> hasher;
         size_t hashValue = hasher(key);
         return hashValue % mod_; // Simple modulo hash function
     }
 
-    IHashFunction* clone() const override {
+    IHashFunction *clone() const override
+    {
         return new SimpleHashFunction(mod_);
     }
 

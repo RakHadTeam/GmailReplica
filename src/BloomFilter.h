@@ -68,4 +68,14 @@ class BloomFilter {
         std::vector<IHashFunction*> getHashFunctions() const {
             return hashFunctions;
         }
+
+        // Adds an element to the Bloom Filter
+        void add(const std::string& element) {
+            // implement later
+        }
+
+        bool contains(const std::string& element) const {
+            // implement later
+            return false;
+        }
 };
