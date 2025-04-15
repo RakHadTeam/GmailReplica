@@ -109,12 +109,13 @@ public:
 
 	bool contains(const std::string& url) const
 	{
-
-		return true;
+		// TODO: Implement the contains method
+		return false;
 	}
 
 	bool containsInFile(const std::string& url) const
 	{
+		// TODO: Implement the containsInFile method
 		return false;
 	}
 };

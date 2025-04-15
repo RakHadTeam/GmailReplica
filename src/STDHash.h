@@ -1,3 +1,5 @@
+#include "IHashFunction.h"
+
 // The STDHash class implements a hash function that applies the standard library's hash function
 // multiple times to a given key. This can be useful for scenarios where additional hashing is needed
 // to reduce collisions or for specific hashing strategies.
@@ -19,6 +21,8 @@ public:
 			hasher = std::hash<std::string>(); // Reinitialize the hasher
 			hashValue = hasher(std::to_string(hashValue)); // Hash the string representation of the current hash value
 		}
+		// print the final
+		std::cout << "Final hash value: " << hashValue << std::endl; // Print the final hash value for debugging
 
 		return hashValue; // Return the final hash value
 	}
