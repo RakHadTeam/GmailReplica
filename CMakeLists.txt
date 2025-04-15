@@ -30,7 +30,7 @@ set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 FetchContent_MakeAvailable(googletest)
 
 # Add test executable
-add_executable(MyProjectTests ${TEST_SOURCES} ${SOURCES})
+add_executable(MyProjectTests ${TEST_SOURCES})
 
 # Link GoogleTest to the test executable
 target_link_libraries(MyProjectTests gtest_main)
