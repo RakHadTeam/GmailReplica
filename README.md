@@ -23,7 +23,15 @@ To add a URL to the blacklist, use the following command:
 ```
 1 <URL>
 ```
+### Check if a URL is in the Blacklist
 
+To check if a URL is in the blacklist, use the following command:
+
+```
+2 <URL>
+```
+
+- The response will be in this format: `<BloomFIlter Array Bits Response> <Verified Answer After False Positive Check>`
 - The tool automatically prefixes the URL with `'0'` before adding it to the Bloom Filter.
 
 ## Running the Application in Docker
