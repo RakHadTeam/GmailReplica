@@ -4,7 +4,7 @@
 
 TEST(AddMethodTest, AddSingleURL) {
 	std::vector<IHashFunction*> hashFunctions;
-	hashFunctions.push_back(new STDHash(1)); 
+	hashFunctions.push_back(new STDHash(1));
 	BloomFilter bloomFilter(10, hashFunctions);
 
 	std::string url = "example.com";
@@ -18,7 +18,7 @@ TEST(AddMethodTest, AddSingleURL) {
 
 TEST(AddMethodTest, AddMultipleURLs) {
 	std::vector<IHashFunction*> hashFunctions;
-	hashFunctions.push_back(new STDHash(2)); 
+	hashFunctions.push_back(new STDHash(2));
 
 	BloomFilter bloomFilter(10, hashFunctions);
 
@@ -37,7 +37,7 @@ TEST(AddMethodTest, AddMultipleURLs) {
 
 TEST(AddMethodTest, AddDuplicateURLWithSTDHash) {
 	std::vector<IHashFunction*> hashFunctions;
-	hashFunctions.push_back(new STDHash(3)); 
+	hashFunctions.push_back(new STDHash(3));
 	BloomFilter bloomFilter(10, hashFunctions);
 
 	std::string url = "example.com";

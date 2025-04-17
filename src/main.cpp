@@ -10,7 +10,7 @@
 int main()
 {
 	STDInput input; // Create an instance of STDInput
-    STDOutput output;
+	STDOutput output;
 	// Remove the front element and store it in bitArraySize
 	int bitArraySize = input.getSizeOfArray();
 
@@ -19,7 +19,7 @@ int main()
 
 	// Construct bloom filter:
 	BloomFilter bloomFilter(bitArraySize, hashFunctions);
-	
+
 	//Real blackList
 	std::unordered_set<std::string> realBlacklist;
 
@@ -27,11 +27,11 @@ int main()
 
 	AddURLCommand* addURLCommand = new AddURLCommand(bloomFilter, &input);
 	commands["1"] = addURLCommand;
-    
-	 // Command 2 – Check URL
-	 CheckURLCommand* checkURLCommand = new CheckURLCommand(bloomFilter, &input,&output);
-	 commands["2"] = checkURLCommand;
-     
+
+	// Command 2 – Check URL
+	CheckURLCommand* checkURLCommand = new CheckURLCommand(bloomFilter, &input, &output);
+	commands["2"] = checkURLCommand;
+
 
 	App app(commands);
 	app.run();

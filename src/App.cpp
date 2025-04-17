@@ -25,7 +25,8 @@ public:
 					continue;
 				}
 				commands[task]->execute(); // Execute the command associated with the task
-			} catch (const std::exception& e) {
+			}
+			catch (const std::exception& e) {
 				std::cerr << "Error: " << e.what() << std::endl;
 				continue;
 			}
