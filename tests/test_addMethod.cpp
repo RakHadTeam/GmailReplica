@@ -2,10 +2,9 @@
 #include "../src/STDHash.h"
 #include <gtest/gtest.h>
 
-// Test case: Adding a single URL to the Bloom Filter
 TEST(AddMethodTest, AddSingleURL) {
 	std::vector<IHashFunction*> hashFunctions;
-	hashFunctions.push_back(new STDHash(1)); // Using STDHash with 1 iteration
+	hashFunctions.push_back(new STDHash(1)); 
 	BloomFilter bloomFilter(10, hashFunctions);
 
 	std::string url = "example.com";
@@ -17,10 +16,9 @@ TEST(AddMethodTest, AddSingleURL) {
 
 }
 
-// Test case: Adding multiple URLs to the Bloom Filter
 TEST(AddMethodTest, AddMultipleURLs) {
 	std::vector<IHashFunction*> hashFunctions;
-	hashFunctions.push_back(new STDHash(2)); // Using STDHash with 2 iterations
+	hashFunctions.push_back(new STDHash(2)); 
 
 	BloomFilter bloomFilter(10, hashFunctions);
 
@@ -37,10 +35,9 @@ TEST(AddMethodTest, AddMultipleURLs) {
 
 }
 
-// // Test case: Adding a URL that already exists in the Bloom Filter
 TEST(AddMethodTest, AddDuplicateURLWithSTDHash) {
 	std::vector<IHashFunction*> hashFunctions;
-	hashFunctions.push_back(new STDHash(3)); // Using STDHash with 3 iterations
+	hashFunctions.push_back(new STDHash(3)); 
 	BloomFilter bloomFilter(10, hashFunctions);
 
 	std::string url = "example.com";
@@ -52,7 +49,6 @@ TEST(AddMethodTest, AddDuplicateURLWithSTDHash) {
 	EXPECT_TRUE(index < bloomFilter.getBitArraySize());
 }
 
-// Test case: Adding a URL to an empty Bloom Filter
 TEST(AddMethodTest, AddToEmptyFilter) {
 	std::vector<IHashFunction*> hashFunctions;
 	hashFunctions.push_back(new STDHash(1));
