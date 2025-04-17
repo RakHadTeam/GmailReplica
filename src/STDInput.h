@@ -6,7 +6,7 @@
 #include "STDHash.h"
 #include "IInput.h"
 
-class STDINInput : public IInput {
+class STDInput : public IInput {
 private:
 	std::string firstLine;
 

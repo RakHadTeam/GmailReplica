@@ -1,16 +1,16 @@
 #include <string>
 #include "BloomFilter.h"
 #include "AddURLCommand.h"
-#include "STDINInput.h"
+#include "STDInput.h"
 #include <map>
 #include "App.cpp"
 #include "IInput.h"
 #include "CheckURLCommand.h"
-
+#include "STDOutput.h"
 int main()
 {
-	STDINInput input; // Create an instance of STDINInput
-
+	STDInput input; // Create an instance of STDInput
+    STDOutput output;
 	// Remove the front element and store it in bitArraySize
 	int bitArraySize = input.getSizeOfArray();
 
@@ -29,9 +29,9 @@ int main()
 	commands["1"] = addURLCommand;
     
 	 // Command 2 – Check URL
-	 CheckURLCommand* checkURLCommand = new CheckURLCommand(bloomFilter, &input, realBlacklist);
+	 CheckURLCommand* checkURLCommand = new CheckURLCommand(bloomFilter, &input,&output);
 	 commands["2"] = checkURLCommand;
- 
+     
 
 	App app(commands);
 	app.run();

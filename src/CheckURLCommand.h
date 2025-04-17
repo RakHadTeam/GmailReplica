@@ -2,18 +2,17 @@
 #include <string>
 #include "IInput.h"
 #include <unordered_set>
-
+#include "IOutput.h"
 // Command that checks if a given URL exists in the Bloom Filter
 class CheckURLCommand : public ICommand {
 private:
     BloomFilter& bloomFilter;
     IInput* input;
-    const std::unordered_set<std::string>& realBlacklist;
-
+    IOutput* output;
 public:
     // Constructor initializes members
-    CheckURLCommand(BloomFilter& bloomFilter, IInput* input, const std::unordered_set<std::string>& blacklist)
-        : bloomFilter(bloomFilter), input(input), realBlacklist(blacklist) {}
+    CheckURLCommand(BloomFilter& bloomFilter, IInput* input,IOutput* output)
+        : bloomFilter(bloomFilter), input(input),output(output) {}
 
     void execute() override {
         std::string url;
@@ -21,16 +20,8 @@ public:
         if (url.empty())
             return;
 
-        // Check Bloom Filter
-        if (bloomFilter.contains(url)) {
-            // Check if it's a true or false positive
-            if (realBlacklist.count(url)) {
-                std::cout << "true true" << std::endl;
-            } else {
-                std::cout << "true false" << std::endl;
-            }
-        } else {
-            std::cout << "false" << std::endl;  // Definitely not in blacklist
-        }
+       //TODO: put instad the false a false positive from function
+      output->displayCheckURLResult(bloomFilter.contains(url),false);
+        
     }
 };
