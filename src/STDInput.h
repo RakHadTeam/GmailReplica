@@ -4,9 +4,9 @@
 #include <string>
 
 #include "STDHash.h"
-#include "Input.h"
+#include "IInput.h"
 
-class STDINInput : public Input {
+class STDInput : public IInput {
 private:
 	std::string firstLine;
 

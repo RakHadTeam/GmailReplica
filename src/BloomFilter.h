@@ -109,8 +109,18 @@ public:
 
 	bool contains(const std::string& url) const
 	{
-		// TODO: Implement the contains method
-		return false;
+		if (bitArray.empty()) return false;
+
+		//Check if one of the bit in bitArray is 0
+		for (const auto& hashFunc : hashFunctions)
+		{
+			size_t index = hashFunc->hash(url) % bitArray.size();
+			if (!bitArray[index])
+				return false;
+		}
+
+		//All the bits is 1
+		return true;
 	}
 
 	bool containsInFile(const std::string& url) const
