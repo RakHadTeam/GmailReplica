@@ -1,13 +1,13 @@
 #include "ICommand.h"
 #include <string>
-#include "Input.h"
+#include "IInput.h"
 
-class AddCommand : public ICommand {
+class AddURLCommand : public ICommand {
 private:
 	BloomFilter& bloomFilter;
-	Input* input;
+	IInput* input;
 public:
-	AddCommand(BloomFilter& bf, Input* inp) : bloomFilter(bf), input(inp) {}
+	AddURLCommand(BloomFilter& bf, IInput* inp) : bloomFilter(bf), input(inp) {}
 	void execute() override {
 
 		// Get URL:

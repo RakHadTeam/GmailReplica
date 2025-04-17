@@ -109,8 +109,7 @@ public:
 
 	bool contains(const std::string& url) const
 	{
-		// TODO: Implement the contains method
-		return false;
+	
 	}
 
 	bool containsInFile(const std::string& url) const

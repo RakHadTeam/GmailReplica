@@ -1,10 +1,11 @@
 #include <string>
 #include "BloomFilter.h"
-#include "AddCommand.h"
+#include "AddURLCommand.h"
 #include "STDINInput.h"
 #include <map>
 #include "App.cpp"
-#include "Input.h"
+#include "IInput.h"
+#include "CheckURLCommand.h"
 
 int main()
 {
@@ -18,12 +19,19 @@ int main()
 
 	// Construct bloom filter:
 	BloomFilter bloomFilter(bitArraySize, hashFunctions);
+	
+	//Real blackList
+	std::unordered_set<std::string> realBlacklist;
 
 	std::map<std::string, ICommand*> commands;
 
-	AddCommand* addCommand = new AddCommand(bloomFilter, &input);
-	commands["1"] = addCommand;
-
+	AddURLCommand* addURLCommand = new AddURLCommand(bloomFilter, &input);
+	commands["1"] = addURLCommand;
+    
+	 // Command 2 – Check URL
+	 CheckURLCommand* checkURLCommand = new CheckURLCommand(bloomFilter, &input, realBlacklist);
+	 commands["2"] = checkURLCommand;
+ 
 
 	App app(commands);
 	app.run();
