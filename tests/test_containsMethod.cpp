@@ -1,23 +1,21 @@
 #include <gtest/gtest.h>
-#include "../src/BloomFilter.h"
-#include "../src/STDHash.h"
+#include "../src/BloomFilter.cpp"
+#include "../src/STDHash.cpp"
 
-// Test: Add one URL and check it is detected
 TEST(ContainsMethodTest, CheckSingleURL) {
-	std::vector<IHashFunction*> hashFunctions;
-	hashFunctions.push_back(new STDHash(1));
+	std::vector<std::shared_ptr<IHashFunction>> hashFunctions;
+	hashFunctions.push_back(std::make_shared<STDHash>(1));
 
 	BloomFilter bloomFilter(10, hashFunctions);
 	std::string url = "example.com";
 	bloomFilter.add(url);
 
-	EXPECT_TRUE(bloomFilter.contains(url)); // Expect to find the URL we added
+	EXPECT_TRUE(bloomFilter.contains(url)); // URL was added → should return true
 }
 
-// Test: Add multiple URLs and check both are detected
 TEST(ContainsMethodTest, CheckMultipleURLs) {
-	std::vector<IHashFunction*> hashFunctions;
-	hashFunctions.push_back(new STDHash(2));
+	std::vector<std::shared_ptr<IHashFunction>> hashFunctions;
+	hashFunctions.push_back(std::make_shared<STDHash>(2));
 
 	BloomFilter bloomFilter(10, hashFunctions);
 	std::string url1 = "example.com";
@@ -27,24 +25,22 @@ TEST(ContainsMethodTest, CheckMultipleURLs) {
 	bloomFilter.add(url2);
 
 	EXPECT_TRUE(bloomFilter.contains(url1));
-	EXPECT_TRUE(bloomFilter.contains(url2)); // Expect both URLs to be found
+	EXPECT_TRUE(bloomFilter.contains(url2)); // Both should return true
 }
 
-// Test: Check that a non-added URL returns false
 TEST(ContainsMethodTest, CheckNonBlacklistedURL) {
-	std::vector<IHashFunction*> hashFunctions;
-	hashFunctions.push_back(new STDHash(1));
+	std::vector<std::shared_ptr<IHashFunction>> hashFunctions;
+	hashFunctions.push_back(std::make_shared<STDHash>(1));
 
 	BloomFilter bloomFilter(10, hashFunctions);
 	std::string url = "example.com";
 
-	EXPECT_FALSE(bloomFilter.contains(url)); // URL was never added → should return false
+	EXPECT_FALSE(bloomFilter.contains(url)); // URL was not added → should return false
 }
 
-// Test: Check that multiple non-added URLs are not falsely detected
 TEST(ContainsMethodTest, CheckMultipleNonBlacklistedURLs) {
-	std::vector<IHashFunction*> hashFunctions;
-	hashFunctions.push_back(new STDHash(2));
+	std::vector<std::shared_ptr<IHashFunction>> hashFunctions;
+	hashFunctions.push_back(std::make_shared<STDHash>(2));
 
 	BloomFilter bloomFilter(10, hashFunctions);
 	std::string url1 = "example.com";

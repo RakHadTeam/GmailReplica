@@ -8,7 +8,7 @@ class STDHash : public IHashFunction {
 private:
 	int numOfTimes; // Number of times the hash function should be applied
 public:
-	// Constructor to initialize the number of times the hash function should be applied
+
 	STDHash(int num) : numOfTimes(num) {}
 
 	// Override the hash function to apply the standard library's hash function multiple times
@@ -21,14 +21,7 @@ public:
 			hasher = std::hash<std::string>(); // Reinitialize the hasher
 			hashValue = hasher(std::to_string(hashValue)); // Hash the string representation of the current hash value
 		}
-		// print the final
-		std::cout << "Final hash value: " << hashValue << std::endl; // Print the final hash value for debugging
 
 		return hashValue; // Return the final hash value
-	}
-
-	// Clone method for deep copying the hash function
-	IHashFunction* clone() const override {
-		return new STDHash(numOfTimes);
 	}
 };

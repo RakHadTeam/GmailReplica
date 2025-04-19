@@ -4,7 +4,7 @@
 #include <string>
 #include <regex>
 
-#include "STDHash.h"
+#include "STDHash.cpp"
 #include "IInput.h"
 
 class STDInput : public IInput {
@@ -47,14 +47,16 @@ private:
 
 public:
 	// Read and validate a list of positive integers from the user
-	void getHashFunctions(std::vector<IHashFunction*>& hashFunctions) {
+	void setHashFunctions(std::vector<std::shared_ptr<IHashFunction>>& hashFunctions) {
 		std::istringstream iss(firstLine);
 		int token;
 
 		iss >> token; // Read the first token (size of bitArray)
 		while (iss >> token) {
-			hashFunctions.push_back(new STDHash(token));
+			hashFunctions.push_back(std::make_shared<STDHash>(token));
 		}
+
+		firstLine.clear(); 
 	}
 
 	// Get the size of the array from user input
@@ -71,21 +73,31 @@ public:
 		return size;
 	}
 
-	bool validateURL(std::string& url) {
+	bool validateURL(const std::string& url) {
 		const std::regex urlRegex(R"(^\S*\.\S*\.\S*$)");
 		return std::regex_match(url, urlRegex);
 	}
 
 	// Get a URL from user input
-	void getURL(std::string& url) {
+	std::string getURL() {
+		std::string URL;
 		std::string line;
 		std::getline(std::cin, line);
 
 		std::istringstream iss(line);
-		iss >> url;
+		iss >> URL;
 
-		if (iss >> url || !validateURL(url)) {
-			url.clear();
+		// If there are more arguments, clear the URL
+		if (iss >> URL  || !validateURL(URL)) {
+			URL.clear();
 		}
+		return URL;
+	}
+
+	std::string getCommandPrefix() {
+		std::string commandPrefix;
+		std::cin >> commandPrefix;
+
+		return commandPrefix;
 	}
 };

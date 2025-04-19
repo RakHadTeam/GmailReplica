@@ -12,7 +12,7 @@ public:
 
 		// Get URL:
 		std::string url;
-		input->getURL(url);
+		url = input->getURL();
 
 		if (url.empty()) {
 			return;
