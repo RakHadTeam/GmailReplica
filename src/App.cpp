@@ -4,10 +4,12 @@
 #include <string>
 #include <map>
 #include "ICommand.h"
+#include "IInput.h"
 
 class App {
 private:
 	std::map<std::string, std::shared_ptr<ICommand>> commands; // Map to store command objects
+	std::shared_ptr<IInput> input;
 
 public:
 	App(std::map<std::string, std::shared_ptr<ICommand>>& commands) : commands(commands) {} // Constructor to initialize commands
@@ -16,7 +18,7 @@ public:
 
 		std::string task;
 		while (true) {
-			std::cin >> task;
+			task = input->getCommandPrefix();
 			try {
 				commands.at(task)->execute();
 			}
