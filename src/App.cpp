@@ -2,32 +2,28 @@
 #include <vector>
 #include <sstream>
 #include <string>
+#include <memory>
 #include <map>
-#include "ICommand.h"
+#include "commands/ICommand.h"
+#include "IO/Input/IInput.h"
 
 class App {
 private:
-	std::map<std::string, ICommand*> commands; // Map to store command objects
+	std::map<std::string, std::shared_ptr<ICommand>> commands; // Map to store command objects
+	std::shared_ptr<IInput> input;
 
 public:
-	App(std::map<std::string, ICommand*>& commands) : commands(commands) {} // Constructor to initialize commands
+	App(std::map<std::string, std::shared_ptr<ICommand>>& commands, std::shared_ptr<IInput> input) : commands(commands), input(input) {}
 
 	void run() {
 
 		std::string task;
 		while (true) {
-			std::cin >> task;
+			task = input->getCommandPrefix();
 			try {
-				if (commands.find(task) == commands.end()) {
-					std::cerr << "Error: Command not found." << std::endl;
-					std::cin.clear(); // Clear the input stream
-					std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // Ignore the rest of the input
-					continue;
-				}
-				commands[task]->execute(); // Execute the command associated with the task
+				commands.at(task)->execute();
 			}
-			catch (const std::exception& e) {
-				std::cerr << "Error: " << e.what() << std::endl;
+			catch (...) {
 				continue;
 			}
 		}

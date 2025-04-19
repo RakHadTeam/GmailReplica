@@ -1,7 +1,7 @@
 #include <gtest/gtest.h>
 #include <vector>
-#include "../src/IHashFunction.h"
-#include "../src/BloomFilter.h"
+#include "../src/BloomFilter/BloomFilter.cpp"
+#include "../src/BloomFilter/HashFunction/STDHash.cpp"
 
 class SimpleHashFunction : public IHashFunction
 {
@@ -15,33 +15,18 @@ public:
 		return hashValue % mod_; // Simple modulo hash function
 	}
 
-	IHashFunction* clone() const override
-	{
-		return new SimpleHashFunction(mod_);
-	}
-
 private:
 	size_t mod_;
 };
 
-TEST(BloomFilterConstructorTest, DefaultConstructor)
-{
-	BloomFilter bf;
-	EXPECT_EQ(bf.getBitArraySize(), 0);   // Assuming getBitArraySize() returns the size of the filter
-	EXPECT_EQ(bf.hashFunctionCount(), 0); // Assuming getHashFunctions() returns the vector of hash functions
-}
 
 TEST(BloomFilterConstructorTest, ParameterizedConstructor)
 {
 	size_t filterSize = 1000;
-	auto* hashFunc1 = new SimpleHashFunction(1000);
-	auto* hashFunc2 = new SimpleHashFunction(500);
-	auto* hashFunc3 = new SimpleHashFunction(333);
-
-	std::vector<IHashFunction*> hashFunctions = {
-		hashFunc1,
-		hashFunc2,
-		hashFunc3 };
+	std::vector<std::shared_ptr<IHashFunction>> hashFunctions;
+	hashFunctions.push_back(std::make_shared<SimpleHashFunction>(1000));
+	hashFunctions.push_back(std::make_shared<SimpleHashFunction>(500));
+	hashFunctions.push_back(std::make_shared<SimpleHashFunction>(333));
 	BloomFilter bf(filterSize, hashFunctions);
 
 	EXPECT_EQ(bf.getBitArraySize(), filterSize);
@@ -50,8 +35,8 @@ TEST(BloomFilterConstructorTest, ParameterizedConstructor)
 
 TEST(BloomFilterConstructorTest, CopyConstructor)
 {
-	std::vector<IHashFunction*> hashFunctions = {
-		new SimpleHashFunction(1000) };
+	std::vector<std::shared_ptr<IHashFunction>> hashFunctions;
+	hashFunctions.push_back(std::make_shared<SimpleHashFunction>(1000));
 	BloomFilter original(1000, hashFunctions);
 	BloomFilter copy(original);
 
@@ -61,12 +46,12 @@ TEST(BloomFilterConstructorTest, CopyConstructor)
 
 TEST(BloomFilterConstructorTest, MoveConstructor)
 {
-	std::vector<IHashFunction*> hashFunctions = {
-		new SimpleHashFunction(1000) };
+	std::vector<std::shared_ptr<IHashFunction>> hashFunctions;
+	hashFunctions.push_back(std::make_shared<SimpleHashFunction>(1000));
 	BloomFilter original(1000, hashFunctions);
 	BloomFilter moved(std::move(original));
 
 	EXPECT_EQ(moved.getBitArraySize(), 1000);
-	EXPECT_EQ(moved.getHashFunctions(), hashFunctions);
+	EXPECT_EQ(moved.setHashFunctions(), hashFunctions);
 	// Assuming original is in a valid but unspecified state after move
 }

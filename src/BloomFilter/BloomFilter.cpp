@@ -1,31 +1,37 @@
+#ifndef BLOOMFILTER_CPP
+#define BLOOMFILTER_CPP
 #include <vector>
+#include <memory>
 #include <iostream>
-#include "IHashFunction.h"
+#include "HashFunction/IHashFunction.h"
 
-// BloomFilter class: Implements a simple Bloom Filter data structure
 class BloomFilter
 {
 private:
 	std::vector<bool> bitArray;                 // The bit array representing the Bloom Filter
-	std::vector<IHashFunction*> hashFunctions; // List of hash functions used in the Bloom Filter
+	std::vector<std::shared_ptr<IHashFunction>> hashFunctions; // List of hash functions used in the Bloom Filter
 
 
 public:
 	// Constructor: Initializes the Bloom Filter with a given size and hash functions
-	BloomFilter(size_t size, const std::vector<IHashFunction*>& hashFuncs)
-		: bitArray(size, false), hashFunctions(hashFuncs)
+	BloomFilter(size_t size, const std::vector<std::shared_ptr<IHashFunction>>& hashFuncs)
+		: bitArray(size, false)
 	{
+		for (const auto& hashFunc : hashFuncs)
+		{
+			hashFunctions.push_back(hashFunc);
+		}
 	}
 
 	// Copy constructor: Creates a deep copy of another BloomFilter object
 	BloomFilter(const BloomFilter& other)
 		: bitArray(other.bitArray)
 	{
-		// Deep copy of hash functions
-		for (auto* func : other.hashFunctions)
+		for (const auto& hashFunc : other.hashFunctions)
 		{
-			hashFunctions.push_back(func->clone());
+			hashFunctions.push_back(hashFunc);
 		}
+
 	}
 
 	// Copy assignment operator: Assigns the state of another BloomFilter object
@@ -33,8 +39,13 @@ public:
 	{
 		if (this != &other)
 		{ // Avoid self-assignment
-			bitArray = other.bitArray;
-			hashFunctions = other.hashFunctions;
+			bitArray = other.bitArray; // Copy the bit array
+
+			hashFunctions.clear(); // Clear existing hash functions
+			for (const auto& hashFunc : other.hashFunctions)
+			{
+				hashFunctions.push_back(hashFunc);
+			}
 		}
 		return *this;
 	}
@@ -58,14 +69,8 @@ public:
 	// Destructor: Cleans up dynamically allocated hash functions
 	~BloomFilter()
 	{
-		for (auto* func : hashFunctions)
-		{
-			delete func; // Assuming ownership of hash functions
-		}
+		hashFunctions.clear(); // Clear the vector of hash functions
 	}
-
-	// Default constructor: Creates an empty Bloom Filter
-	BloomFilter() : bitArray(0), hashFunctions() {}
 
 	// Returns the size of the bit array
 	size_t getBitArraySize() const
@@ -80,7 +85,7 @@ public:
 	}
 
 	// Returns the list of hash functions
-	std::vector<IHashFunction*> getHashFunctions() const
+	std::vector<std::shared_ptr<IHashFunction>> setHashFunctions() const
 	{
 		return hashFunctions;
 	}
@@ -111,7 +116,7 @@ public:
 	{
 		if (bitArray.empty()) return false;
 
-		//Check if one of the bit in bitArray is 0
+		// Check if one of the bits in bitArray is 0
 		for (const auto& hashFunc : hashFunctions)
 		{
 			size_t index = hashFunc->hash(url) % bitArray.size();
@@ -119,13 +124,15 @@ public:
 				return false;
 		}
 
-		//All the bits is 1
+		// All the bits are 1
 		return true;
 	}
 
-	bool containsInFile(const std::string& url) const
+	bool containsInDB(const std::string& url) const
 	{
-		// TODO: Implement the containsInFile method
+		// TODO: Implement the containsInDB method
 		return false;
 	}
 };
+
+#endif // BLOOMFILTER_CPP

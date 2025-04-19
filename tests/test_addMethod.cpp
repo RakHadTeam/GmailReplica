@@ -1,10 +1,10 @@
-#include "../src/BloomFilter.h"
-#include "../src/STDHash.h"
+#include "../src/BloomFilter/BloomFilter.cpp"
+#include "../src/BloomFilter/HashFunction/STDHash.cpp"
 #include <gtest/gtest.h>
 
 TEST(AddMethodTest, AddSingleURL) {
-	std::vector<IHashFunction*> hashFunctions;
-	hashFunctions.push_back(new STDHash(1));
+	std::vector<std::shared_ptr<IHashFunction>> hashFunctions;
+	hashFunctions.push_back(std::make_shared<STDHash>(1));
 	BloomFilter bloomFilter(10, hashFunctions);
 
 	std::string url = "example.com";
@@ -12,13 +12,13 @@ TEST(AddMethodTest, AddSingleURL) {
 
 	// Verify that the corresponding bit in the bit array is set
 	size_t index = hashFunctions[0]->hash(url) % bloomFilter.getBitArraySize();
-	EXPECT_TRUE(bloomFilter.getHashFunctions()[0]->hash(url) % bloomFilter.getBitArraySize() == index);
+	EXPECT_TRUE(bloomFilter.setHashFunctions()[0]->hash(url) % bloomFilter.getBitArraySize() == index);
 
 }
 
 TEST(AddMethodTest, AddMultipleURLs) {
-	std::vector<IHashFunction*> hashFunctions;
-	hashFunctions.push_back(new STDHash(2));
+	std::vector<std::shared_ptr<IHashFunction>> hashFunctions;
+	hashFunctions.push_back(std::make_shared<STDHash>(2));
 
 	BloomFilter bloomFilter(10, hashFunctions);
 
@@ -27,7 +27,6 @@ TEST(AddMethodTest, AddMultipleURLs) {
 	bloomFilter.add(url1);
 	bloomFilter.add(url2);
 
-	// Verify that the corresponding bits in the bit array are set
 	size_t index1 = hashFunctions[0]->hash(url1) % bloomFilter.getBitArraySize();
 	size_t index2 = hashFunctions[0]->hash(url2) % bloomFilter.getBitArraySize();
 	EXPECT_TRUE(index1 < bloomFilter.getBitArraySize());
@@ -36,8 +35,8 @@ TEST(AddMethodTest, AddMultipleURLs) {
 }
 
 TEST(AddMethodTest, AddDuplicateURLWithSTDHash) {
-	std::vector<IHashFunction*> hashFunctions;
-	hashFunctions.push_back(new STDHash(3));
+	std::vector<std::shared_ptr<IHashFunction>> hashFunctions;
+	hashFunctions.push_back(std::make_shared<STDHash>(3));
 	BloomFilter bloomFilter(10, hashFunctions);
 
 	std::string url = "example.com";
@@ -50,8 +49,8 @@ TEST(AddMethodTest, AddDuplicateURLWithSTDHash) {
 }
 
 TEST(AddMethodTest, AddToEmptyFilter) {
-	std::vector<IHashFunction*> hashFunctions;
-	hashFunctions.push_back(new STDHash(1));
+	std::vector<std::shared_ptr<IHashFunction>> hashFunctions;
+	hashFunctions.push_back(std::make_shared<STDHash>(1));
 
 	BloomFilter bloomFilter(0, hashFunctions); // Empty Bloom Filter
 

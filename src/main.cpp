@@ -1,46 +1,36 @@
 #include <string>
-#include "BloomFilter.h"
-#include "AddURLCommand.h"
-#include "STDInput.h"
+#include "BloomFilter/BloomFilter.cpp"
+#include "commands/AddURLCommand.cpp"
+#include "IO/Input/STDInput.cpp"
 #include <map>
+#include <memory>
 #include "App.cpp"
-#include "IInput.h"
-#include "CheckURLCommand.h"
-#include "STDOutput.h"
+#include "IO/Input/IInput.h"
+#include "commands/CheckURLCommand.cpp"
+#include "IO/Output/STDOutput.cpp"
+
 int main()
 {
-	STDInput input; // Create an instance of STDInput
-	STDOutput output;
-	// Remove the front element and store it in bitArraySize
-	int bitArraySize = input.getSizeOfArray();
+	std::shared_ptr<STDInput> input = std::make_shared<STDInput>();
+	std::shared_ptr<STDOutput> output = std::make_shared<STDOutput>();
 
-	std::vector<IHashFunction*> hashFunctions;
-	input.getHashFunctions(hashFunctions);
+	int bitArraySize = input->getSizeOfArray();
 
-	// Construct bloom filter:
+	std::vector<std::shared_ptr<IHashFunction>> hashFunctions;
+	input->setHashFunctions(hashFunctions);
+
 	BloomFilter bloomFilter(bitArraySize, hashFunctions);
 
-	//Real blackList
-	std::unordered_set<std::string> realBlacklist;
+	std::map<std::string, std::shared_ptr<ICommand>> commands;
 
-	std::map<std::string, ICommand*> commands;
-
-	AddURLCommand* addURLCommand = new AddURLCommand(bloomFilter, &input);
+	std::shared_ptr<AddURLCommand> addURLCommand = std::make_shared<AddURLCommand>(bloomFilter, input);
 	commands["1"] = addURLCommand;
 
-	// Command 2 – Check URL
-	CheckURLCommand* checkURLCommand = new CheckURLCommand(bloomFilter, &input, &output);
+	std::shared_ptr<CheckURLCommand> checkURLCommand = std::make_shared<CheckURLCommand>(bloomFilter, input, output);
 	commands["2"] = checkURLCommand;
 
-
-	App app(commands);
+	App app(commands, input);
 	app.run();
 
-
-	// Clean up dynamically allocated memory
-	for (auto& command : commands)
-	{
-		delete command.second; // Delete each command object
-	}
-
+	return 0;
 }
