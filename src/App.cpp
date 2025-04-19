@@ -2,6 +2,7 @@
 #include <vector>
 #include <sstream>
 #include <string>
+#include <memory>
 #include <map>
 #include "commands/ICommand.h"
 #include "IO/Input/IInput.h"
@@ -12,7 +13,7 @@ private:
 	std::shared_ptr<IInput> input;
 
 public:
-	App(std::map<std::string, std::shared_ptr<ICommand>>& commands) : commands(commands) {} // Constructor to initialize commands
+	App(std::map<std::string, std::shared_ptr<ICommand>>& commands, std::shared_ptr<IInput> input) : commands(commands), input(input) {}
 
 	void run() {
 

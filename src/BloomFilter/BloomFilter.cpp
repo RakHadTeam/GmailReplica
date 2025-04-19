@@ -1,4 +1,7 @@
+#ifndef BLOOMFILTER_CPP
+#define BLOOMFILTER_CPP
 #include <vector>
+#include <memory>
 #include <iostream>
 #include "HashFunction/IHashFunction.h"
 
@@ -131,3 +134,5 @@ public:
 		return false;
 	}
 };
+
+#endif // BLOOMFILTER_CPP

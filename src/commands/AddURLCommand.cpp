@@ -1,13 +1,15 @@
 #include "ICommand.h"
 #include <string>
+#include <memory>
 #include "../IO/Input/IInput.h"
+#include "../BloomFilter/BloomFilter.cpp"
 
 class AddURLCommand : public ICommand {
 private:
 	BloomFilter& bloomFilter;
-	IInput* input;
+	std::shared_ptr<IInput> input;
 public:
-	AddURLCommand(BloomFilter& bf, IInput* inp) : bloomFilter(bf), input(inp) {}
+	AddURLCommand(BloomFilter& bf, std::shared_ptr<IInput> inp) : bloomFilter(bf), input(inp) {}
 	void execute() override {
 
 		// Get URL:

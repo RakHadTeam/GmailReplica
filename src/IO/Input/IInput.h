@@ -2,6 +2,7 @@
 #define IINPUT_H
 
 #include <vector>
+#include <memory>
 #include "../../BloomFilter/HashFunction/IHashFunction.h"
 
 class IInput {

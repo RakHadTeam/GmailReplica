@@ -10,7 +10,7 @@ WORKDIR /usr/src/APProject
 
 # Build the project
 # Remove the existing build directory if it exists, then create a new one
-RUN if [ -d "/build" ]; then rm -rf /build; fi && mkdir /build
+RUN if [ -d "/usr/src/APProject/build" ]; then rm -rf /usr/src/APProject/build; fi && mkdir /usr/src/APProject/build
 
 # Set the working directory to the newly created build directory
 WORKDIR /usr/src/APProject/build

@@ -9,4 +9,4 @@ if [ "$(docker ps -aq -f name=^/${CONTAINER_NAME}$)" ]; then
     docker rm $CONTAINER_NAME > /dev/null
 fi
 
-docker run --name approject approject:latest
+docker run -it --name approject approject:latest

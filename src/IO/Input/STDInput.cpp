@@ -1,4 +1,5 @@
 #include <vector>
+#include <memory>
 #include <iostream>
 #include <sstream>
 #include <string>
@@ -74,7 +75,7 @@ public:
 	}
 
 	bool validateURL(const std::string& url) {
-		const std::regex urlRegex(R"(^\S*\.\S*\.\S*$)");
+		const std::regex urlRegex(R"(^[^\s.]+\.[^\s.]+\.[^\s.]+$)");
 		return std::regex_match(url, urlRegex);
 	}
 
