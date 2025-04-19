@@ -2,6 +2,7 @@
 #include <iostream>
 #include <sstream>
 #include <string>
+#include <regex>
 
 #include "STDHash.h"
 #include "IInput.h"
@@ -70,6 +71,11 @@ public:
 		return size;
 	}
 
+	bool validateURL(std::string& url) {
+		const std::regex urlRegex(R"(^((https?|ftp):\/\/)?([a-zA-Z0-9\-]+\.)+[a-zA-Z]{2,}(:\d+)?(\/[^\s]*)?$)");
+		return std::regex_match(url, urlRegex);
+	}
+
 	// Get a URL from user input
 	void getURL(std::string& url) {
 		std::string line;
@@ -78,7 +84,7 @@ public:
 		std::istringstream iss(line);
 		iss >> url;
 
-		if (iss >> url) {
+		if (iss >> url || !validateURL(url)) {
 			url.clear();
 		}
 	}
