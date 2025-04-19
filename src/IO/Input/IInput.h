@@ -2,6 +2,8 @@
 #define IINPUT_H
 
 #include <vector>
+#include "../../BloomFilter/HashFunction/IHashFunction.h"
+
 class IInput {
 public:
 	virtual void setHashFunctions(std::vector<std::shared_ptr<IHashFunction>>& hashFunctions) = 0;

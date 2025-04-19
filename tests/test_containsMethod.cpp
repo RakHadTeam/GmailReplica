@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
-#include "../src/BloomFilter.cpp"
-#include "../src/STDHash.cpp"
+#include "../src/BloomFilter/BloomFilter.cpp"
+#include "../src/BloomFilter/HashFunction/STDHash.cpp"
 
 TEST(ContainsMethodTest, CheckSingleURL) {
 	std::vector<std::shared_ptr<IHashFunction>> hashFunctions;

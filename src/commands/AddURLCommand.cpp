@@ -1,6 +1,6 @@
 #include "ICommand.h"
 #include <string>
-#include "IInput.h"
+#include "../IO/Input/IInput.h"
 
 class AddURLCommand : public ICommand {
 private:

@@ -1,6 +1,6 @@
 #include <vector>
 #include <iostream>
-#include "IHashFunction.h"
+#include "HashFunction/IHashFunction.h"
 
 class BloomFilter
 {

@@ -4,7 +4,7 @@
 #include <string>
 #include <regex>
 
-#include "STDHash.cpp"
+#include "../../BloomFilter/HashFunction/STDHash.cpp"
 #include "IInput.h"
 
 class STDInput : public IInput {

@@ -1,8 +1,8 @@
 #include "ICommand.h"
 #include <string>
-#include "IInput.h"
+#include "../IO/Input/IInput.h"
 #include <unordered_set>
-#include "IOutput.h"
+#include "../IO/Output/IOutput.h"
 
 class CheckURLCommand : public ICommand {
 private:

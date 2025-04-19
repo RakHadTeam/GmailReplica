@@ -3,8 +3,8 @@
 #include <sstream>
 #include <string>
 #include <map>
-#include "ICommand.h"
-#include "IInput.h"
+#include "commands/ICommand.h"
+#include "IO/Input/IInput.h"
 
 class App {
 private:
