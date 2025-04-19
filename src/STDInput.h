@@ -72,7 +72,7 @@ public:
 	}
 
 	bool validateURL(std::string& url) {
-		const std::regex urlRegex(R"(^((https?|ftp):\/\/)?([a-zA-Z0-9\-]+\.)+[a-zA-Z]{2,}(:\d+)?(\/[^\s]*)?$)");
+		const std::regex urlRegex(R"(^\S*\.\S*\.\S*$)");
 		return std::regex_match(url, urlRegex);
 	}
 
