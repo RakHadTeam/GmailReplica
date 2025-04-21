@@ -1,7 +1,7 @@
 #include <gtest/gtest.h>
 #include <vector>
-#include "../src/BloomFilter/BloomFilter.cpp"
-#include "../src/BloomFilter/HashFunction/STDHash.cpp"
+#include "../src/BloomFilter/BloomFilter.h"
+#include "../src/BloomFilter/HashFunction/STDHash.h"
 
 class SimpleHashFunction : public IHashFunction
 {

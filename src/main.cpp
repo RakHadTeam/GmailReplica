@@ -1,13 +1,13 @@
 #include <string>
-#include "BloomFilter/BloomFilter.cpp"
-#include "commands/AddURLCommand.cpp"
-#include "IO/Input/STDInput.cpp"
+#include "BloomFilter/BloomFilter.h"
+#include "commands/AddURLCommand.h"
+#include "IO/Input/STDInput.h"
 #include <map>
 #include <memory>
 #include "App.cpp"
 #include "IO/Input/IInput.h"
-#include "commands/CheckURLCommand.cpp"
-#include "IO/Output/STDOutput.cpp"
+#include "commands/CheckURLCommand.h"
+#include "IO/Output/STDOutput.h"
 
 int main()
 {

@@ -4,27 +4,21 @@
 #include "../IO/Input/IInput.h"
 #include <unordered_set>
 #include "../IO/Output/IOutput.h"
-#include "../BloomFilter/BloomFilter.cpp"
+#include "../BloomFilter/BloomFilter.h"
+#include "CheckURLCommand.h"
 
-class CheckURLCommand : public ICommand {
-private:
-	BloomFilter& bloomFilter;
-	std::shared_ptr<IInput> input;
-	std::shared_ptr<IOutput> output;
-public:
+// Constructor implementation
+CheckURLCommand::CheckURLCommand(BloomFilter& bloomFilter, std::shared_ptr<IInput> input, std::shared_ptr<IOutput> output)
+	: bloomFilter(bloomFilter), input(input), output(output) {
+}
 
-	CheckURLCommand(BloomFilter& bloomFilter, std::shared_ptr<IInput> input, std::shared_ptr<IOutput> output)
-		: bloomFilter(bloomFilter), input(input), output(output) {
-	}
+// Execute the command
+void CheckURLCommand::execute() {
+	std::string url;
+	url = input->getURL();
+	if (url.empty())
+		return;
 
-	void execute() override {
-		std::string url;
-		url = input->getURL();
-		if (url.empty())
-			return;
-
-		//TODO: put instad the false a false positive from function
-		output->displayCheckURLResult(bloomFilter.contains(url), false);
-
-	}
-};
+	// TODO: Replace 'false' with a false positive check from a function
+	output->displayCheckURLResult(bloomFilter.contains(url), false);
+}

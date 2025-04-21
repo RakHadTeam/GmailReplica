@@ -8,13 +8,17 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
 # Add the source files from src/
-file(GLOB_RECURSE SOURCES "src/*.cpp" "src/*.c" "src/*.h")
+file(GLOB_RECURSE SOURCES "src/*.cpp" "src/*.c")
 
 # Add the test files from tests/
 file(GLOB_RECURSE TEST_SOURCES "tests/*.cpp" "tests/*.c")
 
+add_library(MyProjectLib ${SOURCES})
+target_include_directories(MyProjectLib PUBLIC src)  # Add include path for headers
+
 # Add executable for main project
-add_executable(MyProjectExecutable ${SOURCES})
+add_executable(MyProjectExecutable src/main.cpp)
+target_link_libraries(MyProjectExecutable MyProjectLib)
 
 # Enable testing
 enable_testing()
@@ -31,9 +35,8 @@ FetchContent_MakeAvailable(googletest)
 
 # Add test executable
 add_executable(MyProjectTests ${TEST_SOURCES})
-
-# Link GoogleTest to the test executable
-target_link_libraries(MyProjectTests gtest_main)
+# Link the library to the test executable
+target_link_libraries(MyProjectTests MyProjectLib gtest gtest_main)
 
 # Discover tests
 include(GoogleTest)
