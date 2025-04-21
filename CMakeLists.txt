@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.10)
 
 # Project name and version
-project(MyProject VERSION 1.0)
+project(APProject VERSION 1.0)
 
 # Set C++ standard
 set(CMAKE_CXX_STANDARD 17)
@@ -14,12 +14,12 @@ file(GLOB_RECURSE SOURCES "src/*.cpp" "src/*.c")
 file(GLOB_RECURSE TEST_SOURCES "tests/*.cpp" "tests/*.c")
 
 # Create a library for the source files
-add_library(MyProjectLib ${SOURCES})
-target_include_directories(MyProjectLib PUBLIC src)  # Add include path for headers
+add_library(APProjectLib ${SOURCES})
+target_include_directories(APProjectLib PUBLIC src)  # Add include path for headers
 
 # Add executable for main project
-add_executable(MyProjectExecutable src/main.cpp)
-target_link_libraries(MyProjectExecutable MyProjectLib)
+add_executable(APProjectExecutable src/main.cpp)
+target_link_libraries(APProjectExecutable APProjectLib)
 
 # Enable testing
 enable_testing()
@@ -37,9 +37,9 @@ set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 FetchContent_MakeAvailable(googletest)
 
 # Add test executable
-add_executable(MyProjectTests ${TEST_SOURCES})
-target_link_libraries(MyProjectTests MyProjectLib gtest gtest_main)
+add_executable(APProjectTests ${TEST_SOURCES})
+target_link_libraries(APProjectTests APProjectLib gtest_main)
 
 # Discover tests automatically
 include(GoogleTest)
-gtest_discover_tests(MyProjectTests)
+gtest_discover_tests(APProjectTests)

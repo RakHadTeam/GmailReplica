@@ -59,8 +59,18 @@ To check if a URL is in the blacklist, use the following command:
 To run the application inside a Docker container, execute the provided script:
 
 ```bash
-./run-container.sh
+./run.sh
 ```
+
+## Running the tests
+
+```bash
+./tests.sh
+```
+
+## Database
+
+The filter array will be stored in a file named `filter_array.txt` under the folder `data`.
 
 ## Handling Invalid Input
 
