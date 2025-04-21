@@ -13,6 +13,7 @@ file(GLOB_RECURSE SOURCES "src/*.cpp" "src/*.c")
 # Add the test files from tests/
 file(GLOB_RECURSE TEST_SOURCES "tests/*.cpp" "tests/*.c")
 
+# Create a library for the source files
 add_library(MyProjectLib ${SOURCES})
 target_include_directories(MyProjectLib PUBLIC src)  # Add include path for headers
 
@@ -23,21 +24,22 @@ target_link_libraries(MyProjectExecutable MyProjectLib)
 # Enable testing
 enable_testing()
 
-# Add GoogleTest
+# Add GoogleTest via FetchContent
 include(FetchContent)
 FetchContent_Declare(
   googletest
   URL https://github.com/google/googletest/archive/refs/heads/main.zip
+  DOWNLOAD_EXTRACT_TIMESTAMP TRUE 
 )
-# For Windows: Prevent overriding the parent project's compiler/linker settings
+
+# Prevent overriding the parent project's compiler/linker settings
 set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 FetchContent_MakeAvailable(googletest)
 
 # Add test executable
 add_executable(MyProjectTests ${TEST_SOURCES})
-# Link the library to the test executable
 target_link_libraries(MyProjectTests MyProjectLib gtest gtest_main)
 
-# Discover tests
+# Discover tests automatically
 include(GoogleTest)
 gtest_discover_tests(MyProjectTests)
