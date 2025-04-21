@@ -4,15 +4,18 @@
 #include <memory>
 #include <string>
 #include "HashFunction/IHashFunction.h"
+#include "../DB/IDBSaver.h"
 
 // The BloomFilter class implements a probabilistic data structure for set membership testing.
 class BloomFilter {
 private:
 	std::vector<bool> bitArray; // The bit array representing the Bloom Filter
 	std::vector<std::shared_ptr<IHashFunction>> hashFunctions; // List of hash functions used in the Bloom Filter
+	std::shared_ptr<IDBSaver> dbSaver;
 
 public:
-	// Constructor: Initializes the Bloom Filter with a given size and hash functions
+	BloomFilter(size_t size, const std::vector<std::shared_ptr<IHashFunction>>& hashFuncs, std::shared_ptr<IDBSaver> dbSaver);
+
 	BloomFilter(size_t size, const std::vector<std::shared_ptr<IHashFunction>>& hashFuncs);
 
 	// Copy constructor
@@ -32,6 +35,9 @@ public:
 
 	// Returns the size of the bit array
 	size_t getBitArraySize() const;
+
+	// Returns the bit array
+	std::vector<bool> getBitArray() const;
 
 	// Returns the number of hash functions used
 	size_t hashFunctionCount() const;

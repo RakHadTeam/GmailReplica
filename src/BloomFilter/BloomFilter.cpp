@@ -5,16 +5,26 @@
 #include "BloomFilter.h"
 
 // Constructor: Initializes the Bloom Filter with a given size and hash functions
-BloomFilter::BloomFilter(size_t size, const std::vector<std::shared_ptr<IHashFunction>>& hashFuncs)
-	: bitArray(size, false) {
+BloomFilter::BloomFilter(size_t size, const std::vector<std::shared_ptr<IHashFunction>>& hashFuncs, std::shared_ptr<IDBSaver> dbSaver)
+	: dbSaver(dbSaver), // Initialize the database saver
+	  bitArray(size, false) {      // Initialize the bit array with the given size
 	for (const auto& hashFunc : hashFuncs) {
 		hashFunctions.push_back(hashFunc);
 	}
 }
 
+BloomFilter::BloomFilter(size_t size, const std::vector<std::shared_ptr<IHashFunction>>& hashFuncs)
+	: bitArray(size, false) { // Initialize the bit array with the given size
+	for (const auto& hashFunc : hashFuncs) {
+		hashFunctions.push_back(hashFunc);
+	}
+	dbSaver = nullptr;
+}
+
 // Copy constructor
 BloomFilter::BloomFilter(const BloomFilter& other)
-	: bitArray(other.bitArray) {
+	: bitArray(other.bitArray), // Copy the bit array
+	  dbSaver(other.dbSaver) { // Copy the database saver
 	for (const auto& hashFunc : other.hashFunctions) {
 		hashFunctions.push_back(hashFunc);
 	}
@@ -24,6 +34,7 @@ BloomFilter::BloomFilter(const BloomFilter& other)
 BloomFilter& BloomFilter::operator=(const BloomFilter& other) {
 	if (this != &other) { // Avoid self-assignment
 		bitArray = other.bitArray; // Copy the bit array
+		dbSaver = other.dbSaver;   // Copy the database saver
 
 		hashFunctions.clear(); // Clear existing hash functions
 		for (const auto& hashFunc : other.hashFunctions) {
@@ -35,7 +46,7 @@ BloomFilter& BloomFilter::operator=(const BloomFilter& other) {
 
 // Move constructor
 BloomFilter::BloomFilter(BloomFilter&& other) noexcept
-	: bitArray(std::move(other.bitArray)), hashFunctions(std::move(other.hashFunctions)) {
+	: bitArray(std::move(other.bitArray)), hashFunctions(std::move(other.hashFunctions)), dbSaver(std::move(other.dbSaver)) {
 }
 
 // Move assignment operator
@@ -43,6 +54,7 @@ BloomFilter& BloomFilter::operator=(BloomFilter&& other) noexcept {
 	if (this != &other) { // Avoid self-assignment
 		bitArray = std::move(other.bitArray);
 		hashFunctions = std::move(other.hashFunctions);
+		dbSaver = std::move(other.dbSaver);
 	}
 	return *this;
 }
@@ -55,6 +67,11 @@ BloomFilter::~BloomFilter() {
 // Returns the size of the bit array
 size_t BloomFilter::getBitArraySize() const {
 	return bitArray.size();
+}
+
+std::vector<bool> BloomFilter::getBitArray() const {
+	std::vector<bool> bitArrayCopy(bitArray);
+	return bitArrayCopy;
 }
 
 // Returns the number of hash functions used
@@ -81,6 +98,11 @@ void BloomFilter::add(const std::string& url) {
 		size_t index = hashFunc->hash(url) % bitArray.size(); // Calculate the index in the bit array
 		bitArray[index] = true;                               // Set the corresponding bit to true
 	}
+
+	if (dbSaver == nullptr) {
+		return;
+	}
+	dbSaver->saveFilterArray(bitArray);
 }
 
 // Checks if a URL is in the Bloom Filter
