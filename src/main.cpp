@@ -21,7 +21,7 @@ int main()
 	std::vector<std::shared_ptr<IHashFunction>> hashFunctions;
 	input->setHashFunctions(hashFunctions);
 
-	std::shared_ptr<IDBSaver> dbSaver = std::make_shared<FileDBSaver>("data");
+	std::shared_ptr<IDBSaver> dbSaver = std::make_shared<FileDBSaver>("data","blacklist","array_filter");
 
 	BloomFilter bloomFilter(bitArraySize, hashFunctions, dbSaver);
 

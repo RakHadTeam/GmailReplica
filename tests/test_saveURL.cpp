@@ -12,7 +12,12 @@ std::string filePath = dataDir + "/blacklist";
 
 TEST(SaveURLTest, SaveSingleURL) {
 	std::filesystem::remove(filePath);
-	auto dbSaver = std::make_shared<FileDBSaver>(dataDir);
+	auto dbSaver = std::make_shared<FileDBSaver>(
+		dataDir,
+		"blacklist",
+		"array_filter"
+	);
+	
 	std::string url = "www.example.com";
 
 	dbSaver->saveURL(url);
@@ -29,7 +34,12 @@ TEST(SaveURLTest, SaveSingleURL) {
 
 TEST(SaveURLTest, SaveMultipleURLs) {
 	std::filesystem::remove(filePath);
-	auto dbSaver = std::make_shared<FileDBSaver>(dataDir);
+	auto dbSaver = std::make_shared<FileDBSaver>(
+		dataDir,
+		"blacklist",
+		"array_filter"
+	);
+	
 	std::vector<std::string> urls = { "www.example.com", "www.test.com", "www.google.com" };
 
 	for (const auto& url : urls) {
@@ -52,7 +62,12 @@ TEST(SaveURLTest, FileCreatedIfNotExists) {
 	std::filesystem::remove(filePath);
 	EXPECT_FALSE(std::filesystem::exists(filePath));
 
-	auto dbSaver = std::make_shared<FileDBSaver>(dataDir);
+	auto dbSaver = std::make_shared<FileDBSaver>(
+		dataDir,
+		"blacklist",
+		"array_filter"
+	);
+	
 	dbSaver->saveURL("www.created.com");
 
 	EXPECT_TRUE(std::filesystem::exists(filePath));
