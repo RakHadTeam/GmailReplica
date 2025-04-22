@@ -1,4 +1,5 @@
 #include "FileDBSaver.h"
+#include <iostream>
 
 FileDBSaver::FileDBSaver(const std::string& dataFolderPath)
 	: dataFolderPath(dataFolderPath) {
@@ -22,3 +23,18 @@ void FileDBSaver::saveFilterArray(std::vector<bool>& bitArray) {
 	
 	outFile.close();
 }
+
+void FileDBSaver::saveURL(const std::string& url) {
+	std::string fullPath = dataFolderPath + "/blacklist";
+	std::ofstream outFile(fullPath, std::ios::app);
+
+	if (!outFile.is_open()) {
+		return;
+	}
+
+
+	outFile << url << std::endl;
+	outFile.close();
+}
+
+

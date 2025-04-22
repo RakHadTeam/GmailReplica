@@ -12,4 +12,6 @@ private:
 public:
 	FileDBSaver(const std::string& dataFolderPath);
     void saveFilterArray(std::vector<bool>& bitArray);
+	void saveURL(const std::string& url) override;
+
 };
