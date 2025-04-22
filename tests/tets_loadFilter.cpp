@@ -20,7 +20,7 @@ TEST(LoadFilterArrayTest, MissingFileDoesNotChangeArray) {
 	BloomFilter bloom(8, hashFunctions, nullptr, dbLoader);
 	std::vector<bool> original = bloom.getBitArray();
 
-	EXPECT_FALSE(bloom.loadFromFile("data/filter_array.txt"));
+	EXPECT_FALSE(bloom.loadFromFile());
 	EXPECT_EQ(bloom.getBitArray(), original);
 }
 
@@ -36,7 +36,7 @@ TEST(LoadFilterArrayTest, EmptyFileDoesNotChangeArray) {
 	BloomFilter bloom(8, hashFunctions, nullptr, dbLoader);
 	std::vector<bool> original = bloom.getBitArray();
 
-	bloom.loadFromFile("data/filter_array.txt");
+	bloom.loadFromFile();
 
 	std::vector<bool> after = bloom.getBitArray();
 	EXPECT_EQ(after, original);
@@ -54,7 +54,7 @@ TEST(LoadFilterArrayTest, InvalidCharacterInFileDoesNotChangeArray) {
 
 	BloomFilter bloom(8, hashFunctions, nullptr, dbLoader);
 
-	EXPECT_FALSE(bloom.loadFromFile("data/filter_array.txt"));
+	EXPECT_FALSE(bloom.loadFromFile());
 	EXPECT_EQ(bloom.getBitArray(), std::vector<bool>(8, false));
 }
 
@@ -70,6 +70,6 @@ TEST(LoadFilterArrayTest, TooShortFileDoesNotChangeArray) {
 
 	BloomFilter bloom(8, hashFunctions, nullptr, dbLoader);
 
-	EXPECT_FALSE(bloom.loadFromFile("data/filter_array.txt"));
+	EXPECT_FALSE(bloom.loadFromFile());
 	EXPECT_EQ(bloom.getBitArray(), std::vector<bool>(8, false));
 }

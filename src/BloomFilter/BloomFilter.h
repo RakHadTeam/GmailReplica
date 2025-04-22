@@ -15,6 +15,7 @@ private:
 	std::shared_ptr<IDBSaver> dbSaver;
 	std::shared_ptr<IDBLoader> dbLoader;
 
+
 public:
 	BloomFilter(size_t size, const std::vector<std::shared_ptr<IHashFunction>>& hashFuncs, std::shared_ptr<IDBSaver> dbSaver, std::shared_ptr<IDBLoader> dbLoader);
 
@@ -56,6 +57,5 @@ public:
 	// Placeholder for checking if a URL is in the database
 	bool containsInDB(const std::string& url) const;
 
-	bool loadFromFile(const std::string& filePath);
-
+	bool loadFromFile();
 };

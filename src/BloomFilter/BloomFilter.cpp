@@ -11,6 +11,7 @@ BloomFilter::BloomFilter(size_t size, const std::vector<std::shared_ptr<IHashFun
 	for (const auto& hashFunc : hashFuncs) {
 		hashFunctions.push_back(hashFunc);
 	}
+	loadFromFile();
 }
 
 BloomFilter::BloomFilter(size_t size, const std::vector<std::shared_ptr<IHashFunction>>& hashFuncs)
@@ -20,6 +21,7 @@ BloomFilter::BloomFilter(size_t size, const std::vector<std::shared_ptr<IHashFun
 	}
 	dbSaver = nullptr;
 	dbLoader = nullptr;
+	loadFromFile();
 }
 
 // Copy constructor
@@ -31,6 +33,7 @@ BloomFilter::BloomFilter(const BloomFilter& other)
 	for (const auto& hashFunc : other.hashFunctions) {
 		hashFunctions.push_back(hashFunc);
 	}
+	loadFromFile();
 }
 
 
@@ -44,6 +47,7 @@ BloomFilter& BloomFilter::operator=(const BloomFilter& other) {
 		for (const auto& hashFunc : other.hashFunctions) {
 			hashFunctions.push_back(hashFunc);
 		}
+		loadFromFile();
 	}
 	return *this;
 }
@@ -51,6 +55,7 @@ BloomFilter& BloomFilter::operator=(const BloomFilter& other) {
 // Move constructor
 BloomFilter::BloomFilter(BloomFilter&& other) noexcept
 	: bitArray(std::move(other.bitArray)), hashFunctions(std::move(other.hashFunctions)), dbSaver(std::move(other.dbSaver)), dbLoader(std::move(other.dbLoader)) {
+	loadFromFile();
 }
 
 // Move assignment operator
@@ -59,7 +64,8 @@ BloomFilter& BloomFilter::operator=(BloomFilter&& other) noexcept {
 		bitArray = std::move(other.bitArray);
 		hashFunctions = std::move(other.hashFunctions);
 		dbSaver = std::move(other.dbSaver);
-		dbLoader=std::move(other.dbLoader);
+		dbLoader = std::move(other.dbLoader);
+		loadFromFile();
 	}
 	return *this;
 }
@@ -131,11 +137,11 @@ bool BloomFilter::containsInDB(const std::string& url) const {
 	return false;
 }
 
-bool BloomFilter::loadFromFile(const std::string& filePath) {
+bool BloomFilter::loadFromFile() {
 	if (dbLoader == nullptr) {
 		return false;
 	}
 
 	return dbLoader->loadArrayFilter(bitArray);
-	
+
 }
