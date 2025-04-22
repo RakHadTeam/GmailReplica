@@ -27,7 +27,7 @@ int main()
 
 	std::map<std::string, std::shared_ptr<ICommand>> commands;
 
-	std::shared_ptr<AddURLCommand> addURLCommand = std::make_shared<AddURLCommand>(bloomFilter, input);
+	std::shared_ptr<AddURLCommand> addURLCommand = std::make_shared<AddURLCommand>(bloomFilter, input, dbSaver);
 	commands["1"] = addURLCommand;
 
 	std::shared_ptr<CheckURLCommand> checkURLCommand = std::make_shared<CheckURLCommand>(bloomFilter, input, output);
