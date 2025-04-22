@@ -1,13 +1,15 @@
 #include <string>
-#include "BloomFilter/BloomFilter.cpp"
-#include "commands/AddURLCommand.cpp"
-#include "IO/Input/STDInput.cpp"
+#include "BloomFilter/BloomFilter.h"
+#include "commands/AddURLCommand.h"
+#include "IO/Input/STDInput.h"
 #include <map>
 #include <memory>
+#include <filesystem>
 #include "App.cpp"
 #include "IO/Input/IInput.h"
-#include "commands/CheckURLCommand.cpp"
-#include "IO/Output/STDOutput.cpp"
+#include "commands/CheckURLCommand.h"
+#include "IO/Output/STDOutput.h"
+#include "DB/FileDB/FileDBSaver.h"
 
 int main()
 {
@@ -19,7 +21,9 @@ int main()
 	std::vector<std::shared_ptr<IHashFunction>> hashFunctions;
 	input->setHashFunctions(hashFunctions);
 
-	BloomFilter bloomFilter(bitArraySize, hashFunctions);
+	std::shared_ptr<IDBSaver> dbSaver = std::make_shared<FileDBSaver>("data");
+
+	BloomFilter bloomFilter(bitArraySize, hashFunctions, dbSaver);
 
 	std::map<std::string, std::shared_ptr<ICommand>> commands;
 

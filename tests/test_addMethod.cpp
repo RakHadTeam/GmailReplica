@@ -1,5 +1,5 @@
-#include "../src/BloomFilter/BloomFilter.cpp"
-#include "../src/BloomFilter/HashFunction/STDHash.cpp"
+#include "../src/BloomFilter/BloomFilter.h"
+#include "../src/BloomFilter/HashFunction/STDHash.h"
 #include <gtest/gtest.h>
 
 TEST(AddMethodTest, AddSingleURL) {

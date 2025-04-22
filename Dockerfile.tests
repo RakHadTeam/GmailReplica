@@ -1,0 +1,17 @@
+# Use gcc base image
+FROM gcc:latest
+
+# Install dependencies for building and testing
+RUN apt-get update && apt-get install -y cmake gdb && rm -rf /var/lib/apt/lists/*
+
+# Copy source code
+COPY . /usr/src/APProject
+WORKDIR /usr/src/APProject
+
+# Build the project
+RUN if [ -d "/usr/src/APProject/build" ]; then rm -rf /usr/src/APProject/build; fi && mkdir /usr/src/APProject/build
+WORKDIR /usr/src/APProject/build
+RUN cmake .. && make
+
+# Run tests
+CMD ["./APProjectTests"]

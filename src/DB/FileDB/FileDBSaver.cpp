@@ -1,0 +1,24 @@
+#include "FileDBSaver.h"
+
+FileDBSaver::FileDBSaver(const std::string& dataFolderPath)
+	: dataFolderPath(dataFolderPath) {
+	// Create the data folder if it doesn't exist
+	if (!std::filesystem::exists(dataFolderPath)) {
+		std::filesystem::create_directory(dataFolderPath);
+	}
+}
+
+void FileDBSaver::saveFilterArray(std::vector<bool>& bitArray) {
+	// Open the file in write mode
+	// If the file doesn't exist, it will be created
+	std::ofstream outFile(dataFolderPath + "/" + dataFileName, std::ios::out);
+
+	if (!outFile) {
+		return;
+	}
+
+	for (bool bit : bitArray)
+		outFile << (bit ? '1' : '0');
+	
+	outFile.close();
+}

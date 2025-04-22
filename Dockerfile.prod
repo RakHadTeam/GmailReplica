@@ -22,4 +22,4 @@ RUN cmake .. && make
 WORKDIR /usr/src/APProject/build
 
 # Run the compiled binary
-CMD ["./MyProjectExecutable"]
+CMD ["./APProjectExecutable"]
