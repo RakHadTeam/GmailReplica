@@ -6,9 +6,10 @@
 #include "../BloomFilter/BloomFilter.h"
 
 // Constructor implementation
-AddURLCommand::AddURLCommand(BloomFilter& bf, std::shared_ptr<IInput> inp, std::shared_ptr<IDBSaver> dbSaver)
-	: bloomFilter(bf), input(inp), dbSaver(dbSaver) {
+AddURLCommand::AddURLCommand(BloomFilter& bf, std::shared_ptr<IInput> inp, std::shared_ptr<IDBSaver> db)
+    : bloomFilter(bf), input(inp), dbSaver(db) {
 }
+
 
 // Execute the command
 void AddURLCommand::execute() {
@@ -24,5 +25,5 @@ void AddURLCommand::execute() {
 	std::cout << "Adding URL: " << url << std::endl;
 
 	bloomFilter.add(url);
-	dbSaver->saveURL(url);  // ⬅️ Save the URL to persistent storage
+	dbSaver->saveURL(url);
 }
