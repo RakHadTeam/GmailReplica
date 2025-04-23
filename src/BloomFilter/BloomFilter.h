@@ -5,6 +5,7 @@
 #include <string>
 #include "HashFunction/IHashFunction.h"
 #include "../DB/IDBSaver.h"
+#include "../DB/IDBLoader.h"
 
 // The BloomFilter class implements a probabilistic data structure for set membership testing.
 class BloomFilter {
@@ -12,9 +13,11 @@ private:
 	std::vector<bool> bitArray; // The bit array representing the Bloom Filter
 	std::vector<std::shared_ptr<IHashFunction>> hashFunctions; // List of hash functions used in the Bloom Filter
 	std::shared_ptr<IDBSaver> dbSaver;
+	std::shared_ptr<IDBLoader> dbLoader;
+
 
 public:
-	BloomFilter(size_t size, const std::vector<std::shared_ptr<IHashFunction>>& hashFuncs, std::shared_ptr<IDBSaver> dbSaver);
+	BloomFilter(size_t size, const std::vector<std::shared_ptr<IHashFunction>>& hashFuncs, std::shared_ptr<IDBSaver> dbSaver, std::shared_ptr<IDBLoader> dbLoader);
 
 	BloomFilter(size_t size, const std::vector<std::shared_ptr<IHashFunction>>& hashFuncs);
 
@@ -53,4 +56,6 @@ public:
 
 	// Placeholder for checking if a URL is in the database
 	bool containsInDB(const std::string& url) const;
+
+	bool loadFromFile();
 };

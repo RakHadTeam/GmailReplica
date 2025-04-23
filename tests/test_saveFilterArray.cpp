@@ -18,7 +18,7 @@ std::string currentPath = std::filesystem::current_path().string();
 std::shared_ptr<IDBSaver> dbSaver = std::make_shared<FileDBSaver>("data");
 std::vector<std::shared_ptr<IHashFunction>> hashFunctions = {hashFunc};
 
-BloomFilter bloomFilter(8, hashFunctions, dbSaver);
+BloomFilter bloomFilter(8, hashFunctions, dbSaver,nullptr);
 
 TEST(SaveFilterArrayTest, SaveFilterArray) {
 
@@ -62,7 +62,7 @@ TEST(SaveFilterArrayTest, SaveMultipleFilterArray) {
 // Delete the file before running the test
 TEST(SaveFilterArrayTest, NonExistFile) {
 	std::filesystem::remove("data/filter_array.txt");
-	bloomFilter = BloomFilter(8, hashFunctions, dbSaver);
+	bloomFilter = BloomFilter(8, hashFunctions, dbSaver,nullptr);
 
 	bloomFilter.add("www.example.com");
 
@@ -86,7 +86,7 @@ TEST(SaveFilterArrayTest, EmptyFile) {
 	std::ofstream outFile("data/filter_array.txt");
 	outFile.close();
 
-	bloomFilter = BloomFilter(8, hashFunctions, dbSaver);
+	bloomFilter = BloomFilter(8, hashFunctions, dbSaver,nullptr);
 
 	bloomFilter.add("www.example.com");
 

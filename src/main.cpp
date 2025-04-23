@@ -5,14 +5,16 @@
 #include <map>
 #include <memory>
 #include <filesystem>
-#include "App.cpp"
+#include "App.h"
 #include "IO/Input/IInput.h"
 #include "commands/CheckURLCommand.h"
 #include "IO/Output/STDOutput.h"
 #include "DB/FileDB/FileDBSaver.h"
+#include "DB/FileDB/FileDBLoader.h"
 
 int main()
 {
+
 	std::shared_ptr<STDInput> input = std::make_shared<STDInput>();
 	std::shared_ptr<STDOutput> output = std::make_shared<STDOutput>();
 
@@ -23,7 +25,9 @@ int main()
 
 	std::shared_ptr<IDBSaver> dbSaver = std::make_shared<FileDBSaver>("data");
 
-	BloomFilter bloomFilter(bitArraySize, hashFunctions, dbSaver);
+	std::shared_ptr<IDBLoader> dbLoader = std::make_shared<FileDBLoader>("data");
+
+	BloomFilter bloomFilter(bitArraySize, hashFunctions, dbSaver, dbLoader);
 
 	std::map<std::string, std::shared_ptr<ICommand>> commands;
 
