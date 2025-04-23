@@ -15,7 +15,7 @@ std::shared_ptr<STDHash> hashFunc = std::make_shared<STDHash>(1);
 // Print current working directory
 std::string currentPath = std::filesystem::current_path().string();	
 
-std::shared_ptr<IDBSaver> dbSaver = std::make_shared<FileDBSaver>("data");
+std::shared_ptr<IDBSaver> dbSaver = std::make_shared<FileDBSaver>("data","blacklist","array_filter");
 std::vector<std::shared_ptr<IHashFunction>> hashFunctions = {hashFunc};
 
 BloomFilter bloomFilter(8, hashFunctions, dbSaver,nullptr);

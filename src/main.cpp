@@ -23,7 +23,7 @@ int main()
 	std::vector<std::shared_ptr<IHashFunction>> hashFunctions;
 	input->setHashFunctions(hashFunctions);
 
-	std::shared_ptr<IDBSaver> dbSaver = std::make_shared<FileDBSaver>("data");
+	std::shared_ptr<IDBSaver> dbSaver = std::make_shared<FileDBSaver>("data","blacklist","array_filter");
 
 	std::shared_ptr<IDBLoader> dbLoader = std::make_shared<FileDBLoader>("data");
 
@@ -31,7 +31,7 @@ int main()
 
 	std::map<std::string, std::shared_ptr<ICommand>> commands;
 
-	std::shared_ptr<AddURLCommand> addURLCommand = std::make_shared<AddURLCommand>(bloomFilter, input);
+	std::shared_ptr<AddURLCommand> addURLCommand = std::make_shared<AddURLCommand>(bloomFilter, input, dbSaver);
 	commands["1"] = addURLCommand;
 
 	std::shared_ptr<CheckURLCommand> checkURLCommand = std::make_shared<CheckURLCommand>(bloomFilter, input, output);

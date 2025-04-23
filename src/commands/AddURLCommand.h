@@ -9,14 +9,14 @@
 
 // The AddURLCommand class implements the ICommand interface to add a URL to the Bloom filter.
 class AddURLCommand : public ICommand {
-private:
-    BloomFilter& bloomFilter; // Reference to the Bloom filter
-    std::shared_ptr<IInput> input; // Input handler
-
-public:
-    // Constructor
-    AddURLCommand(BloomFilter& bf, std::shared_ptr<IInput> inp);
-
-    // Execute the command
-    void execute() override;
-};
+	private:
+		BloomFilter& bloomFilter;
+		std::shared_ptr<IInput> input;
+		std::shared_ptr<IDBSaver> dbSaver;
+	
+	public:
+		AddURLCommand(BloomFilter& bf, std::shared_ptr<IInput> inp, std::shared_ptr<IDBSaver> dbSaver);
+	
+		void execute() override;
+	};
+	
