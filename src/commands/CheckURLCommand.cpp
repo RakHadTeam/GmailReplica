@@ -19,5 +19,5 @@ void CheckURLCommand::execute() {
 	if (url.empty())
 		return;
 
-	output->displayCheckURLResult(bloomFilter.contains(url), bloomFilter.containsInDB(url));
+	output->displayCheckURLResult(bloomFilter.containsInArray(url), bloomFilter.containsInDB(url));
 }

@@ -14,7 +14,7 @@ private:
 	// Check if a given string represents a positive integer
 	bool isPositiveInteger(const std::string& str);
 
-	// Validate if the input stream contains only positive integers
+	// Validate if the input stream containsInArray only positive integers
 	bool isValidInputStream();
 
 public:

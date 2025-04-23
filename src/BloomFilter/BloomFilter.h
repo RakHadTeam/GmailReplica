@@ -54,7 +54,7 @@ public:
 	void add(const std::string& url);
 
 	// Checks if a URL is in the Bloom Filter
-	bool contains(const std::string& url) const;
+	bool containsInArray(const std::string& url) const;
 
 	// Placeholder for checking if a URL is in the database
 	bool containsInDB(const std::string& url) const;
