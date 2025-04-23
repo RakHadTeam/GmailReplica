@@ -11,9 +11,11 @@
 class BloomFilter {
 private:
 	std::vector<bool> bitArray; // The bit array representing the Bloom Filter
+	std::vector<std::string> URLarray;
 	std::vector<std::shared_ptr<IHashFunction>> hashFunctions; // List of hash functions used in the Bloom Filter
 	std::shared_ptr<IDBSaver> dbSaver;
 	std::shared_ptr<IDBLoader> dbLoader;
+
 
 
 public:
@@ -57,5 +59,5 @@ public:
 	// Placeholder for checking if a URL is in the database
 	bool containsInDB(const std::string& url) const;
 
-	bool loadFromFile();
+	void loadFromDB();
 };
