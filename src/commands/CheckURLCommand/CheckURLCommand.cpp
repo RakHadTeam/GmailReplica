@@ -1,11 +1,11 @@
-#include "ICommand.h"
+#include <commands/ICommand.h>
 #include <string>
 #include <memory>
-#include "../IO/Input/IInput.h"
+#include <IO/Input/IInput.h>
 #include <unordered_set>
-#include "../IO/Output/IOutput.h"
-#include "../BloomFilter/BloomFilter.h"
-#include "CheckURLCommand.h"
+#include <IO/Output/IOutput.h>
+#include <BloomFilter/BloomFilter.h>
+#include <commands/CheckURLCommand/CheckURLCommand.h>
 
 // Constructor implementation
 CheckURLCommand::CheckURLCommand(BloomFilter& bloomFilter, std::shared_ptr<IInput> input, std::shared_ptr<IOutput> output)

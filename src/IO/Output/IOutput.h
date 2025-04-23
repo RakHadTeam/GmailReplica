@@ -1,8 +1,6 @@
-#ifndef IOUTPUT_H
-#define IOUTPUT_H
+#pragma once
+
 class IOutput {
 public:
-	virtual void displayCheckURLResult(bool arrayBitResult, bool falsePositiveResult) = 0;
+	virtual void displayCheckURLResult(bool arrayBitResult, bool URLBlacklistResult) = 0;
 };
-
-#endif // IOUTPUT_H

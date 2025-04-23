@@ -1,7 +1,8 @@
 #pragma once
 
-#include "IHashFunction.h"
+#include <BloomFilter/HashFunction/IHashFunction.h>
 #include <string>
+#include <functional>
 
 // The STDHash class implements a hash function that applies the standard library's hash function
 // multiple times to a given key. This can be useful for scenarios where additional hashing is needed

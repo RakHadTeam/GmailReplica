@@ -4,7 +4,7 @@
 #include <vector>
 #include <filesystem>
 #include <memory>
-#include "../src/DB/FileDB/FileDBLoader.h"
+#include <DB/FileDB/FileDBLoader/FileDBLoader.h>
 
 const std::string dataDir = "data";
 const std::string blacklistPath = dataDir + "/blacklist";

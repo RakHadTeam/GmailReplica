@@ -1,8 +1,8 @@
 #pragma once
 
-#include "ICommand.h"
-#include "../IO/Input/IInput.h"
-#include "../BloomFilter/BloomFilter.h"
+#include <commands/ICommand.h>
+#include <IO/Input/IInput.h>
+#include <BloomFilter/BloomFilter.h>
 #include <memory>
 #include <string>
 #include <iostream>

@@ -3,8 +3,8 @@
 #include <map>
 #include <memory>
 #include <string>
-#include "commands/ICommand.h"
-#include "IO/Input/IInput.h"
+#include <commands/ICommand.h>
+#include <IO/Input/IInput.h>
 
 // The App class manages the execution of commands based on user input.
 class App {

@@ -4,9 +4,9 @@
 #include <string>
 #include <memory>
 #include <map>
-#include "commands/ICommand.h"
-#include "IO/Input/IInput.h"
-#include "App.h"
+#include <commands/ICommand.h>
+#include <IO/Input/IInput.h>
+#include <App/App.h>
 
 // Constructor implementation
 App::App(std::map<std::string, std::shared_ptr<ICommand>>& commands, std::shared_ptr<IInput> input)

@@ -1,16 +1,16 @@
 #include <string>
-#include "BloomFilter/BloomFilter.h"
-#include "commands/AddURLCommand.h"
-#include "IO/Input/STDInput.h"
+#include <BloomFilter/BloomFilter.h>
+#include <commands/AddURLCommand/AddURLCommand.h>
+#include <IO/Input/STDInput/STDInput.h>
 #include <map>
 #include <memory>
 #include <filesystem>
-#include "App.h"
-#include "IO/Input/IInput.h"
-#include "commands/CheckURLCommand.h"
-#include "IO/Output/STDOutput.h"
-#include "DB/FileDB/FileDBSaver.h"
-#include "DB/FileDB/FileDBLoader.h"
+#include <App/App.h>
+#include <IO/Input/IInput.h>
+#include <commands/CheckURLCommand/CheckURLCommand.h>
+#include <IO/Output/STDOutput/STDOutput.h>
+#include <DB/FileDB/FileDBSaver/FileDBSaver.h>
+#include <DB/FileDB/FileDBLoader/FileDBLoader.h>
 
 #define DATA_FOLDER   "data"
 #define BLACKLIST_FILENAME  "blacklist"

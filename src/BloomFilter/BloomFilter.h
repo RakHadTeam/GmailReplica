@@ -3,9 +3,9 @@
 #include <vector>
 #include <memory>
 #include <string>
-#include "HashFunction/IHashFunction.h"
-#include "../DB/IDBSaver.h"
-#include "../DB/IDBLoader.h"
+#include <BloomFilter/HashFunction/IHashFunction.h>
+#include <DB/IDBSaver.h>
+#include <DB/IDBLoader.h>
 
 // The BloomFilter class implements a probabilistic data structure for set membership testing.
 class BloomFilter {

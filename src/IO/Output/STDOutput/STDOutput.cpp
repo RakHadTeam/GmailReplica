@@ -1,6 +1,6 @@
 #include <iostream>
-#include "IOutput.h"
-#include "STDOutput.h"
+#include <IO/Output/IOutput.h>
+#include <IO/Output/STDOutput/STDOutput.h>
 
 // Implement the display method to show result based on bloom filter and real blacklist
 void STDOutput::displayCheckURLResult(bool arrayBitResult, bool URLBlacklistResult) {
