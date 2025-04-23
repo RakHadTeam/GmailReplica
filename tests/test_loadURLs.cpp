@@ -9,7 +9,6 @@
 const std::string dataDir = "data";
 const std::string blacklistPath = dataDir + "/blacklist";
 
-// Utility to write sample URLs to the file
 void writeToBlacklistFile(const std::vector<std::string>& urls) {
     std::ofstream outFile(blacklistPath, std::ios::trunc);
     for (const auto& url : urls) {
