@@ -1,5 +1,5 @@
-#include <commands/ICommand.h>
-#include <commands/AddURLCommand/AddURLCommand.h>
+#include <Commands/ICommand.h>
+#include <Commands/AddURLCommand/AddURLCommand.h>
 #include <string>
 #include <memory>
 #include <IO/Input/IInput.h>

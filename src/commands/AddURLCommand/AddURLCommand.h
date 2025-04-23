@@ -1,6 +1,6 @@
 #pragma once
 
-#include <commands/ICommand.h>
+#include <Commands/ICommand.h>
 #include <IO/Input/IInput.h>
 #include <BloomFilter/BloomFilter.h>
 #include <memory>

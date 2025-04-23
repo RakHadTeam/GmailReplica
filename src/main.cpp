@@ -1,13 +1,13 @@
 #include <string>
 #include <BloomFilter/BloomFilter.h>
-#include <commands/AddURLCommand/AddURLCommand.h>
+#include <Commands/AddURLCommand/AddURLCommand.h>
 #include <IO/Input/STDInput/STDInput.h>
 #include <map>
 #include <memory>
 #include <filesystem>
 #include <App/App.h>
 #include <IO/Input/IInput.h>
-#include <commands/CheckURLCommand/CheckURLCommand.h>
+#include <Commands/CheckURLCommand/CheckURLCommand.h>
 #include <IO/Output/STDOutput/STDOutput.h>
 #include <DB/FileDB/FileDBSaver/FileDBSaver.h>
 #include <DB/FileDB/FileDBLoader/FileDBLoader.h>
