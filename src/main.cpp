@@ -12,9 +12,11 @@
 #include "DB/FileDB/FileDBSaver.h"
 #include "DB/FileDB/FileDBLoader.h"
 
-int main()
-{
+#define DATA_FOLDER   "data"
+#define BLACKLIST_FILENAME  "blacklist"
+#define FILTER_FILENAME     "array_filter"
 
+int main() {
 	std::shared_ptr<STDInput> input = std::make_shared<STDInput>();
 	std::shared_ptr<STDOutput> output = std::make_shared<STDOutput>();
 
@@ -23,9 +25,8 @@ int main()
 	std::vector<std::shared_ptr<IHashFunction>> hashFunctions;
 	input->setHashFunctions(hashFunctions);
 
-	std::shared_ptr<IDBSaver> dbSaver = std::make_shared<FileDBSaver>("data","blacklist","array_filter");
-
-	std::shared_ptr<IDBLoader> dbLoader = std::make_shared<FileDBLoader>("data");
+	std::shared_ptr<IDBSaver> dbSaver = std::make_shared<FileDBSaver>(DATA_FOLDER, BLACKLIST_FILENAME, FILTER_FILENAME);
+	std::shared_ptr<IDBLoader> dbLoader = std::make_shared<FileDBLoader>(DATA_FOLDER, BLACKLIST_FILENAME, FILTER_FILENAME);
 
 	BloomFilter bloomFilter(bitArraySize, hashFunctions, dbSaver, dbLoader);
 

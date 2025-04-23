@@ -7,12 +7,12 @@
 
 class FileDBSaver : public IDBSaver {
 private:
-	std::string dataFolderPath;
+	const std::string dataFolderPath;
 	const std::string blacklistFileName;
 	const std::string arrayFileName;
 public:
 	FileDBSaver(const std::string& dataFolderPath,const std::string& blacklistFileName,const std::string& arrayFileName);
-    void saveFilterArray(std::vector<bool>& bitArray);
+    void saveFilterArray(std::vector<bool>& bitArray) override;
 	void saveURL(const std::string& url) override;
 
 };

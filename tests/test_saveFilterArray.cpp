@@ -27,7 +27,7 @@ TEST(SaveFilterArrayTest, SaveFilterArray) {
 	std::vector<bool> bitArray = bloomFilter.getBitArray();
 
 	// Check for the file contents
-	std::ifstream inFile("data/filter_array.txt");
+	std::ifstream inFile("data/array_filter");
 	std::string line;
 	std::getline(inFile, line);
 
@@ -47,7 +47,7 @@ TEST(SaveFilterArrayTest, SaveMultipleFilterArray) {
 	std::vector<bool> bitArray = bloomFilter.getBitArray();
 
 	// Check for the file contents
-	std::ifstream inFile("data/filter_array.txt");
+	std::ifstream inFile("data/array_filter");
 	std::string line;
 	std::getline(inFile, line);
 
@@ -61,7 +61,7 @@ TEST(SaveFilterArrayTest, SaveMultipleFilterArray) {
 // For non exist file
 // Delete the file before running the test
 TEST(SaveFilterArrayTest, NonExistFile) {
-	std::filesystem::remove("data/filter_array.txt");
+	std::filesystem::remove("data/array_filter");
 	bloomFilter = BloomFilter(8, hashFunctions, dbSaver,nullptr);
 
 	bloomFilter.add("www.example.com");
@@ -69,7 +69,7 @@ TEST(SaveFilterArrayTest, NonExistFile) {
 	std::vector<bool> bitArray = bloomFilter.getBitArray();
 
 	// Check for the file contents
-	std::ifstream inFile("data/filter_array.txt");
+	std::ifstream inFile("data/array_filter");
 	std::string line;
 	std::getline(inFile, line);
 
@@ -82,8 +82,8 @@ TEST(SaveFilterArrayTest, NonExistFile) {
 
 // For empty file
 TEST(SaveFilterArrayTest, EmptyFile) {
-	std::filesystem::remove("data/filter_array.txt");
-	std::ofstream outFile("data/filter_array.txt");
+	std::filesystem::remove("data/array_filter");
+	std::ofstream outFile("data/array_filter");
 	outFile.close();
 
 	bloomFilter = BloomFilter(8, hashFunctions, dbSaver,nullptr);
@@ -93,7 +93,7 @@ TEST(SaveFilterArrayTest, EmptyFile) {
 	std::vector<bool> bitArray = bloomFilter.getBitArray();
 
 	// Check for the file contents
-	std::ifstream inFile("data/filter_array.txt");
+	std::ifstream inFile("data/array_filter");
 	std::string line;
 	std::getline(inFile, line);
 

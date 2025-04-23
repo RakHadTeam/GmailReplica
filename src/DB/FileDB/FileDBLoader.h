@@ -7,9 +7,11 @@
 
 class FileDBLoader : public IDBLoader {
 private:
-	std::string dataFolderPath;
-	const std::string dataFileName = "filter_array.txt";
+const std::string dataFolderPath;
+const std::string blacklistFileName;
+const std::string arrayFileName;
 public:
-	FileDBLoader(const std::string& dataFolderPath);
-	bool loadArrayFilter(std::vector<bool>& bitArray);
+	FileDBLoader (const std::string& dataFolderPath,const std::string& blacklistFileName,const std::string& arrayFileName);
+	bool loadArrayFilter(std::vector<bool>& bitArray) override;
+	void loadURLs(std::vector<std::string>& URLarray) override;
 };

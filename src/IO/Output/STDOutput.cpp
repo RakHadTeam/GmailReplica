@@ -3,13 +3,13 @@
 #include "STDOutput.h"
 
 // Implement the display method to show result based on bloom filter and real blacklist
-void STDOutput::displayCheckURLResult(bool arrayBitResult, bool falsePositiveResult) {
+void STDOutput::displayCheckURLResult(bool arrayBitResult, bool URLBlacklistResult) {
 	if (arrayBitResult) {
-		if (falsePositiveResult) {
-			std::cout << "true false" << std::endl; // False positive case
+		if (URLBlacklistResult) {
+			std::cout << "true true" << std::endl; // False positive case
 		}
 		else {
-			std::cout << "true true" << std::endl; // URL definitely in blacklist
+			std::cout << "true false" << std::endl; // URL definitely in blacklist
 		}
 	}
 	else {

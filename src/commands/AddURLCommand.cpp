@@ -21,9 +21,5 @@ void AddURLCommand::execute() {
 		return;
 	}
 
-	// Print URL:
-	std::cout << "Adding URL: " << url << std::endl;
-
 	bloomFilter.add(url);
-	dbSaver->saveURL(url);
 }

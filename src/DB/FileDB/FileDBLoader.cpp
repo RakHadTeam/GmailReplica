@@ -2,18 +2,35 @@
 #include <iostream>
 #include <fstream>
 
-FileDBLoader::FileDBLoader(const std::string& dataFolderPath)
-	: dataFolderPath(dataFolderPath) {
+FileDBLoader::FileDBLoader(const std::string& dataFolderPath,const std::string& blacklistFileName,const std::string& arrayFileName)
+: dataFolderPath(dataFolderPath), blacklistFileName(blacklistFileName), arrayFileName(arrayFileName) {
+}
+
+void FileDBLoader::loadURLs(std::vector<std::string>& URLarray) {
+	std::ifstream inFile(dataFolderPath + "/" + blacklistFileName);
+
+	if (!inFile.is_open()) {
+		return;
+	}
+
+	std::string line;
+	while (std::getline(inFile, line)) {
+		if (!line.empty()) {
+			URLarray.push_back(line);
+		}
+	}
+
+	inFile.close();
 }
 
 bool FileDBLoader::loadArrayFilter(std::vector<bool>& bitArray) {
-	std::ifstream inFile(dataFolderPath + "/" + dataFileName);
+	std::ifstream inFile(dataFolderPath + "/" + arrayFileName);
 
 	if (!inFile.is_open()) {
 		return false;
 	}
 
-	std::vector<bool> tempArray; // temporary copy
+	std::vector<bool> tempArray;
 
 	char bit;
 	while (inFile >> bit) {

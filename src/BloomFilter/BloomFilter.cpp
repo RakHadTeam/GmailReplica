@@ -11,7 +11,7 @@ BloomFilter::BloomFilter(size_t size, const std::vector<std::shared_ptr<IHashFun
 	for (const auto& hashFunc : hashFuncs) {
 		hashFunctions.push_back(hashFunc);
 	}
-	loadFromFile();
+	loadFromDB();
 }
 
 BloomFilter::BloomFilter(size_t size, const std::vector<std::shared_ptr<IHashFunction>>& hashFuncs)
@@ -21,7 +21,7 @@ BloomFilter::BloomFilter(size_t size, const std::vector<std::shared_ptr<IHashFun
 	}
 	dbSaver = nullptr;
 	dbLoader = nullptr;
-	loadFromFile();
+	loadFromDB();
 }
 
 // Copy constructor
@@ -33,7 +33,7 @@ BloomFilter::BloomFilter(const BloomFilter& other)
 	for (const auto& hashFunc : other.hashFunctions) {
 		hashFunctions.push_back(hashFunc);
 	}
-	loadFromFile();
+	loadFromDB();
 }
 
 
@@ -47,7 +47,7 @@ BloomFilter& BloomFilter::operator=(const BloomFilter& other) {
 		for (const auto& hashFunc : other.hashFunctions) {
 			hashFunctions.push_back(hashFunc);
 		}
-		loadFromFile();
+		loadFromDB();
 	}
 	return *this;
 }
@@ -55,7 +55,7 @@ BloomFilter& BloomFilter::operator=(const BloomFilter& other) {
 // Move constructor
 BloomFilter::BloomFilter(BloomFilter&& other) noexcept
 	: bitArray(std::move(other.bitArray)), hashFunctions(std::move(other.hashFunctions)), dbSaver(std::move(other.dbSaver)), dbLoader(std::move(other.dbLoader)) {
-	loadFromFile();
+	loadFromDB();
 }
 
 // Move assignment operator
@@ -65,7 +65,7 @@ BloomFilter& BloomFilter::operator=(BloomFilter&& other) noexcept {
 		hashFunctions = std::move(other.hashFunctions);
 		dbSaver = std::move(other.dbSaver);
 		dbLoader = std::move(other.dbLoader);
-		loadFromFile();
+		loadFromDB();
 	}
 	return *this;
 }
@@ -97,7 +97,7 @@ std::vector<std::shared_ptr<IHashFunction>> BloomFilter::setHashFunctions() cons
 
 // Adds a URL to the Bloom Filter
 void BloomFilter::add(const std::string& url) {
-	if (contains(url)) {
+	if (containsInDB(url) && containsInArray(url)) {
 		return; // URL already exists in the Bloom Filter
 	}
 
@@ -113,11 +113,13 @@ void BloomFilter::add(const std::string& url) {
 	if (dbSaver == nullptr) {
 		return;
 	}
+	dbSaver->saveURL(url);
 	dbSaver->saveFilterArray(bitArray);
+	URLarray.push_back(url);
 }
 
 // Checks if a URL is in the Bloom Filter
-bool BloomFilter::contains(const std::string& url) const {
+bool BloomFilter::containsInArray(const std::string& url) const {
 	if (bitArray.empty()) return false;
 
 	// Check if one of the bits in bitArray is 0
@@ -131,17 +133,21 @@ bool BloomFilter::contains(const std::string& url) const {
 	return true;
 }
 
-// Placeholder for checking if a URL is in the database
 bool BloomFilter::containsInDB(const std::string& url) const {
-	// TODO: Implement the containsInDB method
+	for (const auto& savedURL : URLarray) {
+		if (savedURL == url) {
+			return true;
+		}
+	}
 	return false;
 }
 
-bool BloomFilter::loadFromFile() {
-	if (dbLoader == nullptr) {
-		return false;
-	}
 
-	return dbLoader->loadArrayFilter(bitArray);
+void BloomFilter::loadFromDB() {
+	if (dbLoader == nullptr) {
+		return;
+	}
+	dbLoader->loadURLs(URLarray);
+	dbLoader->loadArrayFilter(bitArray);
 
 }
