@@ -25,7 +25,8 @@ int main()
 
 	std::shared_ptr<IDBSaver> dbSaver = std::make_shared<FileDBSaver>("data","blacklist","array_filter");
 
-	std::shared_ptr<IDBLoader> dbLoader = std::make_shared<FileDBLoader>("data");
+	std::shared_ptr<IDBLoader> dbLoader = std::make_shared<FileDBLoader>("data", "blacklist", "array_filter");
+
 
 	BloomFilter bloomFilter(bitArraySize, hashFunctions, dbSaver, dbLoader);
 
