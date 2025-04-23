@@ -19,6 +19,5 @@ void CheckURLCommand::execute() {
 	if (url.empty())
 		return;
 
-	// TODO: Replace 'false' with a false positive check from a function
-	output->displayCheckURLResult(bloomFilter.contains(url), false);
+	output->displayCheckURLResult(bloomFilter.contains(url), bloomFilter.containsInDB(url));
 }

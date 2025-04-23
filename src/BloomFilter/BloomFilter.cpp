@@ -97,7 +97,7 @@ std::vector<std::shared_ptr<IHashFunction>> BloomFilter::setHashFunctions() cons
 
 // Adds a URL to the Bloom Filter
 void BloomFilter::add(const std::string& url) {
-	if (contains(url)) {
+	if (containsInDB(url)) {
 		return; // URL already exists in the Bloom Filter
 	}
 
@@ -113,6 +113,7 @@ void BloomFilter::add(const std::string& url) {
 	if (dbSaver == nullptr) {
 		return;
 	}
+	dbSaver->saveURL(url);
 	dbSaver->saveFilterArray(bitArray);
 }
 
@@ -131,11 +132,15 @@ bool BloomFilter::contains(const std::string& url) const {
 	return true;
 }
 
-// Placeholder for checking if a URL is in the database
 bool BloomFilter::containsInDB(const std::string& url) const {
-	// TODO: Implement the containsInDB method
+	for (const auto& savedURL : URLarray) {
+		if (savedURL == url) {
+			return true;
+		}
+	}
 	return false;
 }
+
 
 void BloomFilter::loadFromDB() {
 	if (dbLoader == nullptr) {
