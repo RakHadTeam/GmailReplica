@@ -59,7 +59,7 @@ To check if a URL is in the blacklist, use the following command:
 To run the application inside a Docker container, execute the provided script:
 
 ```bash
-./run.sh
+./run.sh <OPTINAL: Conatiner name>
 ```
 
 ## Running the tests
