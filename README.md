@@ -52,14 +52,14 @@ To check if a URL is in the blacklist, use the following command:
 2 <URL>
 ```
 
-- The response will be in this format: `<BloomFIlter Array Bits Response> <Verified Answer After False Positive Check>`
+- The response will be in this format: `<BloomFIlter Array Bits Response Boolean> <Verified Answer After False Positive Check Boolean>`
 
 ## Running the Application in Docker
 
 To run the application inside a Docker container, execute the provided script:
 
 ```bash
-./run.sh <OPTINAL: Conatiner name>
+./run.sh
 ```
 
 - The script will ask you if you want to build the image, for the first time build it
