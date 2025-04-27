@@ -18,6 +18,9 @@ WORKDIR /usr/src/APProject/build
 # Install build dependencies
 RUN cmake .. && make
 
+# Mount a volume for data
+VOLUME [ "/usr/src/APProject/build/data" ]
+
 # Set working directory to build output
 WORKDIR /usr/src/APProject/build
 

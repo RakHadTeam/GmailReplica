@@ -73,9 +73,9 @@ To run the application inside a Docker container, execute the provided script:
 
 ## Database
 
-The filter array will be stored in a file named `filter_array.txt` under the folder `data`.
+The filter array will be stored in a file named `filter_array` under the folder `data`.
 
-The blacklist will be stored in a file named `blacklist.txt` under the folder `data`.
+The blacklist will be stored in a file named `blacklist` under the folder `data`.
 
 ## Handling Invalid Input
 
