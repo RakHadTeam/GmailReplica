@@ -97,7 +97,7 @@ std::vector<std::shared_ptr<IHashFunction>> BloomFilter::setHashFunctions() cons
 
 // Adds a URL to the Bloom Filter
 void BloomFilter::add(const std::string& url) {
-	if (containsInDB(url) && containsInArray(url)) {
+	if (containsInDB(url)) {
 		return; // URL already exists in the Bloom Filter
 	}
 
