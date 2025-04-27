@@ -1,9 +1,9 @@
-#include "ICommand.h"
-#include "AddURLCommand.h"
+#include <Commands/ICommand.h>
+#include <Commands/AddURLCommand/AddURLCommand.h>
 #include <string>
 #include <memory>
-#include "../IO/Input/IInput.h"
-#include "../BloomFilter/BloomFilter.h"
+#include <IO/Input/IInput.h>
+#include <BloomFilter/BloomFilter.h>
 
 // Constructor implementation
 AddURLCommand::AddURLCommand(BloomFilter& bf, std::shared_ptr<IInput> inp, std::shared_ptr<IDBSaver> db)

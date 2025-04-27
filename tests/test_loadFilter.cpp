@@ -4,9 +4,9 @@
 #include <string>
 #include <memory>
 #include <filesystem>
-#include <../src/BloomFilter/BloomFilter.h>
-#include <../src/BloomFilter/HashFunction/STDHash.h>
-#include "../src/DB/FileDB/FileDBLoader.h"
+#include <BloomFilter/BloomFilter.h>
+#include <BloomFilter/HashFunction/STDHash/STDHash.h>
+#include <DB/FileDB/FileDBLoader/FileDBLoader.h>
 
 TEST(LoadFilterArrayTest, MissingFileDoesNotChangeArray) {
 	std::filesystem::remove("data/array_filter");

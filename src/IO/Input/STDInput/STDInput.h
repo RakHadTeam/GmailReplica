@@ -3,9 +3,9 @@
 #include <vector>
 #include <memory>
 #include <string>
-#include "IInput.h"
-#include "../../BloomFilter/HashFunction/STDHash.h"
-#include "../../Validators/URLValidator.h"
+#include <IO/Input/IInput.h>
+#include <BloomFilter/HashFunction/STDHash/STDHash.h>
+#include <Validators/URLValidator/URLValidator.h>
 
 class STDInput : public IInput {
 private:

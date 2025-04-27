@@ -5,10 +5,10 @@
 #include <string>
 #include <regex>
 
-#include "../../BloomFilter/HashFunction/STDHash.h"
-#include "IInput.h"
-#include "../../Validators/URLValidator.h"
-#include "STDInput.h"
+#include <BloomFilter/HashFunction/STDHash/STDHash.h>
+#include <IO/Input/IInput.h>
+#include <Validators/URLValidator/URLValidator.h>
+#include <IO/Input/STDInput/STDInput.h>
 
 bool STDInput::isPositiveInteger(const std::string& str) {
 	if (str.empty()) {

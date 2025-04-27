@@ -1,5 +1,4 @@
-#include "STDHash.h"
-#include <functional>
+#include <BloomFilter/HashFunction/STDHash/STDHash.h>
 
 // Constructor implementation
 STDHash::STDHash(int num) : numOfTimes(num) {}

@@ -1,13 +1,13 @@
 #include <gtest/gtest.h>
-#include "../src/IO/Input/STDInput.h"
-#include "../src/Validators/URLValidator.h"
+#include <IO/Input/STDInput/STDInput.h>
+#include <Validators/URLValidator/URLValidator.h>
 
 TEST(ValidateURLTest, ValidURLs) {
     STDInput input;
 
     std::string url1 = "www.example.com";
     std::string url2 = "sub.domain.net";
-    std::string url3 = "a.b.c"; // Also valid (2 dots)
+    std::string url3 = "a.b.c";
 
     EXPECT_TRUE(URLValidator::isValid(url1));
     EXPECT_TRUE(URLValidator::isValid(url2));

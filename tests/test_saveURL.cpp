@@ -4,8 +4,8 @@
 #include <string>
 #include <memory>
 #include <filesystem>
-#include <../src/DB/FileDB/FileDBSaver.h>
-#include <../src/DB/IDBSaver.h>
+#include <DB/FileDB/FileDBSaver/FileDBSaver.h>
+#include <DB/IDBSaver.h>
 
 std::string dataDir = "data";
 std::string filePath = dataDir + "/blacklist";

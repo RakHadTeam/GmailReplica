@@ -1,4 +1,4 @@
-#include "URLValidator.h"
+#include <Validators/URLValidator/URLValidator.h>
 #include <regex>
 
 bool URLValidator::isValid(const std::string& url) {

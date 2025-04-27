@@ -5,9 +5,9 @@
 #include <memory>
 #include <filesystem>
 #include <iostream>
-#include <../src/BloomFilter/BloomFilter.h>
-#include <../src/BloomFilter/HashFunction/STDHash.h>
-#include "../src/DB/FileDB/FileDBSaver.h"
+#include <BloomFilter/BloomFilter.h>
+#include <BloomFilter/HashFunction/STDHash/STDHash.h>
+#include <DB/FileDB/FileDBSaver/FileDBSaver.h>
 
 // Initialize the BloomFilter with the FileDBSaver
 std::shared_ptr<STDHash> hashFunc = std::make_shared<STDHash>(1);

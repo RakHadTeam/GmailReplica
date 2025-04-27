@@ -1,8 +1,8 @@
 # APProject
 
-### Project Contributors
+### Creators
 
-This project was proudly developed by:
+This project was proudly created by:
 
 - **Yoav Sinai**
 - **David Goldstein**
@@ -59,8 +59,11 @@ To check if a URL is in the blacklist, use the following command:
 To run the application inside a Docker container, execute the provided script:
 
 ```bash
-./run.sh
+./run.sh <OPTINAL: Conatiner name>
 ```
+
+- The script will ask you if you want to build the image, for the first time build it
+- Then, for every time you want to start the container, just not build it again.
 
 ## Running the tests
 
@@ -71,6 +74,8 @@ To run the application inside a Docker container, execute the provided script:
 ## Database
 
 The filter array will be stored in a file named `filter_array.txt` under the folder `data`.
+
+The blacklist will be stored in a file named `blacklist.txt` under the folder `data`.
 
 ## Handling Invalid Input
 

@@ -1,8 +1,8 @@
 #include <vector>
 #include <memory>
 #include <iostream>
-#include "HashFunction/IHashFunction.h"
-#include "BloomFilter.h"
+#include <BloomFilter/HashFunction/IHashFunction.h>
+#include <BloomFilter/BloomFilter.h>
 
 // Constructor: Initializes the Bloom Filter with a given size and hash functions
 BloomFilter::BloomFilter(size_t size, const std::vector<std::shared_ptr<IHashFunction>>& hashFuncs, std::shared_ptr<IDBSaver> dbSaver, std::shared_ptr<IDBLoader> dbLoader)

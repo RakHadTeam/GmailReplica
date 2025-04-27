@@ -3,7 +3,7 @@
 
 #include <vector>
 #include <memory>
-#include "../../BloomFilter/HashFunction/IHashFunction.h"
+#include <BloomFilter/HashFunction/IHashFunction.h>
 
 class IInput {
 public:
