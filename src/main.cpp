@@ -34,7 +34,7 @@ int main() {
 
 	
 
-	auto addURLCommand = std::make_shared<AddURLCommand>(bloomFilter, input, dbSaver);
+	auto addURLCommand = std::make_shared<AddURLCommand>(bloomFilter, input, output, dbSaver);
 	commands["POST"] = addURLCommand;
 
 	auto checkURLCommand = std::make_shared<CheckURLCommand>(bloomFilter, input, output);

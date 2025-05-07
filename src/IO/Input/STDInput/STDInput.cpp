@@ -70,6 +70,6 @@ std::shared_ptr<Request> STDInput::getRequest() {
 	std::map<std::string, std::string> params;
 	params["url"] = url;
 
-	auto request = std::make_shared<Request>(method, url, params);
+	auto request = std::make_shared<Request>(method, params);
 	return request;
 }
