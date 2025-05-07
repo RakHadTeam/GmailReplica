@@ -17,6 +17,6 @@ class AddURLCommand : public ICommand {
 	public:
 		AddURLCommand(BloomFilter& bf, std::shared_ptr<IInput> inp, std::shared_ptr<IDBSaver> dbSaver);
 	
-		void execute() override;
+		void execute(std::shared_ptr<Request> request) override;
 	};
 	

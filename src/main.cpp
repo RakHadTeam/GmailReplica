@@ -17,8 +17,8 @@
 #define FILTER_FILENAME     "array_filter"
 
 int main() {
-	std::shared_ptr<STDInput> input = std::make_shared<STDInput>();
-	std::shared_ptr<STDOutput> output = std::make_shared<STDOutput>();
+	auto input = std::make_shared<STDInput>();
+	auto output = std::make_shared<STDOutput>();
 
 	int bitArraySize = input->getSizeOfArray();
 
@@ -32,11 +32,13 @@ int main() {
 
 	std::map<std::string, std::shared_ptr<ICommand>> commands;
 
-	std::shared_ptr<AddURLCommand> addURLCommand = std::make_shared<AddURLCommand>(bloomFilter, input, dbSaver);
-	commands["1"] = addURLCommand;
+	
 
-	std::shared_ptr<CheckURLCommand> checkURLCommand = std::make_shared<CheckURLCommand>(bloomFilter, input, output);
-	commands["2"] = checkURLCommand;
+	auto addURLCommand = std::make_shared<AddURLCommand>(bloomFilter, input, dbSaver);
+	commands["POST"] = addURLCommand;
+
+	auto checkURLCommand = std::make_shared<CheckURLCommand>(bloomFilter, input, output);
+	commands["GET"] = checkURLCommand;
 
 	App app(commands, input);
 	app.run();

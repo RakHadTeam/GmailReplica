@@ -12,14 +12,18 @@ AddURLCommand::AddURLCommand(BloomFilter& bf, std::shared_ptr<IInput> inp, std::
 
 
 // Execute the command
-void AddURLCommand::execute() {
+void AddURLCommand::execute(std::shared_ptr<Request> request) {
 	// Get URL:
 	std::string url;
-	url = input->getURL();
+	url = request->getParameters().at("url");
 
 	if (url.empty()) {
 		return;
 	}
 
 	bloomFilter.add(url);
+
+	// Response (Method:ADDURL)
+
+	//output.displayResponse(this, true);
 }
