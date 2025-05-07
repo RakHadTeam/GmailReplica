@@ -5,10 +5,11 @@
 class Response {
 private:
 	StatusCode status;
+	std::string payload;
 		
 public: 
 
-	explicit Response(StatusCode status);
+	explicit Response(StatusCode status, const std::string& payload);
 
 	StatusCode getStatus() const;
 
