@@ -15,5 +15,4 @@ def create_and_connect(ip, port):
         return client_socket
 
     except socket.error as e:
-        # If the connection fails, exit the program with an error
         sys.exit(1)

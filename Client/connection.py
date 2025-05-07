@@ -16,19 +16,15 @@ def is_valid_port(port_str):
 # Parses the IP and port from command-line arguments
 def get_ip_and_port():
     if len(sys.argv) != 3:
-        # Exit if the number of arguments is not exactly 3 (name of file, IP and port)
         sys.exit(1)
 
     ip = sys.argv[1]
     port_str = sys.argv[2]
 
     if not is_valid_ip(ip):
-        # Exit if IP is not in correct format
         sys.exit(1)
 
     if not is_valid_port(port_str):
-        # Exit if port is not numeric or out of range
         sys.exit(1)
 
-    # Return a valid (ip, port) tuple
     return ip, int(port_str)
