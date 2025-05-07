@@ -59,24 +59,17 @@ int STDInput::getSizeOfArray() {
 	return size;
 }
 
-std::string STDInput::getURL() {
-	std::string URL;
-	std::string line;
-	std::getline(std::cin, line);
+std::shared_ptr<Request> STDInput::getRequest() {
+	// Get the method
+	std::string method;
+	std::cin >> method;
+	// Get the url
+	std::string url;
+	std::cin >> url;
 
-	std::istringstream iss(line);
-	iss >> URL;
+	std::map<std::string, std::string> params;
+	params["url"] = url;
 
-	// If there are more arguments, clear the URL
-	if (iss >> URL || !URLValidator::isValid(URL)) {
-		URL.clear();
-	}
-	return URL;
-}
-
-std::string STDInput::getCommandPrefix() {
-	std::string commandPrefix;
-	std::cin >> commandPrefix;
-
-	return commandPrefix;
+	auto request = std::make_shared<Request>(method, url, params);
+	return request;
 }

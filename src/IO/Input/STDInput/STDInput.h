@@ -19,14 +19,11 @@ private:
 
 public:
 	// Read and validate a list of positive integers from the user
-	void setHashFunctions(std::vector<std::shared_ptr<IHashFunction>>& hashFunctions);
+	void setHashFunctions(std::vector<std::shared_ptr<IHashFunction>>& hashFunctions) override;
 
 	// Get the size of the array from user input
-	int getSizeOfArray();
+	int getSizeOfArray() override;
 
-	// Get a URL from user input
-	std::string getURL();
-
-	// Get a command prefix from user input
-	std::string getCommandPrefix();
+	// Get a request from the user
+	std::shared_ptr<Request> getRequest() override;
 };

@@ -36,5 +36,3 @@ void FileDBSaver::saveURL(const std::string& url) {
 	outFile << url << std::endl;
 	outFile.close();
 }
-
-

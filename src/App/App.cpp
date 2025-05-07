@@ -17,9 +17,9 @@ App::App(std::map<std::string, std::shared_ptr<ICommand>>& commands, std::shared
 void App::run() {
 	std::string task;
 	while (true) {
-		task = input->getCommandPrefix();
+		std::shared_ptr<Request> request = input->getRequest();
 		try {
-			commands.at(task)->execute();
+			commands.at(request->getMethod())->execute(request);
 		}
 		catch (...) {
 			continue;

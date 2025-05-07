@@ -13,11 +13,11 @@ CheckURLCommand::CheckURLCommand(BloomFilter& bloomFilter, std::shared_ptr<IInpu
 }
 
 // Execute the command
-void CheckURLCommand::execute() {
+void CheckURLCommand::execute(std::shared_ptr<Request> request) {
 	std::string url;
-	url = input->getURL();
+	url = request->getParameters().at("url");
 	if (url.empty())
 		return;
 
-	output->displayCheckURLResult(bloomFilter.containsInArray(url), bloomFilter.containsInDB(url));
+	//output->displayCheckURLResult(bloomFilter.containsInArray(url), bloomFilter.containsInDB(url));
 }

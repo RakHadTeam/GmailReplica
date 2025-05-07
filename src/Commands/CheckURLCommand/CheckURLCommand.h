@@ -19,5 +19,5 @@ public:
 	CheckURLCommand(BloomFilter& bloomFilter, std::shared_ptr<IInput> input, std::shared_ptr<IOutput> output);
 
 	// Execute the command
-	void execute() override;
+	void execute(std::shared_ptr<Request> request) override;
 };
