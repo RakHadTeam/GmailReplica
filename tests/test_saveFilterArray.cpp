@@ -9,18 +9,11 @@
 #include <BloomFilter/HashFunction/STDHash/STDHash.h>
 #include <DB/FileDB/FileDBSaver/FileDBSaver.h>
 
-// Initialize the BloomFilter with the FileDBSaver
-std::shared_ptr<STDHash> hashFunc = std::make_shared<STDHash>(1);
-
-// Print current working directory
-std::string currentPath = std::filesystem::current_path().string();	
-
-std::shared_ptr<IDBSaver> dbSaver = std::make_shared<FileDBSaver>("data","blacklist","array_filter");
-std::vector<std::shared_ptr<IHashFunction>> hashFunctions = {hashFunc};
-
-BloomFilter bloomFilter(8, hashFunctions, dbSaver,nullptr);
-
 TEST(SaveFilterArrayTest, SaveFilterArray) {
+	std::shared_ptr<STDHash> hashFunc = std::make_shared<STDHash>(1);
+	std::vector<std::shared_ptr<IHashFunction>> hashFunctions = {hashFunc};
+	auto dbSaver = std::make_shared<FileDBSaver>("data", "blacklist", "array_filter");
+	BloomFilter bloomFilter(8, hashFunctions, dbSaver, nullptr);
 
 	bloomFilter.add("www.example.com");
 
@@ -41,6 +34,11 @@ TEST(SaveFilterArrayTest, SaveFilterArray) {
 // For multiple adds
 
 TEST(SaveFilterArrayTest, SaveMultipleFilterArray) {
+	std::shared_ptr<STDHash> hashFunc = std::make_shared<STDHash>(1);
+	std::vector<std::shared_ptr<IHashFunction>> hashFunctions = {hashFunc};
+	auto dbSaver = std::make_shared<FileDBSaver>("data", "blacklist", "array_filter");
+	BloomFilter bloomFilter(8, hashFunctions, dbSaver, nullptr);
+
 	bloomFilter.add("www.example.com");
 	bloomFilter.add("www.test.com");
 
@@ -62,7 +60,11 @@ TEST(SaveFilterArrayTest, SaveMultipleFilterArray) {
 // Delete the file before running the test
 TEST(SaveFilterArrayTest, NonExistFile) {
 	std::filesystem::remove("data/array_filter");
-	bloomFilter = BloomFilter(8, hashFunctions, dbSaver,nullptr);
+
+	std::shared_ptr<STDHash> hashFunc = std::make_shared<STDHash>(1);
+	std::vector<std::shared_ptr<IHashFunction>> hashFunctions = {hashFunc};
+	auto dbSaver = std::make_shared<FileDBSaver>("data", "blacklist", "array_filter");
+	BloomFilter bloomFilter(8, hashFunctions, dbSaver, nullptr);
 
 	bloomFilter.add("www.example.com");
 
@@ -72,6 +74,8 @@ TEST(SaveFilterArrayTest, NonExistFile) {
 	std::ifstream inFile("data/array_filter");
 	std::string line;
 	std::getline(inFile, line);
+
+	std::cout << "bitArray.size(): " << bitArray.size() << std::endl;
 
 	for (size_t i = 0; i < bitArray.size(); ++i) {
 		EXPECT_EQ(line[i], bitArray[i] ? '1' : '0');
@@ -86,7 +90,10 @@ TEST(SaveFilterArrayTest, EmptyFile) {
 	std::ofstream outFile("data/array_filter");
 	outFile.close();
 
-	bloomFilter = BloomFilter(8, hashFunctions, dbSaver,nullptr);
+	std::shared_ptr<STDHash> hashFunc = std::make_shared<STDHash>(1);
+	std::vector<std::shared_ptr<IHashFunction>> hashFunctions = {hashFunc};
+	auto dbSaver = std::make_shared<FileDBSaver>("data", "blacklist", "array_filter");
+	BloomFilter bloomFilter(8, hashFunctions, dbSaver, nullptr);
 
 	bloomFilter.add("www.example.com");
 

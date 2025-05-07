@@ -11,6 +11,7 @@
 #include <IO/Output/STDOutput/STDOutput.h>
 #include <DB/FileDB/FileDBSaver/FileDBSaver.h>
 #include <DB/FileDB/FileDBLoader/FileDBLoader.h>
+#include <TCPServer/TCPServer.h>
 
 #define DATA_FOLDER   "data"
 #define BLACKLIST_FILENAME  "blacklist"
@@ -38,8 +39,14 @@ int main() {
 	std::shared_ptr<CheckURLCommand> checkURLCommand = std::make_shared<CheckURLCommand>(bloomFilter, input, output);
 	commands["2"] = checkURLCommand;
 
-	App app(commands, input);
-	app.run();
+	TCPServer server;
+  if (!server.startServer(8080)) {
+    std::cerr << "Failed to start chat server\n";
+    return 1;
+  }
 
-	return 0;
+  std::cout << "Press ENTER to shut down...\n";
+  std::cin.get();
+  server.shutdown();
+  return 0;
 }

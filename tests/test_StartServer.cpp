@@ -5,98 +5,95 @@
 #include <chrono>
 #include <future>
 
+// POSIX sockets for our fake client
+#include <sys/socket.h>
+#include <arpa/inet.h>
+#include <unistd.h>
+
 //------------------------------------------------------------------------------
 // Subclass for Testing
 //------------------------------------------------------------------------------
-class test_StartServer : public TCPServer {
+class TestServer : public TCPServer {
 public:
     std::atomic<int> connectionsHandled{0};
 
 protected:
     void handleClient(int clientSock) override {
         connectionsHandled.fetch_add(1, std::memory_order_relaxed);
+        ::close(clientSock);
     }
 };
 
 //------------------------------------------------------------------------------
-// Helper function to simulate a client connection
+// Helper: actually connect to localhost:port
 //------------------------------------------------------------------------------
 static void simulateClientConnection(int port) {
     std::this_thread::sleep_for(std::chrono::milliseconds(50));
-    // Logic to simulate a client connection can be placed here
+    int sock = ::socket(AF_INET, SOCK_STREAM, 0);
+    if (sock < 0) return;
+
+    sockaddr_in addr{};
+    addr.sin_family = AF_INET;
+    addr.sin_port   = htons(port);
+    inet_pton(AF_INET, "127.0.0.1", &addr.sin_addr);
+
+    if (::connect(sock, reinterpret_cast<sockaddr*>(&addr), sizeof(addr)) < 0) {
+        ::close(sock);
+        return;
+    }
+    // immediately close
+    ::close(sock);
 }
 
 //------------------------------------------------------------------------------
 // Tests for TCPServer
 //------------------------------------------------------------------------------
 TEST(TCPServerTest, BindToPortZero_SucceedsAndListens) {
-    test_StartServer server;
+    TestServer server;
 
-    // Act
     bool success = server.startServer(0);
+    EXPECT_TRUE(success);
 
-    // Assert
-    EXPECT_TRUE(success);             // Should successfully bind
-    int boundPort = server.getPort(); 
-    EXPECT_EQ(boundPort, 0);          // Should be bound to port 0
+    int boundPort = server.getPort();
+    EXPECT_GT(boundPort, 0) << "Port 0 should yield an ephemeral port > 0";
 
-    // Clean up
     server.shutdown();
 }
 
 TEST(TCPServerTest, BindFailure_InvalidPort_ReturnsError) {
-    test_StartServer server;
-
-    // Act
-    bool success = server.startServer(-1); // Invalid port
-
-    // Assert
-    EXPECT_FALSE(success); // Should fail to bind
+    TestServer server;
+    EXPECT_FALSE(server.startServer(-1));
+    EXPECT_FALSE(server.startServer(70000));
 }
 
 TEST(TCPServerTest, ListenFailure_PortInUse_ReturnsError) {
-    test_StartServer s1;
-
-    // Act
-    ASSERT_TRUE(s1.startServer(8080)); // Start first server
+    TestServer s1;
+    ASSERT_TRUE(s1.startServer(8080));
     int port = s1.getPort();
 
-    test_StartServer s2;
-    bool success = s2.startServer(port); // Try to reuse the same port
+    TestServer s2;
+    EXPECT_FALSE(s2.startServer(port));
 
-    // Assert
-    EXPECT_FALSE(success); // Should fail because the port is in use
-
-    // Clean up
     s1.shutdown();
 }
 
 TEST(TCPServerTest, AcceptClient_HandlesIncomingConnection) {
-    test_StartServer server;
-
-    // Act
+    TestServer server;
     ASSERT_TRUE(server.startServer(0));
     int port = server.getPort();
 
-    // Launch a simulated client asynchronously
-    auto future = std::async(std::launch::async, simulateClientConnection, port);
+    auto fut = std::async(std::launch::async, simulateClientConnection, port);
 
-    // Give time for the client to connect
-    std::this_thread::sleep_for(std::chrono::milliseconds(100));
+    // give acceptLoop a moment
+    std::this_thread::sleep_for(std::chrono::milliseconds(200));
 
-    // Assert
-    EXPECT_GE(server.connectionsHandled.load(), 1); // At least one connection handled
+    EXPECT_GE(server.connectionsHandled.load(), 1);
 
-    // Clean up
     server.shutdown();
 }
 
 TEST(TCPServerTest, CleanShutdown_DoesNotHang) {
-    test_StartServer server;
-
-    // Act
+    TestServer server;
     ASSERT_TRUE(server.startServer(0));
-
-    // Assert
-    EXPECT_NO_THROW(server.shutdown()); // Shutdown should not throw exceptions
+    EXPECT_NO_THROW(server.shutdown());
 }
