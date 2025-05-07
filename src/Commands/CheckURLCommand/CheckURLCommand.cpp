@@ -19,5 +19,5 @@ void CheckURLCommand::execute(std::shared_ptr<Request> request) {
 	if (url.empty())
 		return;
 
-	//output->displayCheckURLResult(bloomFilter.containsInArray(url), bloomFilter.containsInDB(url));
+	output->displayCheckURLResult(bloomFilter.containsInArray(url), bloomFilter.containsInDB(url));
 }
