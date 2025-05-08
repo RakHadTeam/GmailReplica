@@ -11,16 +11,26 @@
 #include <IO/Output/STDOutput/STDOutput.h>
 #include <DB/FileDB/FileDBSaver/FileDBSaver.h>
 #include <DB/FileDB/FileDBLoader/FileDBLoader.h>
+#include <TCPServer/TCPServer.h>
 
 #define DATA_FOLDER   "data"
 #define BLACKLIST_FILENAME  "blacklist"
 #define FILTER_FILENAME     "array_filter"
 
-int main() {
+int main(int argc, char* argv[]) {
 	auto input = std::make_shared<STDInput>();
 	auto output = std::make_shared<STDOutput>();
 
 	int bitArraySize = input->getSizeOfArray();
+
+	int port;
+    try {
+        port = std::stoi(argv[1]);
+    } catch (const std::exception&) {
+        std::cerr << "[Error] Invalid port: " << argv[1] << "\n";
+        return 1;
+    }
+
 
 	std::vector<std::shared_ptr<IHashFunction>> hashFunctions;
 	input->setHashFunctions(hashFunctions);
@@ -40,8 +50,15 @@ int main() {
 	auto checkURLCommand = std::make_shared<CheckURLCommand>(bloomFilter, input, output);
 	commands["GET"] = checkURLCommand;
 
-	App app(commands, input);
-	app.run();
+	TCPServer server;
+	if (!server.startServer(port)) {
+		std::cerr << "[Error] Failed to start chat server on port "
+			<< port << "\n";
+		return 1;
+	}
 
+	std::cout << "Press ENTER to shut down...\n";
+	std::cin.get();
+	server.shutdown();
 	return 0;
 }
