@@ -1,7 +1,7 @@
 def handle_input_loop(sock):
     while True:
         # Read raw input from the user
-        user_input = input("> ")
+        user_input = input()
 
         try:
             # Send the raw input to the server
