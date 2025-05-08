@@ -1,121 +1,125 @@
-// src/TCPServer/TCPServer.cpp
-
 #include "TCPServer.h"
-
-// POSIX sockets
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include <unistd.h>
-
-// C lib
 #include <cerrno>
 #include <cstring>
-
-// C++ std
 #include <iostream>
 #include <thread>
 
+const int MIN_PORT = 0;
+const int MAX_PORT = 65535;
+const int BACKLOG = 5;
+
 TCPServer::TCPServer()
-  : serverSocket(-1)
-  , port(0)
-  , running(false)
-{}
+	: serverSocket(-1)
+	, port(0)
+	, running(false)
+{
+}
 
 TCPServer::~TCPServer() {
-  shutdown();
+	shutdown();
 }
 
 bool TCPServer::startServer(int portNumber) {
-  // Validate port range
-  if (portNumber < 0 || portNumber > 65535) {
-    std::cerr << "[Error] Invalid port: " << portNumber << "\n";
-    return false;
-  }
+	if (portNumber < MIN_PORT || portNumber > MAX_PORT) {
+		std::cerr << "[Error] Invalid port: " << portNumber << "\n";
+		return false;
+	}
 
-  // Create the socket
-  serverSocket = ::socket(AF_INET, SOCK_STREAM, 0);
-  if (serverSocket < 0) {
-    std::cerr << "[Error] socket(): " << std::strerror(errno) << "\n";
-    return false;
-  }
+	serverSocket = ::socket(AF_INET, SOCK_STREAM, 0);
+	if (serverSocket < 0) {
+		std::cerr << "[Error] socket(): " << std::strerror(errno) << "\n";
+		return false;
+	}
 
-  // Bind to INADDR_ANY on requested port (0 means ephemeral)
-  sockaddr_in addr{};
-  addr.sin_family      = AF_INET;
-  addr.sin_addr.s_addr = INADDR_ANY;
-  addr.sin_port        = htons(static_cast<uint16_t>(portNumber));
+	sockaddr_in addr{};
+	addr.sin_family = AF_INET;
+	addr.sin_addr.s_addr = INADDR_ANY;
+	addr.sin_port = htons(static_cast<uint16_t>(portNumber));
 
-  if (::bind(serverSocket,
-             reinterpret_cast<sockaddr*>(&addr),
-             sizeof(addr)) < 0)
-  {
-    std::cerr << "[Error] bind(): " << std::strerror(errno) << "\n";
-    ::close(serverSocket);
-    return false;
-  }
+	if (::bind(serverSocket,
+		reinterpret_cast<sockaddr*>(&addr),
+		sizeof(addr)) < 0)
+	{
+		std::cerr << "[Error] bind(): " << std::strerror(errno) << "\n";
+		::close(serverSocket);
+		return false;
+	}
 
-  // Begin listening
-  if (::listen(serverSocket, 5) < 0) {
-    std::cerr << "[Error] listen(): " << std::strerror(errno) << "\n";
-    ::close(serverSocket);
-    return false;
-  }
+	if (::listen(serverSocket, BACKLOG) < 0) {
+		std::cerr << "[Error] listen(): " << std::strerror(errno) << "\n";
+		::close(serverSocket);
+		return false;
+	}
 
-  // Query the actual bound port (useful when portNumber == 0)
-  {
-    sockaddr_in actual{};
-    socklen_t   len = sizeof(actual);
-    if (::getsockname(serverSocket,
-                      reinterpret_cast<sockaddr*>(&actual),
-                      &len) == 0)
-    {
-      port = ntohs(actual.sin_port);
-    } else {
-      port = portNumber;  // fallback
-    }
-  }
+	{
+		sockaddr_in actual{};
+		socklen_t   len = sizeof(actual);
+		if (::getsockname(serverSocket,
+			reinterpret_cast<sockaddr*>(&actual),
+			&len) == 0)
+		{
+			port = ntohs(actual.sin_port);
+		}
+		else {
+			port = portNumber;
+		}
+	}
 
-  running = true;
+	running = true;
+	{
+		std::lock_guard<std::mutex> lk(guard);
+		threads.emplace_back(&TCPServer::acceptLoop, this);
+	}
 
-  // Spawn the accept loop in its own thread
-  {
-    std::lock_guard<std::mutex> lk(guard);
-    threads.emplace_back(&TCPServer::acceptLoop, this);
-  }
-
-  std::cout << "[Info] Server started on port " << port << "\n";
-  return true;
+	std::cout << "[Info] Server started on port " << port << "\n";
+	return true;
 }
 
 void TCPServer::acceptLoop() {
-  return;
+	while (running) {
+		sockaddr_in clientAddr;
+		socklen_t   len = sizeof(clientAddr);
+
+		int clientSock = ::accept(serverSocket,
+			reinterpret_cast<sockaddr*>(&clientAddr),
+			&len);
+		if (clientSock < 0) {
+			if (!running) break;
+			std::cerr << "[Error] accept(): " << std::strerror(errno) << "\n";
+			continue;
+		}
+
+		handleClient(clientSock);
+
+		::close(clientSock);
+	}
 }
 
-void TCPServer::handleClient(int clientSock) {
-  return;
-  }
+void TCPServer::handleClient(int /*clientSock*/) {
+	// Default does nothing. Override in subclass.
+}
 
 void TCPServer::shutdown() {
-  // Stop the accept loop
-  if (!running.exchange(false)) return;
+	if (!running.exchange(false)) return;
 
-  // Wake up accept()
-  ::shutdown(serverSocket, SHUT_RDWR);
-  ::close(serverSocket);
+	::shutdown(serverSocket, SHUT_RDWR);
+	::close(serverSocket);
 
-  // Join all worker threads
-  {
-    std::lock_guard<std::mutex> lk(guard);
-    for (auto &t : threads) {
-      if (t.joinable()) t.join();
-    }
-    threads.clear();
-  }
+	{
+		std::lock_guard<std::mutex> lk(guard);
+		for (auto& t : threads) {
+			if (t.joinable()) t.join();
+		}
+		threads.clear();
+	}
 
-  std::cout << "[Info] Server stopped\n";
+	std::cout << "[Info] Server stopped\n";
 }
 
 int TCPServer::getPort() const {
-  return port;
+	return port;
 }

@@ -5,14 +5,12 @@
 #include <chrono>
 #include <future>
 
-// POSIX sockets for our fake client
+
 #include <sys/socket.h>
 #include <arpa/inet.h>
 #include <unistd.h>
 
-//------------------------------------------------------------------------------
-// Subclass for Testing
-//------------------------------------------------------------------------------
+
 class TestServer : public TCPServer {
 public:
     std::atomic<int> connectionsHandled{0};
@@ -24,9 +22,7 @@ protected:
     }
 };
 
-//------------------------------------------------------------------------------
-// Helper: actually connect to localhost:port
-//------------------------------------------------------------------------------
+
 static void simulateClientConnection(int port) {
     std::this_thread::sleep_for(std::chrono::milliseconds(50));
     int sock = ::socket(AF_INET, SOCK_STREAM, 0);
@@ -45,9 +41,6 @@ static void simulateClientConnection(int port) {
     ::close(sock);
 }
 
-//------------------------------------------------------------------------------
-// Tests for TCPServer
-//------------------------------------------------------------------------------
 TEST(TCPServerTest, BindToPortZero_SucceedsAndListens) {
     TestServer server;
 
@@ -84,7 +77,6 @@ TEST(TCPServerTest, AcceptClient_HandlesIncomingConnection) {
 
     auto fut = std::async(std::launch::async, simulateClientConnection, port);
 
-    // give acceptLoop a moment
     std::this_thread::sleep_for(std::chrono::milliseconds(200));
 
     EXPECT_GE(server.connectionsHandled.load(), 1);

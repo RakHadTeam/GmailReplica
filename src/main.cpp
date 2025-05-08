@@ -17,11 +17,20 @@
 #define BLACKLIST_FILENAME  "blacklist"
 #define FILTER_FILENAME     "array_filter"
 
-int main() {
+int main(int argc, char* argv[]) {
 	std::shared_ptr<STDInput> input = std::make_shared<STDInput>();
 	std::shared_ptr<STDOutput> output = std::make_shared<STDOutput>();
 
 	int bitArraySize = input->getSizeOfArray();
+
+	int port;
+    try {
+        port = std::stoi(argv[1]);
+    } catch (const std::exception&) {
+        std::cerr << "[Error] Invalid port: " << argv[1] << "\n";
+        return 1;
+    }
+
 
 	std::vector<std::shared_ptr<IHashFunction>> hashFunctions;
 	input->setHashFunctions(hashFunctions);
@@ -40,13 +49,14 @@ int main() {
 	commands["2"] = checkURLCommand;
 
 	TCPServer server;
-  if (!server.startServer(8080)) {
-    std::cerr << "Failed to start chat server\n";
-    return 1;
-  }
+	if (!server.startServer(port)) {
+		std::cerr << "[Error] Failed to start chat server on port "
+			<< port << "\n";
+		return 1;
+	}
 
-  std::cout << "Press ENTER to shut down...\n";
-  std::cin.get();
-  server.shutdown();
-  return 0;
+	std::cout << "Press ENTER to shut down...\n";
+	std::cin.get();
+	server.shutdown();
+	return 0;
 }
