@@ -4,8 +4,8 @@ def handle_input_loop(sock):
         user_input = input()
 
         try:
-            # Send the raw input to the server
-            sock.sendall(user_input.encode("utf-8"))
+            # Send the raw input followed by a newline character
+            sock.sendall((user_input + "\n").encode("utf-8"))
         except Exception:
             # Connection failed or closed
             break
