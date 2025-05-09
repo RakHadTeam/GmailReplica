@@ -1,17 +1,16 @@
 def receive_response(sock):
     try:
-        # Use buffer to accumulate the full response
         buffer = b""
         while True:
             chunk = sock.recv(4096)
             if not chunk:
-                break
+                return  # connection closed
             buffer += chunk
-            if b"\n" in chunk:  # End of message
+            if b"\n" in chunk:
                 break
 
         response = buffer.decode("utf-8").strip()
-        print(response)
+        print(response) 
 
-    except Exception as e:
-       return  
+    except Exception:
+        return 
