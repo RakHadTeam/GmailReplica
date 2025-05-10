@@ -3,6 +3,7 @@
 #include <vector>
 #include <memory>
 #include <string>
+#include <algorithm>
 #include <BloomFilter/HashFunction/IHashFunction.h>
 #include <DB/IDBSaver.h>
 #include <DB/IDBLoader.h>
@@ -60,4 +61,6 @@ public:
 	bool containsInDB(const std::string& url) const;
 
 	void loadFromDB();
+
+	void remove(const std::string& url);
 };

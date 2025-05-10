@@ -35,3 +35,35 @@ void FileDBSaver::saveURL(const std::string& url) {
 	outFile << url << std::endl;
 	outFile.close();
 }
+
+#include <DB/FileDB/FileDBSaver/FileDBSaver.h>
+#include <fstream>
+#include <filesystem>
+
+void FileDBSaver::deleteURL(const std::string& url) {
+    namespace fs = std::filesystem;
+    fs::path fullPath = fs::path(dataFolderPath) / blacklistFileName;
+    fs::path tempPath = fullPath;
+    tempPath += ".tmp";
+
+    std::ifstream inFile(fullPath);
+    if (!inFile.is_open()) return;
+
+    std::ofstream outFile(tempPath, std::ios::trunc);
+    if (!outFile.is_open()) {
+        inFile.close();
+        return;
+    }
+
+    std::string line;
+    while (std::getline(inFile, line)) {
+        if (!line.empty() && line.back() == '\r') line.pop_back();
+        if (line == url) continue;
+        outFile << line << "\n";
+    }
+
+    outFile.close();
+    inFile.close();
+
+    fs::rename(tempPath, fullPath);
+}
