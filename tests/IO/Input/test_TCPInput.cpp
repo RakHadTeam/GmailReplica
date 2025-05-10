@@ -11,7 +11,7 @@ TEST(TCPInputTest, ReceivesValidRequest) {
 
     std::string rawRequest = "POST http://example.com\n";
 	// send in 4096 bytes
-	::send(sv[1], rawRequest.c_str(), rawRequest.size(), 0);
+	::send(sv[1], rawRequest.c_str(), BUFFER_SIZE, 0);
 
 	// Sleep for a second to ensure the request is processed
 	sleep(1);
