@@ -16,6 +16,8 @@
 #include <iostream>
 #include <thread>
 
+#include <IO/Input/TCPInput/TCPInput.h>
+
 TCPServer::TCPServer()
 	: serverSocket(-1)
 	, port(0)
@@ -106,41 +108,18 @@ void TCPServer::acceptLoop() {
 void TCPServer::handleClient(int clientSock) {
 	std::cout << "[Info] handling client socket " << clientSock << "\n";
 
-	char buffer[1024];
-	ssize_t n = ::recv(clientSock, buffer, sizeof(buffer) - 1, 0);
-	if (n < 0) {
-		std::cerr << "[Error] recv(): " << std::strerror(errno) << "\n";
-		::close(clientSock);
-		return;
-	}
-	if (n == 0) {
-		::close(clientSock);
-		return;
-	}
+	// TCPInput input(clientSock);
 
-	buffer[n] = '\0';
-	std::cout << "[Client " << clientSock << "] " << buffer;
+	// auto addURLCommand = std::make_shared<AddURLCommand>(bloomFilter, input, output, dbSaver);
+	// commands["POST"] = addURLCommand;
 
-	std::string req(buffer);
-	std::string resp;
-	if (req.rfind("GET /ping ", 0) == 0) {
-		resp = "HTTP/1.1 200 OK\r\n"
-			"Content-Length: 4\r\n"
-			"Connection: close\r\n"
-			"\r\n"
-			"PONG";
-	}
-	else {
-		resp = "HTTP/1.1 404 Not Found\r\n"
-			"Content-Length: 9\r\n"
-			"Connection: close\r\n"
-			"\r\n"
-			"Not Found";
-	}
+	// auto checkURLCommand = std::make_shared<CheckURLCommand>(bloomFilter, input, output);
+	// commands["GET"] = checkURLCommand;
 
-	::send(clientSock, resp.data(), resp.size(), 0);
-	::close(clientSock);
-	std::cout << "[Info] Client socket " << clientSock << " closed.\n";
+	// App app(commands, input);
+
+	// // app.run();
+
 }
 
 void TCPServer::shutdown() {
