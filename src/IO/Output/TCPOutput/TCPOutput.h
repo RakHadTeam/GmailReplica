@@ -1,3 +1,4 @@
+#pragma once
 #include <IO/Output/IOutput.h>
 #include <Response/Response.h>
 #include <string>

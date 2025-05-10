@@ -1,23 +1,22 @@
 #include <Commands/AddURLCommand/AddURLCommand.h>
 
 // Constructor implementation
-AddURLCommand::AddURLCommand(BloomFilter& bf, std::shared_ptr<IInput> inp, std::shared_ptr<IOutput> out, std::shared_ptr<IDBSaver> db)
-    : bloomFilter(bf), input(inp), output(out), dbSaver(db) {
+AddURLCommand::AddURLCommand(BloomFilter& bf)
+	: bloomFilter(bf) {
 }
 
 
 // Execute the command
-void AddURLCommand::execute(std::shared_ptr<Request> request) {
+std::shared_ptr<Response> AddURLCommand::execute(std::shared_ptr<Request> request) {
 	// Get URL:
 	std::string url;
 	url = request->getParameter("url");
 
 	if (url.empty()) {
-		output->sendResponse(std::make_shared<Response>(StatusCode::BAD_REQUEST));
-		return;
+		return std::make_shared<Response>(StatusCode::BAD_REQUEST);
 	}
 
 	bloomFilter.add(url);
 
-	output->sendResponse(std::make_shared<Response>(StatusCode::CREATED));
+	return std::make_shared<Response>(StatusCode::CREATED);
 }

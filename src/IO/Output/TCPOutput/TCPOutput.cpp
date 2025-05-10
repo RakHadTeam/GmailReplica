@@ -6,7 +6,9 @@ const std::map<StatusCode, std::string> statusCodeMap = {
 	{StatusCode::OK, "200 OK"},
 	{StatusCode::NOT_FOUND, "404 Not Found"},
 	{StatusCode::BAD_REQUEST, "400 Bad Request"},
-	{StatusCode::NOT_FOUND, "403 Forbidden"}
+	{StatusCode::NOT_FOUND, "403 Forbidden"},
+	{StatusCode::CREATED, "201 Created"},
+	{StatusCode::NO_CONTENT, "204 No Content"},
 };
 
 void TCPOutput::sendResponse(std::shared_ptr<Response> res) {
@@ -14,7 +16,7 @@ void TCPOutput::sendResponse(std::shared_ptr<Response> res) {
 	response.append(statusCodeMap.at(res->getStatus()));
 	response.append("\n");
 
-	if(!res->getPayload().empty()) {
+	if (!res->getPayload().empty()) {
 		response.append("\n");
 		response.append(res->getPayload());
 		response.append("\n");

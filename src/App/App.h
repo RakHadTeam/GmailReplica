@@ -5,16 +5,18 @@
 #include <string>
 #include <Commands/ICommand.h>
 #include <IO/Input/IInput.h>
+#include <IO/Output/IOutput.h>
 
 // The App class manages the execution of commands based on user input.
 class App {
 private:
-	std::map<std::string, std::shared_ptr<ICommand>> commands; // Map to store command objects
+	std::map<std::string, std::shared_ptr<ICommand>>& commands; // Map to store command objects
 	std::shared_ptr<IInput> input; // Input handler
+	std::shared_ptr<IOutput> output; // Output handler
 
 public:
 	// Constructor
-	App(std::map<std::string, std::shared_ptr<ICommand>>& commands, std::shared_ptr<IInput> input);
+	App(std::map<std::string, std::shared_ptr<ICommand>>& commands, std::shared_ptr<IInput> input, std::shared_ptr<IOutput> output);
 
 	// Main loop to run the application
 	void run();

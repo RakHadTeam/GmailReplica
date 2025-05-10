@@ -12,13 +12,10 @@
 class AddURLCommand : public ICommand {
 	private:
 		BloomFilter& bloomFilter;
-		std::shared_ptr<IInput> input;
-		std::shared_ptr<IOutput> output;
-		std::shared_ptr<IDBSaver> dbSaver;
 	
 	public:
-		AddURLCommand(BloomFilter& bf, std::shared_ptr<IInput> inp, std::shared_ptr<IOutput> out, std::shared_ptr<IDBSaver> dbSaver);
+		AddURLCommand(BloomFilter& bf);
 	
-		void execute(std::shared_ptr<Request> request) override;
+		std::shared_ptr<Response> execute(std::shared_ptr<Request> request) override;
 	};
 	

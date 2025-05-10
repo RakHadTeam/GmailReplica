@@ -10,11 +10,14 @@
 #include <arpa/inet.h>
 #include <unistd.h>
 
+std::map<std::string, std::shared_ptr<ICommand>> commands;
 
 class TestServer : public TCPServer {
 public:
 	std::atomic<int> connectionsHandled{ 0 };
-
+	TestServer(std::map<std::string, std::shared_ptr<ICommand>>& commands)
+		: TCPServer(commands) {
+	}
 protected:
 	void handleClient(int clientSock) override {
 		connectionsHandled.fetch_add(1, std::memory_order_relaxed);
@@ -42,7 +45,7 @@ static void simulateClientConnection(int port) {
 }
 
 TEST(TCPServerTest, BindToPortZero_SucceedsAndListens) {
-	TestServer server;
+	TestServer server(commands);
 
 	bool success = server.startServer(0);
 	EXPECT_TRUE(success);
@@ -54,24 +57,24 @@ TEST(TCPServerTest, BindToPortZero_SucceedsAndListens) {
 }
 
 TEST(TCPServerTest, BindFailure_InvalidPort_ReturnsError) {
-	TestServer server;
+	TestServer server(commands);
 	EXPECT_FALSE(server.startServer(-1));
 	EXPECT_FALSE(server.startServer(70000));
 }
 
 TEST(TCPServerTest, ListenFailure_PortInUse_ReturnsError) {
-	TestServer s1;
+	TestServer s1(commands);
 	ASSERT_TRUE(s1.startServer(8080));
 	int port = s1.getPort();
 
-	TestServer s2;
+	TestServer s2(commands);
 	EXPECT_FALSE(s2.startServer(port));
 
 	s1.shutdown();
 }
 
 TEST(TCPServerTest, AcceptClient_HandlesIncomingConnection) {
-	TestServer server;
+	TestServer server(commands);
 	ASSERT_TRUE(server.startServer(0));
 	int port = server.getPort();
 
@@ -85,7 +88,7 @@ TEST(TCPServerTest, AcceptClient_HandlesIncomingConnection) {
 }
 
 TEST(TCPServerTest, CleanShutdown_DoesNotHang) {
-	TestServer server;
+	TestServer server(commands);
 	ASSERT_TRUE(server.startServer(0));
 	EXPECT_NO_THROW(server.shutdown());
 }

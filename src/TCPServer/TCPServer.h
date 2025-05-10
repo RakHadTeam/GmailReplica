@@ -4,6 +4,7 @@
 #include <thread>
 #include <vector>
 #include <mutex>
+#include <map>
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
@@ -11,7 +12,12 @@
 #include <cerrno>
 #include <cstring>
 #include <iostream>
+#include <memory>
+#include <Commands/ICommand.h>
 #include <thread>
+#include <IO/Input/TCPInput/TCPInput.h>
+#include <IO/Output/TCPOutput/TCPOutput.h>
+#include <App/App.h>
 
 #define MIN_PORT 0
 #define MAX_PORT 65535
@@ -21,7 +27,7 @@
 
 class TCPServer {
 public:
-	TCPServer();
+	TCPServer(std::map<std::string, std::shared_ptr<ICommand>>& commands);
 	~TCPServer();
 
 	bool startServer(int portNumber);
@@ -39,4 +45,5 @@ private:
 	std::atomic<bool> running;
 	std::vector<std::thread> threads;
 	std::mutex guard;
+	std::map<std::string, std::shared_ptr<ICommand>>& commands;
 };

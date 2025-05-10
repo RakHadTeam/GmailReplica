@@ -1,13 +1,15 @@
 #include <TCPServer/TCPServer.h>
 
-TCPServer::TCPServer() : serverSocket(-1), port(0), running(false) {}
+TCPServer::TCPServer(std::map<std::string, std::shared_ptr<ICommand>>& commands)
+	: serverSocket(-1), port(0), running(false), commands(commands) {
+}
 
 TCPServer::~TCPServer() {
 	shutdown();
 }
 
 bool TCPServer::startServer(int portNumber) {
-	if (portNumber < 0 || portNumber > 65535) {
+	if (portNumber < MIN_PORT || portNumber > MAX_PORT) {
 		std::cerr << "[Error] Invalid port: " << portNumber << "\n";
 		return false;
 	}
@@ -77,18 +79,16 @@ void TCPServer::acceptLoop() {
 void TCPServer::handleClient(int clientSock) {
 	std::cout << "[Info] handling client socket " << clientSock << "\n";
 
-	// TCPInput input(clientSock);
+	std::shared_ptr<TCPInput> input = std::make_shared<TCPInput>(clientSock);
 
-	// auto addURLCommand = std::make_shared<AddURLCommand>(bloomFilter, input, output, dbSaver);
-	// commands["POST"] = addURLCommand;
+	std::shared_ptr<IOutput> output = std::make_shared<TCPOutput>(clientSock);
 
-	// auto checkURLCommand = std::make_shared<CheckURLCommand>(bloomFilter, input, output);
-	// commands["GET"] = checkURLCommand;
+	App app(commands, input, output);
 
-	// App app(commands, input);
+	app.run();
 
-	// // app.run();
-
+	std::cout << "[Info] Client socket " << clientSock << " closed\n";
+	::close(clientSock);
 }
 
 void TCPServer::shutdown() {
