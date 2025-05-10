@@ -7,7 +7,7 @@ TCPServer::~TCPServer() {
 }
 
 bool TCPServer::startServer(int portNumber) {
-	if (portNumber < MIN_PORT || portNumber > MAX_PORT) {
+	if (portNumber < 0 || portNumber > 65535) {
 		std::cerr << "[Error] Invalid port: " << portNumber << "\n";
 		return false;
 	}
@@ -29,7 +29,7 @@ bool TCPServer::startServer(int portNumber) {
 		return false;
 	}
 
-	if (::listen(serverSocket, BACKLOG) < 0) {
+	if (::listen(serverSocket, 5) < 0) {
 		std::cerr << "[Error] listen(): " << std::strerror(errno) << "\n";
 		::close(serverSocket);
 		return false;
@@ -47,6 +47,7 @@ bool TCPServer::startServer(int portNumber) {
 	}
 
 	running = true;
+
 	{
 		std::scoped_lock<std::mutex> lk(guard);
 		threads.emplace_back(&TCPServer::acceptLoop, this);
@@ -68,14 +69,26 @@ void TCPServer::acceptLoop() {
 			continue;
 		}
 
-		handleClient(clientSock);
-
-		::close(clientSock);
+		std::lock_guard<std::mutex> lk(guard);
+		threads.emplace_back(&TCPServer::handleClient, this, clientSock);
 	}
 }
 
 void TCPServer::handleClient(int clientSock) {
-	// Default does nothing. Override in subclass.
+	std::cout << "[Info] handling client socket " << clientSock << "\n";
+
+	// TCPInput input(clientSock);
+
+	// auto addURLCommand = std::make_shared<AddURLCommand>(bloomFilter, input, output, dbSaver);
+	// commands["POST"] = addURLCommand;
+
+	// auto checkURLCommand = std::make_shared<CheckURLCommand>(bloomFilter, input, output);
+	// commands["GET"] = checkURLCommand;
+
+	// App app(commands, input);
+
+	// // app.run();
+
 }
 
 void TCPServer::shutdown() {
