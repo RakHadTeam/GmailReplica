@@ -52,6 +52,9 @@ int main(int argc, char* argv[]) {
 	auto checkURLCommand = std::make_shared<CheckURLCommand>(bloomFilter, input, output);
 	commands["GET"] = checkURLCommand;
 
+	auto DeleteURLCommand = std::make_shared<CheckURLCommand>(bloomFilter, input, output);
+	commands["DELETE"] = checkURLCommand;
+
 	TCPServer server;
 	if (!server.startServer(port)) {
 		std::cerr << "[Error] Failed to start chat server on port "
