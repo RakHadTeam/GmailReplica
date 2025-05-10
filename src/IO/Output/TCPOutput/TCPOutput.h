@@ -1,6 +1,7 @@
 #include <IO/Output/IOutput.h>
 #include <Response/Response.h>
 #include <string>
+#include <TCPServer/TCPServer.h>
 #include <memory>
 
 class TCPOutput : public IOutput {

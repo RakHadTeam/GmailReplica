@@ -55,7 +55,51 @@ TEST(TCPOutputTest, SendResponse_NotFound) {
     ASSERT_GT(len, 0);
     std::string received(buffer, len);
     EXPECT_NE(received.find("404"), std::string::npos);
+	ASSERT_EQ("404 Not Found\n", received);
 
     close(fds[0]);
     close(fds[1]);
+}
+
+TEST(TCPOutputTest, SendResponse_BadRequest) {
+	int fds[2];
+	createSocketPair(fds);
+
+	TCPOutput output(fds[0]);
+	auto response = std::make_shared<Response>(StatusCode::BAD_REQUEST);
+	output.sendResponse(response);
+
+	char buffer[BUFFER_SIZE] = { 0 };
+	ssize_t len = ::recv(fds[1], buffer, BUFFER_SIZE, 0);
+
+	ASSERT_GT(len, 0);
+	std::string received(buffer, len);
+	EXPECT_NE(received.find("400"), std::string::npos);
+	ASSERT_EQ("400 Bad Request\n", received);
+
+	close(fds[0]);
+	close(fds[1]);
+}
+
+// Send a response with a payload
+
+TEST(TCPOutputTest, SendResponse_WithPayload) {
+	int fds[2];
+	createSocketPair(fds);
+
+	TCPOutput output(fds[0]);
+	auto response = std::make_shared<Response>(StatusCode::OK, "This is a test payload.");
+	output.sendResponse(response);
+
+	char buffer[BUFFER_SIZE] = { 0 };
+	ssize_t len = ::recv(fds[1], buffer, BUFFER_SIZE, 0);
+
+	ASSERT_GT(len, 0);
+	std::string received(buffer, len);
+	EXPECT_NE(received.find("200"), std::string::npos);
+	EXPECT_NE(received.find("This is a test payload."), std::string::npos);
+	ASSERT_EQ("200 OK\n\nThis is a test payload.\n", received);
+
+	close(fds[0]);
+	close(fds[1]);
 }
