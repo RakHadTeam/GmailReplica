@@ -1,6 +1,4 @@
 #include <DB/FileDB/FileDBLoader/FileDBLoader.h>
-#include <iostream>
-#include <fstream>
 
 FileDBLoader::FileDBLoader(const std::string& dataFolderPath,const std::string& blacklistFileName,const std::string& arrayFileName)
 : dataFolderPath(dataFolderPath), blacklistFileName(blacklistFileName), arrayFileName(arrayFileName) {

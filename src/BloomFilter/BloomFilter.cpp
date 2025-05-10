@@ -1,7 +1,3 @@
-#include <vector>
-#include <memory>
-#include <iostream>
-#include <BloomFilter/HashFunction/IHashFunction.h>
 #include <BloomFilter/BloomFilter.h>
 
 // Constructor: Initializes the Bloom Filter with a given size and hash functions

@@ -1,29 +1,6 @@
-// src/TCPServer/TCPServer.cpp
+#include <TCPServer/TCPServer.h>
 
-#include "TCPServer.h"
-
-// POSIX sockets
-#include <sys/socket.h>
-#include <netinet/in.h>
-#include <arpa/inet.h>
-#include <unistd.h>
-
-// C lib
-#include <cerrno>
-#include <cstring>
-
-// C++ std
-#include <iostream>
-#include <thread>
-
-#include <IO/Input/TCPInput/TCPInput.h>
-
-TCPServer::TCPServer()
-	: serverSocket(-1)
-	, port(0)
-	, running(false)
-{
-}
+TCPServer::TCPServer() : serverSocket(-1), port(0), running(false) {}
 
 TCPServer::~TCPServer() {
 	shutdown();
@@ -46,10 +23,7 @@ bool TCPServer::startServer(int portNumber) {
 	addr.sin_addr.s_addr = INADDR_ANY;
 	addr.sin_port = htons(static_cast<uint16_t>(portNumber));
 
-	if (::bind(serverSocket,
-		reinterpret_cast<sockaddr*>(&addr),
-		sizeof(addr)) < 0)
-	{
+	if (::bind(serverSocket, static_cast<sockaddr*>(static_cast<void*>(&addr)), sizeof(addr)) < 0) {
 		std::cerr << "[Error] bind(): " << std::strerror(errno) << "\n";
 		::close(serverSocket);
 		return false;
@@ -63,11 +37,8 @@ bool TCPServer::startServer(int portNumber) {
 
 	{
 		sockaddr_in actual{};
-		socklen_t   len = sizeof(actual);
-		if (::getsockname(serverSocket,
-			reinterpret_cast<sockaddr*>(&actual),
-			&len) == 0)
-		{
+		socklen_t len = sizeof(actual);
+		if (::getsockname(serverSocket, static_cast<sockaddr*>(static_cast<void*>(&actual)), &len) == 0) {
 			port = ntohs(actual.sin_port);
 		}
 		else {
@@ -78,7 +49,7 @@ bool TCPServer::startServer(int portNumber) {
 	running = true;
 
 	{
-		std::lock_guard<std::mutex> lk(guard);
+		std::scoped_lock<std::mutex> lk(guard);
 		threads.emplace_back(&TCPServer::acceptLoop, this);
 	}
 
@@ -89,11 +60,9 @@ bool TCPServer::startServer(int portNumber) {
 void TCPServer::acceptLoop() {
 	while (running) {
 		sockaddr_in clientAddr;
-		socklen_t   len = sizeof(clientAddr);
+		socklen_t len = sizeof(clientAddr);
 
-		int clientSock = ::accept(serverSocket,
-			reinterpret_cast<sockaddr*>(&clientAddr),
-			&len);
+		int clientSock = ::accept(serverSocket, static_cast<sockaddr*>(static_cast<void*>(&clientAddr)), &len);
 		if (clientSock < 0) {
 			if (!running) break;
 			std::cerr << "[Error] accept(): " << std::strerror(errno) << "\n";
@@ -129,7 +98,7 @@ void TCPServer::shutdown() {
 	::close(serverSocket);
 
 	{
-		std::lock_guard<std::mutex> lk(guard);
+		std::scoped_lock lock(guard);
 		for (auto& t : threads) {
 			if (t.joinable()) t.join();
 		}

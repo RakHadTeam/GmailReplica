@@ -1,5 +1,4 @@
 #include <Response/Response.h>
-#include <sstream>
 
 Response::Response(StatusCode status, const std::string& payload) : status(status), payload(payload) {}
 
