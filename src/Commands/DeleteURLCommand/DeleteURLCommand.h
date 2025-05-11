@@ -8,14 +8,11 @@
 
 class DeleteURLCommand : public ICommand {
 public:
-    DeleteURLCommand(BloomFilter& bloomFilter,
-                     std::shared_ptr<IInput> input,
-                     std::shared_ptr<IOutput> output);
+    DeleteURLCommand(BloomFilter& bloomFilter);
 
-    void execute(std::shared_ptr<Request> request) override;
+	std::shared_ptr<Response> execute(std::shared_ptr<Request> request) override;
+
 
 private:
     BloomFilter& bloomFilter;
-    std::shared_ptr<IInput> input;
-    std::shared_ptr<IOutput> output;
 };
