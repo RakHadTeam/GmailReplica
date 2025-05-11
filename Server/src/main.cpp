@@ -8,6 +8,7 @@
 #include <App/App.h>
 #include <IO/Input/IInput.h>
 #include <Commands/CheckURLCommand/CheckURLCommand.h>
+#include <Commands/DeleteURLCommand/DeleteURLCommand.h>
 #include <IO/Output/STDOutput/STDOutput.h>
 #include <DB/FileDB/FileDBSaver/FileDBSaver.h>
 #include <DB/FileDB/FileDBLoader/FileDBLoader.h>
@@ -51,7 +52,11 @@ int main(int argc, char* argv[]) {
 	auto checkURLCommand = std::make_shared<CheckURLCommand>(bloomFilter);
 	commands["GET"] = checkURLCommand;
 
+	auto deleteURLCommand = std::make_shared<DeleteURLCommand>(bloomFilter);
+	commands["DELETE"] = deleteURLCommand;
+
 	TCPServer server(commands);
+  
 	if (!server.startServer(port)) {
 		return 1;
 	}

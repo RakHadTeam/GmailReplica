@@ -147,3 +147,18 @@ void BloomFilter::loadFromDB() {
 	dbLoader->loadArrayFilter(bitArray);
 
 }
+
+void BloomFilter::remove(const std::string& url) {
+
+    if (!containsInDB(url)) {
+        return;
+    }
+    auto it = std::find(URLarray.begin(), URLarray.end(), url);
+    if (it != URLarray.end()) {
+        URLarray.erase(it);
+    }
+    if (dbSaver) {
+        dbSaver->deleteURL(url);
+    }
+}
+
