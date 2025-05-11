@@ -149,15 +149,7 @@ void BloomFilter::loadFromDB() {
 }
 
 void BloomFilter::remove(const std::string& url) {
-    // 1) Bit-array clearing (only if present)
-    if (!bitArray.empty() && containsInArray(url)) {
-        for (const auto& hf : hashFunctions) {
-            size_t idx = hf->hash(url) % bitArray.size();
-            bitArray[idx] = false;
-        }
-    }
-
-    // 2) Always attempt to delete from the blacklist file
+	
     if (dbSaver) {
         dbSaver->deleteURL(url);
         dbSaver->saveFilterArray(bitArray);
