@@ -1,0 +1,1 @@
+PORT=0 HOST="" docker compose -f docker-compose.yml run tests

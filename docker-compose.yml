@@ -1,0 +1,24 @@
+services:
+  server:
+    build:
+      context: ./Server
+      dockerfile: Dockerfile.server
+    command: ["${PORT}"]
+    tty: true
+    stdin_open: true
+    volumes:
+      - ./data/:/usr/src/Server/build/data
+
+
+  client:
+    build:
+      context: ./Client
+      dockerfile: Dockerfile.client
+    command: ["${HOST}", "${PORT}"]
+    tty: true
+    stdin_open: true
+
+  tests:
+    build:
+      context: ./Server
+      dockerfile: Dockerfile.tests
