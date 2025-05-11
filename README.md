@@ -10,6 +10,26 @@ This project was proudly created by:
 
 **APProject** is a command-line interface (CLI) tool designed to efficiently manage a blacklist of URLs using a Bloom Filter.
 
+## Running Server (In Docker)
+
+We have provided you with easy to deploy bash scripts to run the docker containers in a shared network.
+
+Firstly, run the server (The port argument will be the port that the server will listen on)
+- `sh ./run_server.sh <PORT>`
+OR:
+- `PORT=<PORT> docker compose -f docker-compose.yml up --build -d server`
+
+These commands will print the **container name, please remember it**.
+
+Then, the server will be up and running, waiting for it's configuration.
+
+To configure the server, you will need to enter the container proccess in the terminal, by using `docker attach <Contianer Name>`
+Run one of the following commands:
+- `sh ./attach.sh <Container Name>`
+- `docker attach <Container Name>`
+
+Then procceed to configure the bloom filter
+
 
 ## Configure the Bloom Filter
 
@@ -31,6 +51,25 @@ The first line of the CLI program is used to configure the parameters of the Blo
 
 Each hash function sets the corresponding bits in the array based on its configuration.
 
+## Running Client (In Docker)
+
+Firstly, we need to build and start the client container.
+Please run one of these commands:
+HOST = is the server's hostname, please use `server` to refer to the server running in the container before.
+PORT = the server's listening port, as defined earlier.
+
+- `sh ./run_client.sh <HOST> <PORT>` (Use `server` in HOST)
+- `PORT=<PORT> HOST=<HOST> docker compose -f docker-compose.yml up --build -d client` (Use `server` in HOST)
+
+**Remeber the client container name!** It will be shown.
+
+Like before, we need to attach to the container proccess
+Do one of the commands:
+
+- `sh ./attach.sh <Container Name>`
+- `docker attach <Container Name>`
+
+Then you can use the client normally, it will be connected to the server running on the container we set earlier.
 
 ## Features
 
