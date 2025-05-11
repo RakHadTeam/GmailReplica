@@ -7,7 +7,11 @@ def is_valid_ip(ip):
         socket.inet_aton(ip)  # Try converting to binary format
         return True
     except socket.error:
-        return False
+        try:
+            socket.gethostbyname(ip)
+            return True
+        except socket.error:
+            return False
 
 # Checks if the given string is a valid port number (numeric and in range)
 def is_valid_port(port_str):

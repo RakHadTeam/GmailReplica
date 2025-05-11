@@ -19,6 +19,7 @@
 #define FILTER_FILENAME     "array_filter"
 
 int main(int argc, char* argv[]) {
+	std::cout << "Bloom Filter Server\n";
 	auto initInput = std::make_shared<STDInitInput>();
 
 	auto input = std::make_shared<STDInput>();
@@ -31,10 +32,8 @@ int main(int argc, char* argv[]) {
 		port = std::stoi(argv[1]);
 	}
 	catch (const std::exception&) {
-		std::cerr << "[Error] Invalid port: " << argv[1] << "\n";
 		return 1;
 	}
-
 
 	std::vector<std::shared_ptr<IHashFunction>> hashFunctions;
 	initInput->setHashFunctions(hashFunctions);
@@ -57,8 +56,6 @@ int main(int argc, char* argv[]) {
 		return 1;
 	}
 
-	std::cout << "Press ENTER to shut down...\n";
-	std::cin.get();
 	server.shutdown();
 	return 0;
 }

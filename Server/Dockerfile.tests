@@ -5,13 +5,13 @@ FROM gcc:15.1.0
 RUN apt-get update && apt-get install -y cmake gdb && rm -rf /var/lib/apt/lists/*
 
 # Copy source code
-COPY . /usr/src/APProject
-WORKDIR /usr/src/APProject
+COPY . /usr/src/Server
+WORKDIR /usr/src/Server
 
 # Build the project
-RUN if [ -d "/usr/src/APProject/build" ]; then rm -rf /usr/src/APProject/build; fi && mkdir /usr/src/APProject/build
-WORKDIR /usr/src/APProject/build
+RUN if [ -d "/usr/src/Server/build" ]; then rm -rf /usr/src/Server/build; fi && mkdir /usr/src/Server/build
+WORKDIR /usr/src/Server/build
 RUN cmake .. && make
 
 # Run tests
-CMD ["./APProjectTests"]
+CMD ["./ServerTests"]

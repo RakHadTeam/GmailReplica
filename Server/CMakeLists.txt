@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.10)
 
 # Project name and version
-project(APProject VERSION 1.0)
+project(APProjectServer VERSION 1.0)
 
 # Set C++ standard
 set(CMAKE_CXX_STANDARD 17)
@@ -18,8 +18,8 @@ add_library(APProjectLib ${SOURCES})
 target_include_directories(APProjectLib PUBLIC src)  # Add include path for headers
 
 # Add executable for main project
-add_executable(APProjectExecutable src/main.cpp)
-target_link_libraries(APProjectExecutable APProjectLib)
+add_executable(ServerExecutable src/main.cpp)
+target_link_libraries(ServerExecutable APProjectLib)
 
 # Enable testing
 enable_testing()
@@ -37,9 +37,9 @@ set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 FetchContent_MakeAvailable(googletest)
 
 # Add test executable
-add_executable(APProjectTests ${TEST_SOURCES})
-target_link_libraries(APProjectTests APProjectLib gtest_main)
+add_executable(ServerTests ${TEST_SOURCES})
+target_link_libraries(ServerTests APProjectLib gtest_main)
 
 # Discover tests automatically
 include(GoogleTest)
-gtest_discover_tests(APProjectTests)
+gtest_discover_tests(ServerTests)
