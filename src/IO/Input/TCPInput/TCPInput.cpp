@@ -9,6 +9,7 @@ std::shared_ptr<Request> TCPInput::getRequest() {
 	while (true) {
 		ssize_t bytesRead = ::recv(clientSocket, tmp, BUFFER_SIZE, 0);
 		buffer.append(tmp, bytesRead);
+		std::cout << "Received: " << buffer << std::endl;
 		if (bytesRead < BUFFER_SIZE) break;
 	}
 
@@ -26,7 +27,13 @@ std::shared_ptr<Request> TCPInput::getRequest() {
 	}
 
 	std::map<std::string, std::string> parameters;
-	parameters["url"] = url;
+
+	if (URLValidator::isValid(url)) {
+		parameters["url"] = url;
+	}
+	else {
+		parameters["url"] = "";
+	}
 
 	return std::make_shared<Request>(method, parameters);
 }

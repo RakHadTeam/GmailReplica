@@ -11,13 +11,11 @@
 class CheckURLCommand : public ICommand {
 private:
 	BloomFilter& bloomFilter; // Reference to the Bloom filter
-	std::shared_ptr<IInput> input; // Input handler
-	std::shared_ptr<IOutput> output; // Output handler
 
 public:
 	// Constructor
-	CheckURLCommand(BloomFilter& bloomFilter, std::shared_ptr<IInput> input, std::shared_ptr<IOutput> output);
+	CheckURLCommand(BloomFilter& bloomFilter);
 
 	// Execute the command
-	void execute(std::shared_ptr<Request> request) override;
+	std::shared_ptr<Response> execute(std::shared_ptr<Request> request) override;
 };

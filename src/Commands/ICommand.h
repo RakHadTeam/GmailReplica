@@ -5,5 +5,5 @@
 
 class ICommand {
 public:
-	virtual void execute(std::shared_ptr<Request> request) = 0;
+	virtual std::shared_ptr<Response> execute(std::shared_ptr<Request> request) = 0;
 };

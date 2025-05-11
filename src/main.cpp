@@ -27,12 +27,13 @@ int main(int argc, char* argv[]) {
 	int bitArraySize = initInput->getSizeOfArray();
 
 	int port;
-    try {
-        port = std::stoi(argv[1]);
-    } catch (const std::exception&) {
-        std::cerr << "[Error] Invalid port: " << argv[1] << "\n";
-        return 1;
-    }
+	try {
+		port = std::stoi(argv[1]);
+	}
+	catch (const std::exception&) {
+		std::cerr << "[Error] Invalid port: " << argv[1] << "\n";
+		return 1;
+	}
 
 
 	std::vector<std::shared_ptr<IHashFunction>> hashFunctions;
@@ -44,21 +45,19 @@ int main(int argc, char* argv[]) {
 	BloomFilter bloomFilter(bitArraySize, hashFunctions, dbSaver, dbLoader);
 
 	std::map<std::string, std::shared_ptr<ICommand>> commands;
-	
 
-	auto addURLCommand = std::make_shared<AddURLCommand>(bloomFilter, input, output, dbSaver);
+	auto addURLCommand = std::make_shared<AddURLCommand>(bloomFilter);
 	commands["POST"] = addURLCommand;
 
-	auto checkURLCommand = std::make_shared<CheckURLCommand>(bloomFilter, input, output);
+	auto checkURLCommand = std::make_shared<CheckURLCommand>(bloomFilter);
 	commands["GET"] = checkURLCommand;
 
 	auto DeleteURLCommand = std::make_shared<CheckURLCommand>(bloomFilter, input, output);
 	commands["DELETE"] = checkURLCommand;
 
-	TCPServer server;
+	TCPServer server(commands);
+  
 	if (!server.startServer(port)) {
-		std::cerr << "[Error] Failed to start chat server on port "
-			<< port << "\n";
 		return 1;
 	}
 
