@@ -23,6 +23,8 @@ OR:
 
 These commands will print the **container name, please remember it**.
 
+<img width="941" alt="image" src="https://github.com/user-attachments/assets/ea3a05a7-88ce-41e5-a94c-b27d0e55a555" />
+
 Then, the server will be up and running, waiting for it's configuration.
 
 To configure the server, you will need to enter the container proccess in the terminal, by using `docker attach <Contianer Name>`
@@ -32,6 +34,7 @@ Run one of the following commands:
 
 Then procceed to configure the bloom filter
 
+<img width="821" alt="image" src="https://github.com/user-attachments/assets/eab25c8a-29a0-4316-81e3-c21669124e3c" />
 
 ## Configure the Bloom Filter
 
@@ -65,6 +68,8 @@ PORT = the server's listening port, as defined earlier.
 
 **Remeber the client container name!** It will be shown.
 
+<img width="933" alt="image" src="https://github.com/user-attachments/assets/e718d21a-750a-4f7a-9c2d-2367bc1da40b" />
+
 Like before, we need to attach to the container proccess
 Do one of the commands:
 
@@ -72,6 +77,8 @@ Do one of the commands:
 - `docker attach <Container Name>`
 
 Then you can use the client normally, it will be connected to the server running on the container we set earlier.
+
+<img width="812" alt="image" src="https://github.com/user-attachments/assets/77c6c8f4-7899-4c99-b9a3-c32293094727" />
 
 ## Features
 
@@ -165,4 +172,15 @@ Any input that does not comply with the expected format will be ignored. This in
 - Incorrect configuration in the first line (Placing non positive integers as well).
 
 Ensure all inputs follow the specified format to avoid being disregarded by the program.
+
+Example:
+
+PORT=8080 HOST=server
+
+<img width="667" alt="image" src="https://github.com/user-attachments/assets/f6c7764f-4ab1-4e28-b1df-d71398401e40" />
+
+<img width="667" alt="image" src="https://github.com/user-attachments/assets/47e5c50b-aaa7-4f43-81d6-f266ead7ee2b" />
+
+
+
 
