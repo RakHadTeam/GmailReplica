@@ -1,8 +1,10 @@
+CHUNK_SIZE = 4096
+
 def receive_response(sock):
     try:
         buffer = b""
         while True:
-            chunk = sock.recv(4096)
+            chunk = sock.recv(CHUNK_SIZE)
             if not chunk:
                 return  # connection closed
             buffer += chunk

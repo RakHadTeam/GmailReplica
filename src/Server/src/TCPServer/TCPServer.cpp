@@ -16,7 +16,6 @@ bool TCPServer::startServer(int portNumber) {
 
 	serverSocket = ::socket(AF_INET, SOCK_STREAM, 0);
 	if (serverSocket < 0) {
-		std::cerr << "[Error] socket(): " << std::strerror(errno) << "\n";
 		return false;
 	}
 
@@ -26,13 +25,11 @@ bool TCPServer::startServer(int portNumber) {
 	addr.sin_port = htons(static_cast<uint16_t>(portNumber));
 
 	if (::bind(serverSocket, static_cast<sockaddr*>(static_cast<void*>(&addr)), sizeof(addr)) < 0) {
-		std::cerr << "[Error] bind(): " << std::strerror(errno) << "\n";
 		::close(serverSocket);
 		return false;
 	}
 
 	if (::listen(serverSocket, 5) < 0) {
-		std::cerr << "[Error] listen(): " << std::strerror(errno) << "\n";
 		::close(serverSocket);
 		return false;
 	}
@@ -49,13 +46,12 @@ bool TCPServer::startServer(int portNumber) {
 	}
 
 	running = true;
-
+	
 	{
-		std::scoped_lock<std::mutex> lk(guard);
+		std::scoped_lock lock(guard);
 		threads.emplace_back(&TCPServer::acceptLoop, this);
 	}
 
-	std::cout << "[Info] Server started on port " << port << "\n";
 	return true;
 }
 
@@ -110,4 +106,10 @@ void TCPServer::shutdown() {
 
 int TCPServer::getPort() const {
 	return port;
+}
+
+void TCPServer::waitMainThread() {
+	if (threads[0].joinable()) {
+		threads[0].join();
+	}
 }

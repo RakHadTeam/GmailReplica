@@ -7,6 +7,7 @@
 #include <BloomFilter/HashFunction/STDHash/STDHash.h>
 #include <Validators/URLValidator/URLValidator.h>
 #include <TCPServer/TCPServer.h>
+#include <algorithm>
 
 class TCPInput : public IInput {
 private:
