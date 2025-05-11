@@ -9,7 +9,7 @@ TEST(TCPInputTest, ReceivesValidRequest) {
     int sv[2];
     ASSERT_EQ(socketpair(AF_UNIX, SOCK_STREAM, 0, sv), 0);
 
-    std::string rawRequest = "POST http://example.com\n";
+    std::string rawRequest = "POST http://www.example.com\n";
 	// send in 4096 bytes
 	::send(sv[1], rawRequest.c_str(), rawRequest.size(), 0);
 
@@ -21,7 +21,7 @@ TEST(TCPInputTest, ReceivesValidRequest) {
 
 	ASSERT_NE(req, nullptr);
 	EXPECT_EQ(req->getMethod(), "POST");
-	EXPECT_EQ(req->getParameter("url"), "http://example.com");
+	EXPECT_EQ(req->getParameter("url"), "http://www.example.com");
 
     close(sv[0]);
     close(sv[1]);
