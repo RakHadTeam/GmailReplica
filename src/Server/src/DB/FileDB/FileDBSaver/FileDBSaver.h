@@ -15,5 +15,6 @@ public:
 	FileDBSaver(const std::string& dataFolderPath,const std::string& blacklistFileName,const std::string& arrayFileName);
     void saveFilterArray(std::vector<bool>& bitArray) override;
 	void saveURL(const std::string& url) override;
+	void deleteURL(const std::string& url) override;
 
 };

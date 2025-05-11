@@ -61,6 +61,7 @@ int main(int argc, char* argv[]) {
 		return 1;
 	}
 
-	server.shutdown();
+	server.waitMainThread();
+	 
 	return 0;
 }

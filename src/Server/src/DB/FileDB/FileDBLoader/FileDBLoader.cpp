@@ -45,5 +45,6 @@ bool FileDBLoader::loadArrayFilter(std::vector<bool>& bitArray) {
 
 	// if all good
 	bitArray = tempArray;
+	inFile.close();
 	return true;
 }

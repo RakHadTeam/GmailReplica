@@ -46,8 +46,11 @@ bool TCPServer::startServer(int portNumber) {
 	}
 
 	running = true;
-
-	acceptLoop();
+	
+	{
+		std::scoped_lock lock(guard);
+		threads.emplace_back(&TCPServer::acceptLoop, this);
+	}
 
 	return true;
 }
@@ -103,4 +106,10 @@ void TCPServer::shutdown() {
 
 int TCPServer::getPort() const {
 	return port;
+}
+
+void TCPServer::waitMainThread() {
+	if (threads[0].joinable()) {
+		threads[0].join();
+	}
 }

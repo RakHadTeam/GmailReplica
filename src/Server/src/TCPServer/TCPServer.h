@@ -33,6 +33,7 @@ public:
 	bool startServer(int portNumber);
 	void shutdown();
 	int getPort() const;
+	void waitMainThread();
 
 protected:
 	virtual void handleClient(int clientSock);

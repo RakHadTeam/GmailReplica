@@ -1,7 +1,7 @@
 services:
   server:
     build:
-      context: ./Server
+      context: ./src/Server
       dockerfile: Dockerfile.server
     command: ["${PORT}"]
     tty: true
@@ -12,7 +12,7 @@ services:
 
   client:
     build:
-      context: ./Client
+      context: ./src/Client
       dockerfile: Dockerfile.client
     command: ["${HOST}", "${PORT}"]
     tty: true
@@ -20,5 +20,5 @@ services:
 
   tests:
     build:
-      context: ./Server
+      context: ./src/Server
       dockerfile: Dockerfile.tests
