@@ -15,10 +15,10 @@ void DeleteURLCommand::execute(std::shared_ptr<Request> request) {
         return;
     }
 
-    if (bloomFilter.containsInArray(url)) {
+    if (bloomFilter.containsInDB(url)) {
         bloomFilter.remove(url);
-        output->sendResponse(std::make_shared<Response>(StatusCode::OK, "true"));
+        output->sendResponse(std::make_shared<Response>(StatusCode::OK));
     } else {
-        output->sendResponse(std::make_shared<Response>(StatusCode::NOT_FOUND, "false"));
+        output->sendResponse(std::make_shared<Response>(StatusCode::NOT_FOUND));
     }
 }

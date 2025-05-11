@@ -4,6 +4,7 @@
 #include <DB/IDBSaver.h>
 #include <DB/IDBLoader.h>
 #include <DB/FileDB/FileDBSaver/FileDBSaver.h>
+#include <DB/FileDB/FileDBLoader/FileDBLoader.h>
 #include <fstream>
 #include <filesystem>
 
@@ -32,11 +33,11 @@ TEST(DeleteMethodTest, DeleteSingleURL) {
     hashFunctions.push_back(std::make_shared<STDHash>(1));
     BloomFilter bloomFilter(10, hashFunctions, dbSaver, nullptr);
 
-    std::string url = "example.com";
+    std::string url = "www.example.com";
     bloomFilter.add(url);
-    EXPECT_TRUE(bloomFilter.containsInArray(url));
+    EXPECT_TRUE(bloomFilter.containsInDB(url));
     bloomFilter.remove(url);
-    EXPECT_FALSE(bloomFilter.containsInArray(url));
+    EXPECT_FALSE(bloomFilter.containsInDB(url));
 
     auto lines = readFileLines(filePath);
     EXPECT_TRUE(lines.empty());
@@ -54,9 +55,9 @@ TEST(DeleteMethodTest, DeleteNonexistentURL) {
     hashFunctions.push_back(std::make_shared<STDHash>(3));
     BloomFilter bloomFilter(10, hashFunctions, dbSaver, nullptr);
 
-    std::string url = "ghost.com";
+    std::string url = "www.ghost.com";
     EXPECT_NO_THROW(bloomFilter.remove(url));
-    EXPECT_FALSE(bloomFilter.containsInArray(url));
+    EXPECT_FALSE(bloomFilter.containsInDB(url));
 
     auto lines = readFileLines(filePath);
     EXPECT_TRUE(lines.empty());
@@ -74,12 +75,12 @@ TEST(DeleteMethodTest, MultipleRemoveCalls) {
     hashFunctions.push_back(std::make_shared<STDHash>(1));
     BloomFilter bloomFilter(10, hashFunctions, dbSaver, nullptr);
 
-    std::string url = "example.com";
+    std::string url = "www.example.com";
     bloomFilter.add(url);
     bloomFilter.remove(url);
-    EXPECT_FALSE(bloomFilter.containsInArray(url));
+    EXPECT_FALSE(bloomFilter.containsInDB(url));
     bloomFilter.remove(url);
-    EXPECT_FALSE(bloomFilter.containsInArray(url));
+    EXPECT_FALSE(bloomFilter.containsInDB(url));
 
     auto lines = readFileLines(filePath);
     EXPECT_TRUE(lines.empty());
@@ -94,13 +95,23 @@ TEST(DeleteMethodTest, DeleteFromBlacklistOnly) {
     );
 
     std::ofstream outFile(filePath);
-    outFile << "example.com\nother.com\n";
+    outFile << "www.example.com\nwww.other.com\n";
     outFile.close();
+
+	auto dbLoader = std::make_shared<FileDBLoader>(
+        dataDir,
+        "blacklist",
+        "array_filter"
+    );
 
     std::vector<std::shared_ptr<IHashFunction>> hashFunctions;
     hashFunctions.push_back(std::make_shared<STDHash>(1));
-    BloomFilter bloomFilter(10, hashFunctions, dbSaver, nullptr);
-    bloomFilter.remove("example.com");
+    BloomFilter bloomFilter(10, hashFunctions, dbSaver, dbLoader);
+	auto beforeLines = readFileLines(filePath);
+    for (const auto& line : beforeLines) {
+        std::cout << line << std::endl;
+    }
+    bloomFilter.remove("www.example.com");
 
     auto lines = readFileLines(filePath);
 
@@ -109,6 +120,6 @@ TEST(DeleteMethodTest, DeleteFromBlacklistOnly) {
         std::cout << line << std::endl;
     }
 
-    EXPECT_EQ(lines.size(), 1);
-    EXPECT_EQ(lines[0], "other.com");
+    EXPECT_EQ(lines.size(), beforeLines.size()-1);
+    EXPECT_EQ(lines[0], "www.other.com");
 }
