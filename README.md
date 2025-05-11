@@ -1,5 +1,7 @@
 # APProject
 
+[![CMake Tests](https://github.com/RakHadTeam/APProject/actions/workflows/cmake-tests.yml/badge.svg)](https://github.com/RakHadTeam/APProject/actions/workflows/cmake-tests.yml)
+
 ### Creators
 
 This project was proudly created by:
