@@ -135,4 +135,6 @@ Ensure all inputs follow the specified format to avoid being disregarded by the 
 
 Example:
 
-PORT=8080 HOST=server
+PORT=`4545` HOST=container name=`server-api` Bloom Filter Arguments: `16 1 2`
+
+![image](https://github.com/user-attachments/assets/991aa453-3849-4031-9524-fd7a591bd216)
