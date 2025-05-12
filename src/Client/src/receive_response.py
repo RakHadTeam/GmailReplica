@@ -8,7 +8,7 @@ def receive_response(sock):
             if not chunk:
                 return  # connection closed
             buffer += chunk
-            if b"\n" in chunk:
+            if chunk.endswith(b"\n"):
                 break
 
         response = buffer.decode("utf-8").strip()
