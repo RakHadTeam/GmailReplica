@@ -138,31 +138,17 @@ It will be connected to the docker aswell.
 
 ## Q/A
 
-- **Q: Is the fact that the command's names has been changed made us touch the code that was supposed to be "Closed for modifications and open to expansion"?**
-  **A:** No. As demonstrated in the lecture, we designed our main.cpp so that each command is mapped to a specific input string using a dictionary like structure (map). When a command’s name changes, we only need to update the corresponding key in this mapping, not the underlying command logic itself.
+- **Q: Is the fact that the command's names has been changed made us touch the code that was supposed to be "Closed for modifications and open to expansion"?**<br>**A:** No. As demonstrated in the lecture, we designed our main.cpp so that each command is mapped to a specific input string using a dictionary like structure (map). When a command’s name changes, we only need to update the corresponding key in this mapping, not the underlying command logic itself.
 	This design aligns with the open to expansion and closed to changes, since we didn’t modify existing command implementations; we merely updated the configuration that connects input strings to commands. All command logic remains encapsulated in their respective classes, which were untouched.
 
 	
 
-- **Q: Is the fact that new commands has been added made us touch the code that was supposed to be "Closed for modifications and open to expansion"?**
-  A: No. We followed good design practices by defining an interface for all commands. Every new command simply inherits from this interface and implements its required behavior.
-Additionally, we expanded the BloomFilter class with any needed functionality, which was a natural and modular process due to its structure.
-This pattern lets us extend the functionality without modifying code that we wrote earlier, which is following the "Closed for modifications and open to expansion".
+- **Q: Is the fact that new commands has been added made us touch the code that was supposed to be "Closed for modifications and open to expansion"?**<br>**A:** No. We followed good design practices by defining an interface for all commands.<br>Every new command simply inherits from this interface and implements its required behavior.<br>Additionally, we expanded the BloomFilter class with any needed functionality, which was a natural and modular process due to its structure.<br>This pattern lets us extend the functionality without modifying code that we wrote earlier, which is following the "Closed for modifications and open to expansion".
 	
 
-- **Q: Is the fact that the output of the commands has been changed made us touch the code that was supposed to be "Closed for modifications and open to expansion"?**
-  A: Yes. Initially, in Part 1, we thought that each response should be handled with a dedicated method, which led us to output results directly inside the commands themselves. This turned out to be a mistake, as it tightly coupled the output logic to the command logic.
-What we needed was an abstraction for the response, allowing a single method of output to handle various messages in a more flexible way.
-To address this, we created new Request and Response classes. Each command now returns a Response object containing all the relevant data. The App class is then responsible for sending that response to the client.
-We believe this new structure provides better tools for future expansion, such as supporting multiple parameters, new attributes, or additional headers, without modifying existing command logic.
+- **Q: Is the fact that the output of the commands has been changed made us touch the code that was supposed to be "Closed for modifications and open to expansion"?**<br>**A:** Yes. Initially, in Part 1, we thought that each response should be handled with a dedicated method, which led us to output results directly inside the commands themselves.<br>This turned out to be a mistake, as it tightly coupled the output logic to the command logic. What we needed was an abstraction for the response, allowing a single method of output to handle various messages in a more flexible way.<br>To address this, we created new Request and Response classes. Each command now returns a Response object containing all the relevant data. The App class is then responsible for sending that response to the client.<br>We believe this new structure provides better tools for future expansion, such as supporting multiple parameters, new attributes, or additional headers, without modifying existing command logic.
 
-- **Q: Is the fact that the Input/Output comes from sockets instead of the console made us touch the code that was supposed to be "Closed for modifications and open to expansion"?**
-  A: Yes. In the previous part, we abstracted the Input/Output using interfaces that each class had to implement. However, our core design still didn’t allow the kind of extensibility we needed.
-So we restructured the system into a Request/Response model, as described in the previous answer.
-Now, input classes implement a method to receive a request from the client and construct a Request object, which contains all the data we need (method, parameters, etc.).
-Output classes implement a method to send a Response object back to the client, making it easier for the commands to return a result without handling the I/O directly.
-Going forward, to implement a new form of Input/Output, all we need to do is create classes that implement the existing interfaces. The App class remains unchanged, it simply receives a Request and outputs a Response, more over, the commands are totally isolated from the I/O, only getting Request and returning Response.
-We believe this gives us the tools to handle future changes such as new input/output types, or support for more complex data (images, binary files, etc.). 
+- **Q: Is the fact that the Input/Output comes from sockets instead of the console made us touch the code that was supposed to be "Closed for modifications and open to expansion"?**<br>**A:** Yes. In the previous part, we abstracted the Input/Output using interfaces that each class had to implement. However, our core design still didn’t allow the kind of extensibility we needed.<br>So we restructured the system into a Request/Response model, as described in the previous answer.<br>Now, input classes implement a method to receive a request from the client and construct a Request object, which contains all the data we need (method, parameters, etc.).<br>Output classes implement a method to send a Response object back to the client, making it easier for the commands to return a result without handling the I/O directly.<br>Going forward, to implement a new form of Input/Output, all we need to do is create classes that implement the existing interfaces. The App class remains unchanged, it simply receives a Request and outputs a Response, more over, the commands are totally isolated from the I/O, only getting Request and returning Response.<br>We believe this gives us the tools to handle future changes such as new input/output types, or support for more complex data (images, binary files, etc.). 
 
 
 ## Handling Invalid Input
@@ -171,7 +157,7 @@ Any input that does not comply with the expected format will be ignored. This in
 
 - Incorrect configuration in the first line (Placing non positive integers as well).
 
-Ensure all inputs follow the specified format to avoid being disregarded by the program.
+Ensure all inputs follow the specified format to avoid being disregarded by the program, and will return `400 Bad Request`
 
 Example:
 
@@ -180,7 +166,3 @@ PORT=8080 HOST=server
 <img width="667" alt="image" src="https://github.com/user-attachments/assets/f6c7764f-4ab1-4e28-b1df-d71398401e40" />
 
 <img width="667" alt="image" src="https://github.com/user-attachments/assets/47e5c50b-aaa7-4f43-81d6-f266ead7ee2b" />
-
-
-
-
