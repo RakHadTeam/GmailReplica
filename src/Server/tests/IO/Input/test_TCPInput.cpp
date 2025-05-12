@@ -27,16 +27,16 @@ TEST(TCPInputTest, ReceivesValidRequest) {
     close(sv[1]);
 }
 
-TEST(TCPInputTest, HandlesMissingMethod) {
+TEST(TCPInputTest, HandlesWrongMethod) {
     int sv[2];
     ASSERT_EQ(socketpair(AF_UNIX, SOCK_STREAM, 0, sv), 0);
 
-    ::send(sv[1], "1", 1, 0);
+    ::send(sv[1], "1\n", 2, 0);
 
     TCPInput input(sv[0]);
     std::shared_ptr<Request> req = input.getRequest();
 
-    EXPECT_EQ(req->getMethod(), "");
+    EXPECT_EQ(req->getMethod(), "1");
 
     close(sv[0]);
     close(sv[1]);
