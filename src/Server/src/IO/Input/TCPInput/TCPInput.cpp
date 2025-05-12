@@ -15,15 +15,11 @@ std::shared_ptr<Request> TCPInput::getRequest() {
 	// Remove trailing newline characters
 	buffer.erase(std::remove(buffer.begin(), buffer.end(), '\n'), buffer.end());
 
-	// Check for parameters, separated by ' '
-	size_t pos = buffer.find(' ');
+	std::stringstream ss(buffer);
 	std::string method;
 	std::string url;
-
-	if (pos != std::string::npos) {
-		method = buffer.substr(0, pos);
-		url = buffer.substr(pos + 1);
-	}
+	ss >> method;
+	ss >> url;
 
 	std::map<std::string, std::string> parameters;
 
