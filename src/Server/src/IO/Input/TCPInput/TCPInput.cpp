@@ -7,9 +7,10 @@ std::shared_ptr<Request> TCPInput::getRequest() {
 	std::string buffer;
 	char tmp[BUFFER_SIZE];
 	while (true) {
-		ssize_t bytesRead = ::recv(clientSocket, tmp, BUFFER_SIZE, 0);
+		ssize_t bytesRead = read(clientSocket, tmp, BUFFER_SIZE);
+		if (bytesRead <= 0) break;
 		buffer.append(tmp, bytesRead);
-		if (bytesRead < BUFFER_SIZE) break;
+		if (!buffer.empty() && buffer.back() == '\n') break; // Stop when newline is the last character
 	}
 
 	// Remove trailing newline characters
@@ -20,6 +21,7 @@ std::shared_ptr<Request> TCPInput::getRequest() {
 	std::string url;
 	ss >> method;
 	ss >> url;
+
 
 	std::map<std::string, std::string> parameters;
 

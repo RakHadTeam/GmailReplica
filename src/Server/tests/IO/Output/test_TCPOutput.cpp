@@ -30,12 +30,18 @@ TEST(TCPOutputTest, SendResponse_OK) {
     output.sendResponse(response);
 
     // Read the response from the other end
-	char buffer[BUFFER_SIZE] = { 0 };
-	ssize_t len = ::recv(fds[1], buffer, BUFFER_SIZE, 0);
+	std::string buffer;
+	char tmp[BUFFER_SIZE];
+	while (true) {
+		ssize_t bytesRead = read(fds[1], tmp, BUFFER_SIZE);
+		if (bytesRead <= 0) break;
+		buffer.append(tmp, bytesRead);
+		std::cout << "Received: " << std::string(tmp, bytesRead) << std::endl;
+		if (!buffer.empty() && buffer.back() == '\n') break; // Stop when newline is the last character
+	}
 
-    ASSERT_GT(len, 0);
-    std::string received(buffer, len);
-    EXPECT_NE(received.find("200"), std::string::npos);
+    ASSERT_GT(buffer.size(), 0);
+    EXPECT_NE(buffer.find("200"), std::string::npos);
 
     close(fds[0]);
     close(fds[1]);
@@ -49,13 +55,17 @@ TEST(TCPOutputTest, SendResponse_NotFound) {
     auto response = std::make_shared<Response>(StatusCode::NOT_FOUND);
     output.sendResponse(response);
 
-    char buffer[1024] = {0};
-    ssize_t len = ::recv(fds[1], buffer, sizeof(buffer) - 1, 0);
-
-    ASSERT_GT(len, 0);
-    std::string received(buffer, len);
-    EXPECT_NE(received.find("404"), std::string::npos);
-	ASSERT_EQ("404 Not Found\n", received);
+	std::string buffer;
+	char tmp[BUFFER_SIZE];
+	while (true) {
+		ssize_t bytesRead = read(fds[1], tmp, BUFFER_SIZE);
+		if (bytesRead <= 0) break;
+		buffer.append(tmp, bytesRead);
+		if (!buffer.empty() && buffer.back() == '\n') break; // Stop when newline is the last character
+	}
+    ASSERT_GT(buffer.size(), 0);
+    EXPECT_NE(buffer.find("404"), std::string::npos);
+	ASSERT_EQ("404 Not Found\n", buffer);
 
     close(fds[0]);
     close(fds[1]);
@@ -69,13 +79,17 @@ TEST(TCPOutputTest, SendResponse_BadRequest) {
 	auto response = std::make_shared<Response>(StatusCode::BAD_REQUEST);
 	output.sendResponse(response);
 
-	char buffer[BUFFER_SIZE] = { 0 };
-	ssize_t len = ::recv(fds[1], buffer, BUFFER_SIZE, 0);
-
-	ASSERT_GT(len, 0);
-	std::string received(buffer, len);
-	EXPECT_NE(received.find("400"), std::string::npos);
-	ASSERT_EQ("400 Bad Request\n", received);
+	std::string buffer;
+	char tmp[BUFFER_SIZE];
+	while (true) {
+		ssize_t bytesRead = read(fds[1], tmp, BUFFER_SIZE);
+		if (bytesRead <= 0) break;
+		buffer.append(tmp, bytesRead);
+		if (!buffer.empty() && buffer.back() == '\n') break; // Stop when newline is the last character
+	}
+	ASSERT_GT(buffer.size(), 0);
+	EXPECT_NE(buffer.find("400"), std::string::npos);
+	ASSERT_EQ("400 Bad Request\n", buffer);
 
 	close(fds[0]);
 	close(fds[1]);
@@ -91,14 +105,18 @@ TEST(TCPOutputTest, SendResponse_WithPayload) {
 	auto response = std::make_shared<Response>(StatusCode::OK, "This is a test payload.");
 	output.sendResponse(response);
 
-	char buffer[BUFFER_SIZE] = { 0 };
-	ssize_t len = ::recv(fds[1], buffer, BUFFER_SIZE, 0);
-
-	ASSERT_GT(len, 0);
-	std::string received(buffer, len);
-	EXPECT_NE(received.find("200"), std::string::npos);
-	EXPECT_NE(received.find("This is a test payload."), std::string::npos);
-	ASSERT_EQ("200 OK\n\nThis is a test payload.\n", received);
+	std::string buffer;
+	char tmp[BUFFER_SIZE];
+	while (true) {
+		ssize_t bytesRead = read(fds[1], tmp, BUFFER_SIZE);
+		if (bytesRead <= 0) break;
+		buffer.append(tmp, bytesRead);
+		if (!buffer.empty() && buffer.back() == '\n') break; // Stop when newline is the last character
+	}
+	ASSERT_GT(buffer.size(), 0);
+	EXPECT_NE(buffer.find("200"), std::string::npos);
+	EXPECT_NE(buffer.find("This is a test payload."), std::string::npos);
+	ASSERT_EQ("200 OK\n\nThis is a test payload.\n", buffer);
 
 	close(fds[0]);
 	close(fds[1]);
