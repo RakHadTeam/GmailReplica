@@ -108,17 +108,10 @@ TEST(DeleteMethodTest, DeleteFromBlacklistOnly) {
     hashFunctions.push_back(std::make_shared<STDHash>(1));
     BloomFilter bloomFilter(10, hashFunctions, dbSaver, dbLoader);
 	auto beforeLines = readFileLines(filePath);
-    for (const auto& line : beforeLines) {
-        std::cout << line << std::endl;
-    }
-    bloomFilter.remove("www.example.com");
+
+	bloomFilter.remove("www.example.com");
 
     auto lines = readFileLines(filePath);
-
-    std::cout << "Contents of the file after delete operation:" << std::endl;
-    for (const auto& line : lines) {
-        std::cout << line << std::endl;
-    }
 
     EXPECT_EQ(lines.size(), beforeLines.size()-1);
     EXPECT_EQ(lines[0], "www.other.com");

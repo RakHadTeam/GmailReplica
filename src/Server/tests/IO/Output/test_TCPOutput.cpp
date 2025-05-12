@@ -36,7 +36,6 @@ TEST(TCPOutputTest, SendResponse_OK) {
 		ssize_t bytesRead = read(fds[1], tmp, BUFFER_SIZE);
 		if (bytesRead <= 0) break;
 		buffer.append(tmp, bytesRead);
-		std::cout << "Received: " << std::string(tmp, bytesRead) << std::endl;
 		if (!buffer.empty() && buffer.back() == '\n') break; // Stop when newline is the last character
 	}
 
