@@ -7,8 +7,6 @@ def create_and_connect(ip, port):
         # AF_INET specifies IPv4
         # SOCK_STREAM specifies TCP (reliable, connection-based)
         client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        
-        print(f"Connecting to {ip}:{port}...")
 
         # Attempt to connect to the server at the given IP and port
         client_socket.connect((ip, port))
