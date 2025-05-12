@@ -75,8 +75,6 @@ TEST(SaveFilterArrayTest, NonExistFile) {
 	std::string line;
 	std::getline(inFile, line);
 
-	std::cout << "bitArray.size(): " << bitArray.size() << std::endl;
-
 	for (size_t i = 0; i < bitArray.size(); ++i) {
 		EXPECT_EQ(line[i], bitArray[i] ? '1' : '0');
 	}
