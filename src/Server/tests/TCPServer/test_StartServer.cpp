@@ -47,7 +47,7 @@ static void simulateClientConnection(int port) {
 TEST(TCPServerTest, BindToPortZero_SucceedsAndListens) {
 	TestServer server(commands);
 
-	bool success = server.startServer(0);
+	bool success = server.startServer(MIN_PORT);
 	EXPECT_TRUE(success);
 
 	int boundPort = server.getPort();
@@ -75,7 +75,7 @@ TEST(TCPServerTest, ListenFailure_PortInUse_ReturnsError) {
 
 TEST(TCPServerTest, AcceptClient_HandlesIncomingConnection) {
 	TestServer server(commands);
-	ASSERT_TRUE(server.startServer(0));
+	ASSERT_TRUE(server.startServer(MIN_PORT));
 	int port = server.getPort();
 
 	auto fut = std::async(std::launch::async, simulateClientConnection, port);
@@ -89,6 +89,6 @@ TEST(TCPServerTest, AcceptClient_HandlesIncomingConnection) {
 
 TEST(TCPServerTest, CleanShutdown_DoesNotHang) {
 	TestServer server(commands);
-	ASSERT_TRUE(server.startServer(0));
+	ASSERT_TRUE(server.startServer(MIN_PORT));
 	EXPECT_NO_THROW(server.shutdown());
 }
