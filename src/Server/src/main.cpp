@@ -20,7 +20,6 @@
 #define FILTER_FILENAME     "array_filter"
 
 int main(int argc, char* argv[]) {
-	std::cout << "Bloom Filter Server\n";
 	auto initInput = std::make_shared<STDInitInput>();
 
 	auto input = std::make_shared<STDInput>();

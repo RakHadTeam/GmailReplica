@@ -21,7 +21,7 @@ std::shared_ptr<Response> CheckURLCommand::execute(std::shared_ptr<Request> requ
 			return std::make_shared<Response>(StatusCode::OK, "true true");
 		}
 		else {
-			return std::make_shared<Response>(StatusCode::NOT_FOUND, "false false");
+			return std::make_shared<Response>(StatusCode::NOT_FOUND, "true false");
 		}
 
 	}

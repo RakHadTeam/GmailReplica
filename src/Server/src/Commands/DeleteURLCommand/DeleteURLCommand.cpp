@@ -14,7 +14,7 @@ std::shared_ptr<Response> DeleteURLCommand::execute(std::shared_ptr<Request> req
 
     if (bloomFilter.containsInDB(url)) {
         bloomFilter.remove(url);
-        return std::make_shared<Response>(StatusCode::OK);
+        return std::make_shared<Response>(StatusCode::NO_CONTENT);
     } else {
         return std::make_shared<Response>(StatusCode::NOT_FOUND);
     }
