@@ -19,7 +19,7 @@
 #include <IO/Output/TCPOutput/TCPOutput.h>
 #include <App/App.h>
 
-#define MIN_PORT 0
+#define MIN_PORT 1024
 #define MAX_PORT 65535
 #define BACKLOG 5
 #define BUFFER_SIZE 4096

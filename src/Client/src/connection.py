@@ -15,7 +15,9 @@ def is_valid_ip(ip):
 
 # Checks if the given string is a valid port number (numeric and in range)
 def is_valid_port(port_str):
-    return port_str.isdigit() and 1 <= int(port_str) <= 65535
+    MIN_PORT = 1024
+    MAX_PORT = 65535
+    return port_str.isdigit() and MIN_PORT <= int(port_str) <= MAX_PORT
 
 # Parses the IP and port from command-line arguments
 def get_ip_and_port():
