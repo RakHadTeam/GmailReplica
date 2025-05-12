@@ -13,30 +13,36 @@
 #include <DB/FileDB/FileDBSaver/FileDBSaver.h>
 #include <DB/FileDB/FileDBLoader/FileDBLoader.h>
 #include <TCPServer/TCPServer.h>
-#include <IO/Input/InitInput/STDInitInput/STDInitInput.h>
 
 #define DATA_FOLDER   "data"
 #define BLACKLIST_FILENAME  "blacklist"
 #define FILTER_FILENAME     "array_filter"
 
 int main(int argc, char* argv[]) {
-	auto initInput = std::make_shared<STDInitInput>();
-
 	auto input = std::make_shared<STDInput>();
 	auto output = std::make_shared<STDOutput>();
 
-	int bitArraySize = initInput->getSizeOfArray();
-
+	int bitArraySize;
+	std::vector<std::shared_ptr<IHashFunction>> hashFunctions;
 	int port;
 	try {
 		port = std::stoi(argv[1]);
+		bitArraySize = std::stoi(argv[2]);
+		hashFunctions.push_back(std::make_shared<STDHash>(std::stoi(argv[3])));
 	}
 	catch (const std::exception&) {
 		return 1;
 	}
 
-	std::vector<std::shared_ptr<IHashFunction>> hashFunctions;
-	initInput->setHashFunctions(hashFunctions);
+	for (int i = 4; i < argc; ++i) {
+		try {
+			hashFunctions.push_back(std::make_shared<STDHash>(std::stoi(argv[i])));
+		}
+		catch (const std::exception&) {
+			return 1;
+		}
+	}
+
 
 	std::shared_ptr<IDBSaver> dbSaver = std::make_shared<FileDBSaver>(DATA_FOLDER, BLACKLIST_FILENAME, FILTER_FILENAME);
 	std::shared_ptr<IDBLoader> dbLoader = std::make_shared<FileDBLoader>(DATA_FOLDER, BLACKLIST_FILENAME, FILTER_FILENAME);

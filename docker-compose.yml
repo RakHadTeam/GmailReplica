@@ -1,9 +1,9 @@
 services:
   server:
+    container_name: "approject_server"
     build:
       context: ./src/Server
       dockerfile: Dockerfile.server
-    command: ["${PORT}"]
     tty: true
     stdin_open: true
     volumes:
@@ -11,13 +11,12 @@ services:
 
 
   client:
+    container_name: "approject_client"
     build:
       context: ./src/Client
       dockerfile: Dockerfile.client
-    command: ["${HOST}", "${PORT}"]
     tty: true
     stdin_open: true
-
   tests:
     build:
       context: ./src/Server
