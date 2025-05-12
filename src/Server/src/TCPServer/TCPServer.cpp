@@ -10,7 +10,6 @@ TCPServer::~TCPServer() {
 
 bool TCPServer::startServer(int portNumber) {
 	if (portNumber < MIN_PORT || portNumber > MAX_PORT) {
-		std::cerr << "[Error] Invalid port: " << portNumber << "\n";
 		return false;
 	}
 
@@ -63,7 +62,6 @@ void TCPServer::acceptLoop() {
 		int clientSock = ::accept(serverSocket, static_cast<sockaddr*>(static_cast<void*>(&clientAddr)), &len);
 		if (clientSock < 0) {
 			if (!running) break;
-			std::cerr << "[Error] accept(): " << std::strerror(errno) << "\n";
 			continue;
 		}
 
@@ -73,7 +71,6 @@ void TCPServer::acceptLoop() {
 }
 
 void TCPServer::handleClient(int clientSock) {
-	std::cout << "[Info] handling client socket " << clientSock << "\n";
 
 	std::shared_ptr<TCPInput> input = std::make_shared<TCPInput>(clientSock);
 
@@ -83,7 +80,6 @@ void TCPServer::handleClient(int clientSock) {
 
 	app.run();
 
-	std::cout << "[Info] Client socket " << clientSock << " closed\n";
 	::close(clientSock);
 }
 
@@ -101,7 +97,6 @@ void TCPServer::shutdown() {
 		threads.clear();
 	}
 
-	std::cout << "[Info] Server stopped\n";
 }
 
 int TCPServer::getPort() const {

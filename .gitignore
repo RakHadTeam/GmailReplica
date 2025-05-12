@@ -2,5 +2,5 @@
 /src/Server/build
 details.txt
 /.vscode
-/src/Client/__pycache__
+/src/Client/src/__pycache__
 /data
