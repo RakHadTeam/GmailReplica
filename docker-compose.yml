@@ -9,6 +9,15 @@ services:
     volumes:
       - ./data/:/usr/src/Server/build/data
 
+  webserver:
+    container_name: "approject_webserver"
+    build:
+      context: ./src/WebServer
+      dockerfile: Dockerfile.webserver
+    ports:
+      - "3000:3000"
+    depends_on:
+      - server
 
   client:
     container_name: "approject_client"

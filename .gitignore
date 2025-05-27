@@ -1,6 +1,7 @@
-/build
-/src/Server/build
+build
 details.txt
 /.vscode
-/src/Client/src/__pycache__
+__pycache__
 /data
+node_modules
+.DS_Store
