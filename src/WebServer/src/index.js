@@ -4,6 +4,14 @@ const app = express();
 
 const PORT = 3000;
 
-// endpoints
+app.use(express.json());
 
-app.listen(PORT);
+let labels = [];
+
+app.get('/api/labels', (req, res) => {
+    res.status(200).json(labels);
+});
+
+app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+});
