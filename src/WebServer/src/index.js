@@ -73,6 +73,23 @@ app.patch('/api/labels/:id', (req, res) => {
     res.status(204).send();
 });
 
+app.delete('/api/labels/:id', (req, res) => {
+    const { id } = req.params;
+
+    // Find the index of the label
+    const index = labels.findIndex(label => label.id === id);
+
+    if (index === -1) {
+        // Not found
+        return res.status(404).json({ error: 'Label not found' });
+    }
+
+    // Remove the label from the array
+    labels.splice(index, 1);
+
+    res.status(204).send();
+});
+
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
 });
