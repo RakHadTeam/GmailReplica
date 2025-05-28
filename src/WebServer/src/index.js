@@ -49,7 +49,30 @@ app.get('/api/labels/:id', (req, res) => {
     // If found, return the label with status 200
     res.status(200).json(label);
 });
-  
+
+app.patch('/api/labels/:id', (req, res) => {
+    const { id } = req.params;       // Gets the ID from the URL
+    const { name } = req.body;       // Gets the new name from the request body
+
+    // Validate that 'name' is present
+    if (!name) {
+        return res.status(400).json({ error: 'Name is required' });
+    }
+
+    // Find the label by ID
+    const label = labels.find(l => l.id === id);
+
+    if (!label) {
+        // If label not found, return 404
+        return res.status(404).json({ error: 'Label not found' });
+    }
+
+    // Update the label name
+    label.name = name;
+
+    res.status(204).send();
+});
+
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
 });
