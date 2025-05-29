@@ -5,7 +5,7 @@ function signupHandler(users, req, res) {
 
 	// Validate input
 	if (!username || !password || !fullName) {
-
+		return
 	}
 	const newUser = {
 		id: randomUUID(),
@@ -17,6 +17,10 @@ function signupHandler(users, req, res) {
 
 	// Check if the username already exists
 	const existingUser = users.find((user) => user.username === username);
+
+	// Add the new user to the in memory array
+	users.push(newUser);
+
 }
 
 export default signupHandler;
