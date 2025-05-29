@@ -5,7 +5,7 @@ function signupHandler(users, req, res) {
 
 	// Validate input
 	if (!username || !password || !fullName) {
-		return
+		return res.status(400).json({ error: 'Username, password, and full name are required' });
 	}
 	const newUser = {
 		id: randomUUID(),
@@ -17,10 +17,14 @@ function signupHandler(users, req, res) {
 
 	// Check if the username already exists
 	const existingUser = users.find((user) => user.username === username);
+	if (existingUser) {
+		return res.status(404).json({ error: 'Username already exists' });
+	}
 
 	// Add the new user to the in memory array
 	users.push(newUser);
-
+	
+	res.status(201).location(`/api/users/${newUser.id}`).send();
 }
 
 export default signupHandler;
