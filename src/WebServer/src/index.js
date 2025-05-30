@@ -30,6 +30,14 @@ app.patch('/api/labels/:id', (req, res) => {
     const { name } = req.body;       // Gets the new name from the request body
 
     // Validate that 'name' is present
+
+app.get('/api/labels', (req, res) => {
+    res.status(200).json(labels); // Respond with HTTP 200 and the labels as JSON
+});
+
+app.post('/api/labels', (req, res) => {
+    const { name } = req.body; // Destructure 'name' from the request body
+
     if (!name) {
         return res.status(400).json({ error: 'Name is required' });
     }
@@ -63,6 +71,17 @@ app.delete('/api/labels/:id', (req, res) => {
     labels.splice(index, 1);
 
     res.status(204).send();
+    // Create a new label object with a unique ID
+    const newLabel = {
+        id: uuidv4(),
+        name
+    };
+
+    // Add the new label to the in-memory array
+    labels.push(newLabel);
+
+    // Respond with 201 Created and set the Location header to the new resource
+    res.status(201).location(`/api/labels/${newLabel.id}`).send();
 });
 
 app.listen(PORT, () => {
