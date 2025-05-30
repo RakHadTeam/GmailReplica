@@ -1,6 +1,10 @@
 import express from 'express';
+import { randomUUID } from "crypto";
+import signupHandler from './signup.js'
 
 const app = express();
+
+const router = express.Router();
 
 const PORT = 3000;
 
@@ -9,6 +13,8 @@ app.use(express.json());
 
 // In memory array to store labels
 let labels = [];
+
+let users = [];
 
 app.get('/api/labels/:id', (req, res) => {
     const { id } = req.params; // Extracts the 'id' parameter from the URL
@@ -73,7 +79,7 @@ app.delete('/api/labels/:id', (req, res) => {
     res.status(204).send();
     // Create a new label object with a unique ID
     const newLabel = {
-        id: uuidv4(),
+        id: randomUUID(),
         name
     };
 
@@ -83,6 +89,8 @@ app.delete('/api/labels/:id', (req, res) => {
     // Respond with 201 Created and set the Location header to the new resource
     res.status(201).location(`/api/labels/${newLabel.id}`).send();
 });
+
+app.post('/api/users', signupHandler.bind(null, users));
 
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
