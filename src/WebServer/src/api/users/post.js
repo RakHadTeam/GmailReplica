@@ -1,0 +1,29 @@
+import { getUserByUsername } from "./userService.js";
+
+export function postUsers(req, res) {
+    const { username, password, email, fullName, picture } = req.body;
+
+    // Validate input
+    if (!username || !password || !fullName || !email) {
+        return res
+            .status(400)
+            .json({ error: "Username, password, full name, and email are required" });
+    }
+    let newUser = {
+        username,
+        password,
+        email,
+        fullName,
+        picture,
+    };
+
+    // Check if the username already exists
+    const existingUser = getUserByUsername(username);
+    if (existingUser) {
+        return res.status(404).json({ error: "Username already exists" });
+    }
+
+    newUser = createUser(newUser);
+
+    res.status(201).location(`/api/users/${newUser.id}`).send();
+}
