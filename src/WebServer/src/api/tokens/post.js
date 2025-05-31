@@ -1,12 +1,15 @@
-export function loginHandler(users, req, res) {
+import { validateCredentials } from "./tokensService.js";
+
+
+export function postTokens(req, res) {
     const { username, password } = req.body;
     if (!username || !password) {
         return res.status(400).json({ error: 'Username and password are required' });
     }
 
-    const user = users.find(u => u.username === username && u.password === password);
+    const { valid, user } = validateCredentials(username, password);
 
-    if (!user) {
+    if (!valid) {
         return res.status(400).json({ error: 'Invalid credentials' });
     }
 
@@ -15,4 +18,3 @@ export function loginHandler(users, req, res) {
     // Respond with token
     return res.status(200).json({ token });
 }
-

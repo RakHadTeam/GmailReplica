@@ -15,3 +15,4 @@ export function createUser(data) {
     globals.users.push(newUser);
     return newUser;
 }
+
