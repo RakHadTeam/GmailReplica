@@ -1,4 +1,6 @@
 import express from "express";
+import globals from "../core/globals.js";
+import { loginHandler } from "../core/login.js";
 import { deleteLabel } from "../api/labels/_id/delete.js";
 import { getLabel } from "../api/labels/_id/get.js";
 import { patchLabel } from "../api/labels/_id/patch.js";
@@ -28,5 +30,8 @@ usersRouter.get("/:id", getUserByIdHandler);
 
 
 apiRouter.use("/users", usersRouter);
+
+apiRouter.post("/tokens", loginHandler.bind(null, globals.users));
+
 
 export default apiRouter;
