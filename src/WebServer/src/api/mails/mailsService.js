@@ -38,3 +38,7 @@ export function searchMails(query) {
         (mail.recipient && mail.recipient.toLowerCase().includes(query))
     );
 }
+
+export function getMailById(id) {
+    return globals.mails.find(m => m.id === id);
+}

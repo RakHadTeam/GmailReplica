@@ -13,7 +13,7 @@ import { deleteBlacklistID } from "../api/blacklist/_id/delete.js";
 import { getMails } from "../api/mails/get.js";
 import { postMail } from "../api/mails/post.js";
 import { searchMailsHandler } from "../api/mails/search/_query/get.js";
-
+import { getMailByIdHandler } from "../api/mails/_id/get.js";
 
 const apiRouter = express.Router();
 
@@ -49,6 +49,7 @@ const mailsRouter = express.Router();
 mailsRouter.get("/", getMails);
 mailsRouter.post("/", postMail);
 mailsRouter.get("/search/:query", searchMailsHandler);
+mailsRouter.get("/:id", getMailByIdHandler);
 apiRouter.use("/mails", mailsRouter);
 
 apiRouter.use("/blacklist", blacklistRouter);
