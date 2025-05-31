@@ -4,6 +4,7 @@ services:
     build:
       context: ./src/Server
       dockerfile: Dockerfile.server
+    command: ["4545", "8", "1", "2"]
     tty: true
     stdin_open: true
     volumes:
@@ -24,6 +25,7 @@ services:
     build:
       context: ./src/Client
       dockerfile: Dockerfile.client
+    command: ["approject_server", "4545"]
     tty: true
     stdin_open: true
   tests:
