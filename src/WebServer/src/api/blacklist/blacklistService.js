@@ -33,3 +33,7 @@ export async function addURLToBlacklist(url) {
         });
     });
 }
+
+export async function deleteURLFromBlacklist(id) {
+    // todo
+}

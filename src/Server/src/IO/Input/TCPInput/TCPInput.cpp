@@ -13,6 +13,10 @@ std::shared_ptr<Request> TCPInput::getRequest() {
 		if (!buffer.empty() && buffer.back() == '\n') break; // Stop when newline is the last character
 	}
 
+    if (buffer.empty()) {
+        return nullptr; // No data read, return null
+    }
+
 	// Remove trailing newline characters
 	buffer.erase(std::remove(buffer.begin(), buffer.end(), '\n'), buffer.end());
 
