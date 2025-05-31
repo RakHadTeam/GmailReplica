@@ -1,4 +1,4 @@
-import { searchMails } from "./mailsService.js";
+import { searchMails } from "../mailsService.js";
 
 export function searchMailsHandler(req, res) {
     const query = req.params.query.toLowerCase();
