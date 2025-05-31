@@ -6,6 +6,7 @@ import { getLabels } from "../api/labels/get.js";
 import { postLabels } from "../api/labels/post.js";
 import { postUsers } from "../api/users/post.js";
 import { postBlacklist } from "../api/blacklist/post.js";
+import { deleteBlacklistID } from "../api/blacklist/_id/delete.js";
 
 const apiRouter = express.Router();
 
@@ -29,6 +30,11 @@ apiRouter.use("/users", usersRouter);
 const blacklistRouter = express.Router();
 blacklistRouter.post("/", postBlacklist);
 
+const blacklistIdRouter = express.Router({ mergeParams: true });
+blacklistIdRouter.delete("/", deleteBlacklistID);
+blacklistRouter.use("/:id", blacklistIdRouter);
+
 apiRouter.use("/blacklist", blacklistRouter);
+
 
 export default apiRouter;
