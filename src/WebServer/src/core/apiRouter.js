@@ -1,10 +1,12 @@
 import express from "express";
 import { deleteLabel } from "../api/labels/_id/delete.js";
-import { getLabel } from "../api/labels/_id/get.js"
+import { getLabel } from "../api/labels/_id/get.js";
 import { patchLabel } from "../api/labels/_id/patch.js";
 import { getLabels } from "../api/labels/get.js";
 import { postLabels } from "../api/labels/post.js";
 import { postUsers } from "../api/users/post.js";
+import { getUserByIdHandler } from "../api/users/get.js";
+
 
 const apiRouter = express.Router();
 
@@ -22,6 +24,8 @@ apiRouter.use("/labels", labelsRouter);
 
 const usersRouter = express.Router();
 usersRouter.post("/", postUsers);
+usersRouter.get("/:id", getUserByIdHandler);
+
 
 apiRouter.use("/users", usersRouter);
 
