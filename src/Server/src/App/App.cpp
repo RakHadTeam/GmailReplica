@@ -9,6 +9,9 @@ void App::run() {
 	std::string task;
 	while (true) {
 		std::shared_ptr<Request> request = input->getRequest();
+        if (!request) {
+            return;
+        }
 		auto it = commands.find(request->getMethod());
 		if (it != commands.end()) {
 			std::shared_ptr<Response> response = it->second->execute(request);
