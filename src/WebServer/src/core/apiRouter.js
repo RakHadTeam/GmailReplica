@@ -14,6 +14,8 @@ import { getMails } from "../api/mails/get.js";
 import { postMail } from "../api/mails/post.js";
 import { searchMailsHandler } from "../api/mails/search/_query/get.js";
 import { getMailByIdHandler } from "../api/mails/_id/get.js";
+import { patchMail } from "../api/mails/_id/patch.js";
+
 
 const apiRouter = express.Router();
 
@@ -51,6 +53,10 @@ mailsRouter.post("/", postMail);
 mailsRouter.get("/search/:query", searchMailsHandler);
 mailsRouter.get("/:id", getMailByIdHandler);
 apiRouter.use("/mails", mailsRouter);
+
+const mailIdRouter = express.Router({ mergeParams: true });
+mailIdRouter.patch("/", patchMail);
+mailsRouter.use("/:id", mailIdRouter);
 
 apiRouter.use("/blacklist", blacklistRouter);
 
