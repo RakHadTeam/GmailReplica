@@ -1,4 +1,6 @@
 import { getUserByUsername } from "./userService.js";
+import { createUser } from './userService.js';
+
 
 export function postUsers(req, res) {
     const { username, password, email, fullName, picture } = req.body;
@@ -25,5 +27,6 @@ export function postUsers(req, res) {
 
     newUser = createUser(newUser);
 
-    res.status(201).location(`/api/users/${newUser.id}`).send();
+    res.status(201).location(`/api/users/${newUser.id}`).json(newUser);
+
 }
