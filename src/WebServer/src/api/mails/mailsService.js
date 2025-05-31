@@ -29,3 +29,12 @@ export function sendMail({ subject, body, recipient }) {
 
     return { success: true };
 }
+
+export function searchMails(query) {
+    const mails = globals.mails || [];
+    return mails.filter(mail =>
+        (mail.subject && mail.subject.toLowerCase().includes(query)) ||
+        (mail.body && mail.body.toLowerCase().includes(query)) ||
+        (mail.recipient && mail.recipient.toLowerCase().includes(query))
+    );
+}
