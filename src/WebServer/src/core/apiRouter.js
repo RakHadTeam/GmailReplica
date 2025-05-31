@@ -9,7 +9,7 @@ import { postBlacklist } from "../api/blacklist/post.js";
 import { deleteBlacklistID } from "../api/blacklist/_id/delete.js";
 import { getMails } from "../api/mails/get.js";
 import { postMail } from "../api/mails/post.js";
-import { searchMailsHandler } from "../api/mails/search/search.js";
+import { searchMailsHandler } from "../api/mails/search/_query/get.js";
 
 
 const apiRouter = express.Router();
