@@ -55,15 +55,29 @@ export function patchMailById(id, updates) {
     const mails = globals.mails || [];
     const mail = mails.find(mail => mail.id === id);
     if (!mail) return null;
-    if (updates.subject) mail.subject = updates.subject;
-    if (updates.body) mail.body = updates.body;
+
+    if (typeof updates.subject === "string") {
+        mail.subject = updates.subject;
+    }
+
+    if (typeof updates.body === "string") {
+        mail.body = updates.body;
+    }
+
     return mail;
 }
 
 export function updateMailById(id, updates) {
-    const mail = globals.mails.find(mail => mail.id === id);
+    const mails = globals.mails || [];
+    const mail = mails.find(mail => mail.id === id);
     if (!mail) return null;
-    if (updates.subject) mail.subject = updates.subject;
-    if (updates.body) mail.body = updates.body;
+
+    if (typeof updates.subject === "string") {
+        mail.subject = updates.subject;
+    }
+    if (typeof updates.body === "string") {
+        mail.body = updates.body;
+    }
+
     return mail;
 }
