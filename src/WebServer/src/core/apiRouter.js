@@ -53,17 +53,16 @@ const mailsRouter = express.Router();
 mailsRouter.get("/", getMails);
 mailsRouter.post("/", postMail);
 mailsRouter.get("/search/:query", searchMailsHandler);
-mailsRouter.get("/:id", getMailByIdHandler);
-mailsRouter.patch("/:id", patchMail);
-mailsRouter.delete("/:id", deleteMail); // ✅ Moved into mailsRouter
+const mailIdRouter = express.Router({ mergeParams: true });
+mailIdRouter.get("/", getMailByIdHandler);
+mailIdRouter.patch("/", patchMail);
+mailIdRouter.delete("/", deleteMail);
+
+mailsRouter.use("/:id", mailIdRouter);
+
 
 apiRouter.use("/mails", mailsRouter);
 
-
-
-const mailIdRouter = express.Router({ mergeParams: true });
-mailIdRouter.patch("/", patchMail);
-mailsRouter.use("/:id", mailIdRouter);
 
 apiRouter.use("/blacklist", blacklistRouter);
 

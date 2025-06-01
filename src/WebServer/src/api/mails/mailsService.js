@@ -40,5 +40,30 @@ export function searchMails(query) {
 }
 
 export function getMailById(id) {
-    return globals.mails.find(m => m.id === id);
+    return (globals.mails || []).find(m => m.id === id);
+}
+
+export function deleteMailById(id) {
+    const mails = globals.mails || [];
+    const index = mails.findIndex(mail => mail.id === id);
+    if (index === -1) return false;
+    mails.splice(index, 1);
+    return true;
+}
+
+export function patchMailById(id, updates) {
+    const mails = globals.mails || [];
+    const mail = mails.find(mail => mail.id === id);
+    if (!mail) return null;
+    if (updates.subject) mail.subject = updates.subject;
+    if (updates.body) mail.body = updates.body;
+    return mail;
+}
+
+export function updateMailById(id, updates) {
+    const mail = globals.mails.find(mail => mail.id === id);
+    if (!mail) return null;
+    if (updates.subject) mail.subject = updates.subject;
+    if (updates.body) mail.body = updates.body;
+    return mail;
 }
