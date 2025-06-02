@@ -30,6 +30,6 @@ export function postUsers(req, res) {
 
     newUser = createUser(newUser);
 
-    res.status(CREATED).location(`/api/users/${newUser.id}`).json(newUser);
+    res.status(201).location(`/api/users/${newUser.id}`).json(newUser);
 
 }

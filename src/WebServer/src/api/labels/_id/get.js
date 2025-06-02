@@ -1,4 +1,4 @@
-import { getLabelById } from "./labelService";
+import { getLabelById } from "./labelService.js";
 
 export function getLabel(req, res) {
     const { id } = req.params; // Extracts the 'id' parameter from the URL

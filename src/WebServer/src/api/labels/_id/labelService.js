@@ -1,3 +1,5 @@
+import { getUserById } from "../../users/userService";
+
 export function getLabelById(token, id) {
     const user = getUserById(token);
     if (!user) {
