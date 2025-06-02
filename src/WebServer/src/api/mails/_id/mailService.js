@@ -7,10 +7,7 @@ export function getMailById(token, id) {
         return { status: 401 };
     }
     const mailIndex = user.mails.find((m) => globals.mails[m].id === id);
-    console.log("Mail Index:", mailIndex);
-    console.log("User Mails:", user.mails);
     if (mailIndex == undefined) {
-        console.log("Mail not found for user:", user.id);
         return { status: 404 };
     }
     return globals.mails[mailIndex];
