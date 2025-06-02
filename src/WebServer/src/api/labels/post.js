@@ -2,7 +2,9 @@ import { createLabel } from "./labelsService.js";
 
 
 export function postLabels(req, res) {
-    const { name } = req.body; // Destructure 'name' from the request body
+    const token = req.headers.authorization?.split(" ")[1];
+
+    const { name } = req.body;
 
     if (!name) {
         return res.status(400).json({ error: "Name is required" });
@@ -12,7 +14,7 @@ export function postLabels(req, res) {
         name
     };
 
-    newLabel = createLabel(newLabel)
+    newLabel = createLabel(token, newLabel)
 
     res.status(201).location(`/api/labels/${newLabel.id}`).send();
 }

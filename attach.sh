@@ -1,3 +1,0 @@
-CONTAINER_NAME=$1
-
-docker attach $CONTAINER_NAME

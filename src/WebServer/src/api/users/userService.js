@@ -1,5 +1,5 @@
 import globals from '../../core/globals.js';
-import crypto from 'crypto';
+import { randomUUID } from "crypto";
 
 export function getUserById(id) {
     return globals.users.find((user) => user.id === id);
@@ -10,7 +10,7 @@ export function getUserByUsername(username) {
 }
 
 export function createUser(data) {
-    const id = crypto.randomUUID();
+    const id = randomUUID();
     const newUser = { id, ...data };
     globals.users.push(newUser);
     return newUser;

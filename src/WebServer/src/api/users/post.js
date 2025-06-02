@@ -17,6 +17,9 @@ export function postUsers(req, res) {
         email,
         fullName,
         picture,
+        createdAt: new Date().toISOString(),
+        mails: [],
+        labels: [],
     };
 
     // Check if the username already exists
@@ -27,6 +30,6 @@ export function postUsers(req, res) {
 
     newUser = createUser(newUser);
 
-    res.status(201).location(`/api/users/${newUser.id}`).json(newUser);
+    res.status(CREATED).location(`/api/users/${newUser.id}`).json(newUser);
 
 }

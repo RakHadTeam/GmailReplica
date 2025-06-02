@@ -13,7 +13,7 @@ export function postTokens(req, res) {
         return res.status(400).json({ error: 'Invalid credentials' });
     }
 
-    const token = `${user.id}-token`;
+    const token = user.id;
 
     // Respond with token
     return res.status(200).json({ token });
