@@ -39,7 +39,7 @@ export async function sendMail(token, { subject, body, recipient }) {
         }
     }
 
-    const recipientUser = getUserByUsername(recipient);
+    const recipientUser = getUserById(recipient) || getUserByUsername(recipient);
     if (!recipientUser) {
         return { status: 404, error: "Recipient not found" };
     }
