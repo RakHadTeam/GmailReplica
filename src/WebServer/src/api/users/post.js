@@ -15,7 +15,7 @@ export function postUsers(req, res) {
         username,
         password,
         email,
-        fullName,
+        fullname,
         picture,
         createdAt: new Date().toISOString(),
         mails: [],
