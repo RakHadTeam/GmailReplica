@@ -6,7 +6,7 @@ export function getLabelById(token, id) {
         return { status: 401 }; // Unauthorized
     }
     const label = user.labels.find((label) => label.id === id);
-    if (!label) {
+    if (label == undefined) {
         return { status: 404 }; // Not Found
     }
     return label;

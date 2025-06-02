@@ -9,7 +9,9 @@ export function getLatestMails(token) {
         return { status: 401 };
     }
     // get the latest 50 mails
-    return user.mails.slice(-50);
+    return user.mails
+        .slice(-50)
+        .map((mailIndex) => globals.mails[mailIndex] || null);
 }
 
 function isURLBlacklisted(url) {
@@ -39,7 +41,8 @@ export async function sendMail(token, { subject, body, recipient }) {
         }
     }
 
-    const recipientUser = getUserById(recipient) || getUserByUsername(recipient);
+    const recipientUser =
+        getUserById(recipient) || getUserByUsername(recipient);
     if (!recipientUser) {
         return { status: 404, error: "Recipient not found" };
     }
@@ -63,4 +66,3 @@ export async function sendMail(token, { subject, body, recipient }) {
 
     return { id: newMail.id };
 }
-
