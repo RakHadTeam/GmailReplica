@@ -38,3 +38,46 @@ export function searchMails(query) {
         (mail.recipient && mail.recipient.toLowerCase().includes(query))
     );
 }
+
+export function getMailById(id) {
+    return (globals.mails || []).find(m => m.id === id);
+}
+
+export function deleteMailById(id) {
+    const mails = globals.mails || [];
+    const index = mails.findIndex(mail => mail.id === id);
+    if (index === -1) return false;
+    mails.splice(index, 1);
+    return true;
+}
+
+export function patchMailById(id, updates) {
+    const mails = globals.mails || [];
+    const mail = mails.find(mail => mail.id === id);
+    if (!mail) return null;
+
+    if (typeof updates.subject === "string") {
+        mail.subject = updates.subject;
+    }
+
+    if (typeof updates.body === "string") {
+        mail.body = updates.body;
+    }
+
+    return mail;
+}
+
+export function updateMailById(id, updates) {
+    const mails = globals.mails || [];
+    const mail = mails.find(mail => mail.id === id);
+    if (!mail) return null;
+
+    if (typeof updates.subject === "string") {
+        mail.subject = updates.subject;
+    }
+    if (typeof updates.body === "string") {
+        mail.body = updates.body;
+    }
+
+    return mail;
+}

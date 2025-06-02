@@ -13,6 +13,9 @@ import { deleteBlacklistID } from "../api/blacklist/_id/delete.js";
 import { getMails } from "../api/mails/get.js";
 import { postMail } from "../api/mails/post.js";
 import { searchMailsHandler } from "../api/mails/search/_query/get.js";
+import { getMailByIdHandler } from "../api/mails/_id/get.js";
+import { patchMail } from "../api/mails/_id/patch.js";
+import { deleteMail } from "../api/mails/_id/delete.js";
 
 
 const apiRouter = express.Router();
@@ -46,10 +49,20 @@ blacklistIdRouter.delete("/", deleteBlacklistID);
 blacklistRouter.use("/:id", blacklistIdRouter);
 
 const mailsRouter = express.Router();
+
 mailsRouter.get("/", getMails);
 mailsRouter.post("/", postMail);
 mailsRouter.get("/search/:query", searchMailsHandler);
+const mailIdRouter = express.Router({ mergeParams: true });
+mailIdRouter.get("/", getMailByIdHandler);
+mailIdRouter.patch("/", patchMail);
+mailIdRouter.delete("/", deleteMail);
+
+mailsRouter.use("/:id", mailIdRouter);
+
+
 apiRouter.use("/mails", mailsRouter);
+
 
 apiRouter.use("/blacklist", blacklistRouter);
 
