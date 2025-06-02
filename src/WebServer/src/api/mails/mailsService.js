@@ -1,83 +1,66 @@
-import globals from "../../core/globals.js";
 import { randomUUID } from "crypto";
+import globals from "../../core/globals.js";
+import { sendBlacklistCommand } from "../blacklist/blacklistService.js";
+import { getUserById, getUserByUsername } from "../users/userService.js";
 
-export function getLatestMails() {
-    const mails = globals.mails || [];
-    return mails
-        .sort((a, b) => new Date(b.date) - new Date(a.date)) // newest to oldest
-        .slice(0, 50);
+export function getLatestMails(token) {
+    const user = getUserById(token);
+    if (!user) {
+        return { status: 401 };
+    }
+    // get the latest 50 mails
+    return user.mails.slice(-50);
 }
 
-export function sendMail({ subject, body, recipient }) {
-    const blacklisted = globals.blacklist || [];
-    const hasBlacklistedUrl = blacklisted.some(url => body.includes(url));
+function isURLBlacklisted(url) {
+    return sendBlacklistCommand(`GET ${url}`);
+}
 
-    if (hasBlacklistedUrl) {
-        return { error: "Body contains blacklisted content" };
+function getAllLinksFromBody(body) {
+    const urlRegex =
+        /((https?|ftp):\/\/)?([a-zA-Z0-9-]+\.){1,2}[a-zA-Z0-9-]+/gi;
+    const links = [];
+    let match;
+    while ((match = urlRegex.exec(body)) !== null) {
+        links.push(match[0]);
+    }
+    return links;
+}
+
+export async function sendMail(token, { subject, body, recipient }) {
+    const sender = getUserById(token);
+    if (!sender) {
+        return { status: 401 };
+    }
+    const links = getAllLinksFromBody(body);
+    for (const link of links) {
+        if ((await isURLBlacklisted(link)) == 200) {
+            return { error: "Body contains blacklisted content" };
+        }
+    }
+
+    const recipientUser = getUserByUsername(recipient);
+    if (!recipientUser) {
+        return { status: 404, error: "Recipient not found" };
     }
 
     const newMail = {
         id: randomUUID(),
         subject,
         body,
-        recipient,
-        date: new Date().toISOString()
+        sender: sender.id,
+        recipient: recipientUser.id,
+        date: new Date().toISOString(),
     };
 
-    globals.mails = globals.mails || [];
+    let mailIndex = recipientUser.mails.length;
     globals.mails.push(newMail);
 
-    return { success: true };
+    // Add the mail array index to the recipient's mailbox
+    recipientUser.mails.push(mailIndex);
+    // Add the mail array index to the sender's mailbox
+    sender.mails.push(mailIndex);
+
+    return { id: newMail.id };
 }
 
-export function searchMails(query) {
-    const mails = globals.mails || [];
-    return mails.filter(mail =>
-        (mail.subject && mail.subject.toLowerCase().includes(query)) ||
-        (mail.body && mail.body.toLowerCase().includes(query)) ||
-        (mail.recipient && mail.recipient.toLowerCase().includes(query))
-    );
-}
-
-export function getMailById(id) {
-    return (globals.mails || []).find(m => m.id === id);
-}
-
-export function deleteMailById(id) {
-    const mails = globals.mails || [];
-    const index = mails.findIndex(mail => mail.id === id);
-    if (index === -1) return false;
-    mails.splice(index, 1);
-    return true;
-}
-
-export function patchMailById(id, updates) {
-    const mails = globals.mails || [];
-    const mail = mails.find(mail => mail.id === id);
-    if (!mail) return null;
-
-    if (typeof updates.subject === "string") {
-        mail.subject = updates.subject;
-    }
-
-    if (typeof updates.body === "string") {
-        mail.body = updates.body;
-    }
-
-    return mail;
-}
-
-export function updateMailById(id, updates) {
-    const mails = globals.mails || [];
-    const mail = mails.find(mail => mail.id === id);
-    if (!mail) return null;
-
-    if (typeof updates.subject === "string") {
-        mail.subject = updates.subject;
-    }
-    if (typeof updates.body === "string") {
-        mail.body = updates.body;
-    }
-
-    return mail;
-}

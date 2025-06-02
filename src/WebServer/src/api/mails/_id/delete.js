@@ -1,13 +1,11 @@
-import { deleteMailById } from "../../mails/mailsService.js";
+import { deleteMailById } from "./mailService.js";
 
 export function deleteMail(req, res) {
     const { id } = req.params;
 
-    const deleted = deleteMailById(id);
+    const token = req.headers.authorization?.split(" ")[1];
 
-    if (!deleted) {
-        return res.status(404).json({ error: "Mail not found" });
-    }
+    const status = deleteMailById(token, id);
 
-    return res.status(204).end();
+    return res.status(status).end();
 }
