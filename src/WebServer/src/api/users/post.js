@@ -3,10 +3,10 @@ import { createUser } from './userService.js';
 
 
 export function postUsers(req, res) {
-    const { username, password, email, fullName, picture } = req.body;
+    const { username, password, email, fullname, picture } = req.body;
 
     // Validate input
-    if (!username || !password || !fullName || !email) {
+    if (!username || !password || !fullname || !email) {
         return res
             .status(400)
             .json({ error: "Username, password, full name, and email are required" });
