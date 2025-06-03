@@ -59,8 +59,8 @@ export function updateMailById(token, id, updates) {
     }
 
     if (updates.draft === false) {
-        const links = getAllLinksFromBody(body).concat(
-            getAllLinksFromBody(subject)
+        const links = getAllLinksFromBody(mail.body).concat(
+            getAllLinksFromBody(mail.subject)
         );
         for (const link of links) {
             if (isURLBlacklisted(link)) {
