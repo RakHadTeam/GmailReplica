@@ -5,10 +5,10 @@ export function deleteLabel(req, res) {
 
     const token = req.headers.authorization?.split(" ")[1];
 
-    const status = deleteLabelById(token, id);
-    if (status) {
-        return res.status(status).end();
+    const { error, status } = deleteLabelById(token, id);
+    if (error) {
+        return res.status(status).json({ error });
     }
 
-    res.status(204).send();
+    res.status(status).send();
 }

@@ -6,9 +6,10 @@ export function getMails(req, res) {
         return res.status(401).json({ error: "Unauthorized" });
     }
 
-    const mails = getLatestMails(token);
-    if (mails.status) {
-        return res.status(mails.status).end();
+    const { status, error, mails } = getLatestMails(token);
+    if (error) {
+        return res.status(status ?? 400).json({ error });
     }
-    res.status(200).json(mails);
+
+    res.status(status).json(mails);
 }

@@ -14,7 +14,7 @@ export function postLabels(req, res) {
         name
     };
 
-    newLabel = createLabel(token, newLabel)
+    const { status, label } = createLabel(token, newLabel)
 
-    res.status(201).location(`/api/labels/${newLabel.id}`).send();
+    res.status(status).location(`/api/labels/${label.id}`).send();
 }

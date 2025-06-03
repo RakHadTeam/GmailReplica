@@ -8,14 +8,14 @@ export function postTokens(req, res) {
             .json({ error: "Username and password are required" });
     }
 
-    const { valid, user } = validateCredentials(username, password);
+    const { status, user } = validateCredentials(username, password);
 
-    if (!valid) {
-        return res.status(400).json({ error: "Invalid credentials" });
+    if (status != 200) {
+        return res.status(status).json({ error: "Invalid credentials" });
     }
 
     const token = `Bearer ${user.id}`;
 
     // Respond with token
-    return res.status(200).json({ token });
+    return res.status(status).json({ token });
 }

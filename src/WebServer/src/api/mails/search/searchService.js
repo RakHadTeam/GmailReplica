@@ -4,9 +4,9 @@ import { getUserById } from "../../users/userService.js";
 export function searchMails(token, query) {
     const user = getUserById(token);
     if (!user) {
-        return { status: 401 };
+        return { status: 401, error: "Unauthorized" };
     }
-
+    console.log("Mails: ", user.mails);
     const filteredMails = user.mails
         .filter(
             (mailIndex) =>
@@ -29,5 +29,6 @@ export function searchMails(token, query) {
     const uniqueMails = Array.from(
         new Map(filteredMails.map((mail) => [mail.id, mail])).values()
     );
-    return uniqueMails.length > 0 ? uniqueMails : { status: 404, message: "No mails found" };
+
+    return { status: 200, mails: uniqueMails };
 }

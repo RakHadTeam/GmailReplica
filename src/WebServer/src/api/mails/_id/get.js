@@ -5,11 +5,11 @@ export function getMailByIdHandler(req, res) {
 
     const token = req.headers.authorization?.split(" ")[1];
 
-    const mail = getMailById(token, id);
+    const { status, error, mail } = getMailById(token, id);
 
-    if (mail.status) {
-        return res.status(mail.status).end();
+    if (error) {
+        return res.status(status).json({ error });
     }
 
-    res.status(200).json(mail);
+    res.status(status).json(mail);
 }

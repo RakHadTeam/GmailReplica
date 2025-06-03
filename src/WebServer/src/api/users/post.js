@@ -1,4 +1,3 @@
-import { getUserByUsername } from "./userService.js";
 import { createUser } from './userService.js';
 
 
@@ -22,14 +21,8 @@ export function postUsers(req, res) {
         labels: [],
     };
 
-    // Check if the username already exists
-    const existingUser = getUserByUsername(username);
-    if (existingUser) {
-        return res.status(404).json({ error: "Username already exists" });
-    }
+    const { status } = createUser(newUser);
 
-    newUser = createUser(newUser);
-
-    res.status(201).location(`/api/users/${newUser.id}`).json(newUser);
+    res.status(status).send();
 
 }

@@ -1,5 +1,6 @@
 import globals from "../../../core/globals.js";
-import { getUserById } from "../../users/userService.js";
+import { getUserById, getUserByUsername } from "../../users/userService.js";
+import { getAllLinksFromBody } from "../mailsService.js";
 
 export function getMailById(token, id) {
     const user = getUserById(token);
@@ -10,37 +11,82 @@ export function getMailById(token, id) {
     if (mailIndex == undefined) {
         return { status: 404 };
     }
-    return globals.mails[mailIndex];
+    return { status: 200, mail: globals.mails[mailIndex] };
 }
 
 export function deleteMailById(token, id) {
     const user = getUserById(token);
     if (!user) {
-        return 401;
+        return { status: 401 };
     }
 
-    const mail = getMailById(token, id);
+    const { mail, status, error } = getMailById(token, id);
 
-    if (mail.status) return mail.status;
+    if (error) return { status, error };
 
     // Remove the mail from the user's mailbox
     user.mails = user.mails.filter(
         (mailIndex) => globals.mails[mailIndex].id !== id
     );
-    return 204;
+    return { status: 204 };
 }
 
 export function updateMailById(token, id, updates) {
-    const mail = getMailById(token, id);
-    if (mail.status) return mail.status;
+    const { mail, status, error } = getMailById(token, id);
+    if (error) {
+        return { status, error };
+    }
 
-    if (typeof updates.subject === "string") {
+    if (!mail.draft)
+        return { status: 400, error: "Only drafts can be updated" };
+
+    if (updates.subject) {
         mail.subject = updates.subject;
     }
 
-    if (typeof updates.body === "string") {
+    if (updates.body) {
         mail.body = updates.body;
     }
 
-    return 204;
+    if (updates.recipient) {
+        const recipientUser =
+            getUserById(updates.recipient) ||
+            getUserByUsername(updates.recipient);
+        if (!recipientUser) {
+            return { status: 404, error: "Recipient not found" };
+        }
+        mail.recipient = recipientUser.id;
+    }
+
+    if (updates.draft === false) {
+        const links = getAllLinksFromBody(mail.body);
+        for (const link of links) {
+            if (isURLBlacklisted(link)) {
+                return {
+                    status: 400,
+                    error: "Body contains blacklisted content",
+                };
+            }
+        }
+
+        const recipientUser =
+            getUserById(mail.recipient) || getUserByUsername(mail.recipient);
+
+        if (!recipientUser) {
+            return { status: 404, error: "Recipient not found" };
+        }
+
+        // Add the mail to the recipient's mailbox
+        const draftIndex = globals.mails.findIndex((m) => m.id === id);
+
+        if (recipientUser.mails.includes(draftIndex)) {
+            return { status: 400, error: "Mail already sent to recipient" };
+        }
+
+        recipientUser.mails.push(draftIndex);
+
+        mail.draft = false;
+    }
+
+    return { status: 204, mail };
 }

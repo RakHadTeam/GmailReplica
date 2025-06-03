@@ -5,7 +5,11 @@ export function deleteMail(req, res) {
 
     const token = req.headers.authorization?.split(" ")[1];
 
-    const status = deleteMailById(token, id);
+    const { status, error } = deleteMailById(token, id);
+
+    if (error) {
+        return res.status(status).json({ error });
+    }
 
     return res.status(status).end();
 }

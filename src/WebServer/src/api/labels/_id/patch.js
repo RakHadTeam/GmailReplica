@@ -9,10 +9,10 @@ export function patchLabel(req, res) {
         return res.status(400).json({ error: "Name is required" }); // Returns an error if name is not provided
     }
 
-    const status = updateLabel(token, id, { name }); // Calls the service to update the label
-    if (status) {
-        return res.status(status).end(); // If the status is an error, return it
+    const {status, error} = updateLabel(token, id, { name }); // Calls the service to update the label
+    if (error) {
+        return res.status(status).json({ error });
     }
 
-    return res.status(204).location(`/api/labels/${id}`).send(); // If successful, return 204 No Content
+    return res.status(status).location(`/api/labels/${id}`).send(); // If successful, return the status and location
 }

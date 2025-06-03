@@ -6,19 +6,22 @@ import { getUserById, getUserByUsername } from "../users/userService.js";
 export function getLatestMails(token) {
     const user = getUserById(token);
     if (!user) {
-        return { status: 401 };
+        return { status: 401, error: "Unauthorized" };
     }
     // get the latest 50 mails
-    return user.mails
-        .slice(-50)
-        .map((mailIndex) => globals.mails[mailIndex] || null);
+    return {
+        status: 200,
+        mails: user.mails
+            .slice(-50)
+            .map((mailIndex) => globals.mails[mailIndex] || null),
+    };
 }
 
 function isURLBlacklisted(url) {
     return sendBlacklistCommand(`GET ${url}`);
 }
 
-function getAllLinksFromBody(body) {
+export function getAllLinksFromBody(body) {
     const urlRegex =
         /((https?|ftp):\/\/)?([a-zA-Z0-9-]+\.){1,2}[a-zA-Z0-9-]+/gi;
     const links = [];
@@ -29,21 +32,26 @@ function getAllLinksFromBody(body) {
     return links;
 }
 
-export async function sendMail(token, { subject, body, recipient }) {
+export async function createMail(token, { subject, body, recipient, draft }) {
     const sender = getUserById(token);
     if (!sender) {
-        return { status: 401 };
+        return { status: 401, error: "Unauthorized" };
     }
-    const links = getAllLinksFromBody(body);
-    for (const link of links) {
-        if ((await isURLBlacklisted(link)) == 200) {
-            return { error: "Body contains blacklisted content" };
+    if (!draft) {
+        const links = getAllLinksFromBody(body);
+        for (const link of links) {
+            if ((await isURLBlacklisted(link)) == 200) {
+                return {
+                    status: 400,
+                    error: "Body contains blacklisted content",
+                };
+            }
         }
     }
 
     const recipientUser =
         getUserById(recipient) || getUserByUsername(recipient);
-    if (!recipientUser) {
+    if (!recipientUser && !draft) {
         return { status: 404, error: "Recipient not found" };
     }
 
@@ -52,17 +60,21 @@ export async function sendMail(token, { subject, body, recipient }) {
         subject,
         body,
         sender: sender.id,
-        recipient: recipientUser.id,
+        recipient: recipientUser ? recipientUser.id : null,
+        draft: draft || false,
         date: new Date().toISOString(),
     };
 
-    let mailIndex = recipientUser.mails.length;
     globals.mails.push(newMail);
+    const mailIndex = globals.mails.length - 1;
 
-    // Add the mail array index to the recipient's mailbox
-    recipientUser.mails.push(mailIndex);
-    // Add the mail array index to the sender's mailbox
+    // Always push to sender's mails
     sender.mails.push(mailIndex);
 
-    return { id: newMail.id };
+    // Only push to recipient's mails if not a draft
+    if (!draft && recipientUser && recipientUser.id !== sender.id) {
+        recipientUser.mails.push(mailIndex);
+    }
+
+    return { id: newMail.id, status: 201 };
 }
