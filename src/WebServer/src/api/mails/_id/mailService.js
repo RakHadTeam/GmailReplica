@@ -59,12 +59,14 @@ export function updateMailById(token, id, updates) {
     }
 
     if (updates.draft === false) {
-        const links = getAllLinksFromBody(mail.body);
+        const links = getAllLinksFromBody(body).concat(
+            getAllLinksFromBody(subject)
+        );
         for (const link of links) {
             if (isURLBlacklisted(link)) {
                 return {
                     status: 400,
-                    error: "Body contains blacklisted content",
+                    error: "Mail contains blacklisted content",
                 };
             }
         }

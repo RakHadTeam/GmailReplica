@@ -38,12 +38,14 @@ export async function createMail(token, { subject, body, recipient, draft }) {
         return { status: 401, error: "Unauthorized" };
     }
     if (!draft) {
-        const links = getAllLinksFromBody(body);
+        const links = getAllLinksFromBody(body).concat(
+            getAllLinksFromBody(subject)
+        );
         for (const link of links) {
             if ((await isURLBlacklisted(link)) == 200) {
                 return {
                     status: 400,
-                    error: "Body contains blacklisted content",
+                    error: "Mail contains blacklisted content",
                 };
             }
         }
