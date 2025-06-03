@@ -1,9 +1,14 @@
-import { deleteLabelById } from "../labelsService.js";
+import { deleteLabelById } from "./labelService.js";
 
 export function deleteLabel(req, res) {
     const { id } = req.params;
 
-    deleteLabelById(id);
+    const token = req.headers.authorization?.split(" ")[1];
 
-    res.status(204).send();
+    const { error, status } = deleteLabelById(token, id);
+    if (error) {
+        return res.status(status).json({ error });
+    }
+
+    res.status(status).send();
 }

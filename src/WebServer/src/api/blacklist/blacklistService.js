@@ -1,65 +1,49 @@
 import net from "net";
 import globals from "../../core/globals.js";
 
-export async function addURLToBlacklist(url) {
+export function sendBlacklistCommand(command) {
     return new Promise((resolve, reject) => {
-        const client = net.createConnection(globals.blacklistServer, () => {
-            const message = `POST ${url}\n`;
-            const encodedMessage = Buffer.from(message, "utf-8");
+        const clientSocket = net.createConnection(
+            {
+                host: globals.blacklistServer.host,
+                port: globals.blacklistServer.port,
+            },
+            () => {
+                const encodedMessage = Buffer.from(`${command}\n`, "utf-8");
+                const CHUNK_SIZE = 4096;
 
-            const CHUNK_SIZE = 4096;
-            for (let i = 0; i < encodedMessage.length; i += CHUNK_SIZE) {
-                client.write(encodedMessage.subarray(i, i + CHUNK_SIZE));
+                for (let i = 0; i < encodedMessage.length; i += CHUNK_SIZE) {
+                    clientSocket.write(
+                        encodedMessage.subarray(i, i + CHUNK_SIZE)
+                    );
+                }
             }
-        });
+        );
 
         let response = "";
 
-        client.on("data", (data) => {
-            response += data.toString();
+        clientSocket.on("data", (chunk) => {
+            response += chunk.toString("utf-8");
             if (response.endsWith("\n")) {
-                const resParts = response.trim().split(" ");
-                const statusCode = parseInt(resParts[0], 10) || 500;
-                client.end();
-                resolve(statusCode);
+                clientSocket.end(); // Close the connection after receiving the full response
             }
         });
 
-        client.on("error", (err) => {
-            client.end();
+        clientSocket.on("end", () => {
+            const resParts = response.split(" ");
+            resolve(parseInt(resParts[0], 10));
+        });
+
+        clientSocket.on("error", (err) => {
             reject(err);
         });
     });
 }
 
-export async function deleteURLFromBlacklist(id) {
-    return new Promise((resolve, reject) => {
-        const client = net.createConnection(globals.blacklistServer, () => {
-            const message = `DELETE ${id}\n`;
-            const encodedMessage = Buffer.from(message, "utf-8");
+export function addURLToBlacklist(url) {
+    return sendBlacklistCommand(`POST ${url}`);
+}
 
-            const CHUNK_SIZE = 4096;
-            for (let i = 0; i < encodedMessage.length; i += CHUNK_SIZE) {
-                client.write(encodedMessage.subarray(i, i + CHUNK_SIZE));
-            }
-        });
-
-
-        let response = "";
-
-        client.on("data", (data) => {
-            response += data.toString();
-            if (response.endsWith("\n")) {
-                const resParts = response.trim().split(" ");
-                const statusCode = parseInt(resParts[0], 10) || 500;
-                client.end();
-                resolve(statusCode);
-            }
-        });
-
-        client.on("error", (err) => {
-            client.end();
-            reject(err);
-        });
-    });
+export function deleteURLFromBlacklist(id) {
+    return sendBlacklistCommand(`DELETE ${id}`);
 }

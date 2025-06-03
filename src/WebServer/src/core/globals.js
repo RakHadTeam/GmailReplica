@@ -1,9 +1,9 @@
 let users = [];
-let labels = [];
+let mails = [];
 
 export default {
     users,
-    labels,
+    mails,
     blacklistServer: {
         host: "server",
         port: 4545,

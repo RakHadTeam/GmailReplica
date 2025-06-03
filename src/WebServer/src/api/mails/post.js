@@ -1,17 +1,22 @@
-import { sendMail } from "./mailsService.js";
+import { createMail } from "./mailsService.js";
 
-export function postMail(req, res) {
-    const { subject, body, recipient } = req.body;
+export async function postMail(req, res) {
+    const token = req.headers.authorization?.split(" ")[1];
+    const { subject, body, recipient, draft } = req.body;
+
 
     if (!subject || !body || !recipient) {
         return res.status(400).json({ error: "Missing required fields" });
     }
 
-    const result = sendMail({ subject, body, recipient });
+    const { status, error, id } = await createMail(token, { subject, body, recipient, draft });
 
-    if (result.error) {
-        return res.status(400).json({ error: result.error });
+    if (error) {
+        return res.status(status ?? 400).json({ error });
     }
 
-    return res.status(201).send();
+    return res
+        .status(status)
+        .location(`/api/mails/${id}`)
+        .json({ message: `${draft ? "Draft" : "Mail"} created successfully` });
 }

@@ -1,4 +1,3 @@
-import express from 'express';
 import { getUserById } from './userService.js';
 
 

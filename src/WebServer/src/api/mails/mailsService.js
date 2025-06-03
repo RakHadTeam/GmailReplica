@@ -1,83 +1,82 @@
-import globals from "../../core/globals.js";
 import { randomUUID } from "crypto";
+import globals from "../../core/globals.js";
+import { sendBlacklistCommand } from "../blacklist/blacklistService.js";
+import { getUserById, getUserByUsername } from "../users/userService.js";
 
-export function getLatestMails() {
-    const mails = globals.mails || [];
-    return mails
-        .sort((a, b) => new Date(b.date) - new Date(a.date)) // newest to oldest
-        .slice(0, 50);
+export function getLatestMails(token) {
+    const user = getUserById(token);
+    if (!user) {
+        return { status: 401, error: "Unauthorized" };
+    }
+    // get the latest 50 mails
+    return {
+        status: 200,
+        mails: user.mails
+            .slice(-50)
+            .map((mailIndex) => globals.mails[mailIndex] || null),
+    };
 }
 
-export function sendMail({ subject, body, recipient }) {
-    const blacklisted = globals.blacklist || [];
-    const hasBlacklistedUrl = blacklisted.some(url => body.includes(url));
+function isURLBlacklisted(url) {
+    return sendBlacklistCommand(`GET ${url}`);
+}
 
-    if (hasBlacklistedUrl) {
-        return { error: "Body contains blacklisted content" };
+export function getAllLinksFromBody(body) {
+    const urlRegex =
+        /((https?|ftp):\/\/)?([a-zA-Z0-9-]+\.){1,2}[a-zA-Z0-9-]+/gi;
+    const links = [];
+    let match;
+    while ((match = urlRegex.exec(body)) !== null) {
+        links.push(match[0]);
+    }
+    return links;
+}
+
+export async function createMail(token, { subject, body, recipient, draft }) {
+    const sender = getUserById(token);
+    if (!sender) {
+        return { status: 401, error: "Unauthorized" };
+    }
+    if (!draft) {
+        const links = getAllLinksFromBody(body).concat(
+            getAllLinksFromBody(subject)
+        );
+        for (const link of links) {
+            if ((await isURLBlacklisted(link)) == 200) {
+                return {
+                    status: 400,
+                    error: "Mail contains blacklisted content",
+                };
+            }
+        }
+    }
+
+    const recipientUser =
+        getUserById(recipient) || getUserByUsername(recipient);
+    if (!recipientUser && !draft) {
+        return { status: 404, error: "Recipient not found" };
     }
 
     const newMail = {
         id: randomUUID(),
         subject,
         body,
-        recipient,
-        date: new Date().toISOString()
+        sender: sender.id,
+        recipient: recipientUser ? recipientUser.id : null,
+        draft: draft || false,
+        date: new Date().toISOString(),
     };
 
-    globals.mails = globals.mails || [];
     globals.mails.push(newMail);
+    const mailIndex = globals.mails.length - 1;
 
-    return { success: true };
-}
+    // Always push to sender's mails
+    sender.mails.push(mailIndex);
 
-export function searchMails(query) {
-    const mails = globals.mails || [];
-    return mails.filter(mail =>
-        (mail.subject && mail.subject.toLowerCase().includes(query)) ||
-        (mail.body && mail.body.toLowerCase().includes(query)) ||
-        (mail.recipient && mail.recipient.toLowerCase().includes(query))
-    );
-}
-
-export function getMailById(id) {
-    return (globals.mails || []).find(m => m.id === id);
-}
-
-export function deleteMailById(id) {
-    const mails = globals.mails || [];
-    const index = mails.findIndex(mail => mail.id === id);
-    if (index === -1) return false;
-    mails.splice(index, 1);
-    return true;
-}
-
-export function patchMailById(id, updates) {
-    const mails = globals.mails || [];
-    const mail = mails.find(mail => mail.id === id);
-    if (!mail) return null;
-
-    if (typeof updates.subject === "string") {
-        mail.subject = updates.subject;
+    // Only push to recipient's mails if not a draft
+    if (!draft && recipientUser && recipientUser.id !== sender.id) {
+        recipientUser.mails.push(mailIndex);
     }
 
-    if (typeof updates.body === "string") {
-        mail.body = updates.body;
-    }
-
-    return mail;
-}
-
-export function updateMailById(id, updates) {
-    const mails = globals.mails || [];
-    const mail = mails.find(mail => mail.id === id);
-    if (!mail) return null;
-
-    if (typeof updates.subject === "string") {
-        mail.subject = updates.subject;
-    }
-    if (typeof updates.body === "string") {
-        mail.body = updates.body;
-    }
-
-    return mail;
+    return { id: newMail.id, status: 201 };
 }
