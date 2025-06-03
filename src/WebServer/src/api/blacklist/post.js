@@ -11,5 +11,5 @@ export async function postBlacklist(req, res) {
     }
 
     const status = await addURLToBlacklist(url);
-    return res.status(status).json();
+    return res.status(status).location(`/api/blacklist/${url}`).json();
 }
