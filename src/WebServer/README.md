@@ -12,6 +12,10 @@ docker compose up --build webserver server
 This will start the web server on port `3000` by default.
 And will start the blacklist server on port `4545`, and with configuration `1000 1 2` (Refer to [Server README](../Server/README.md)).
 
+Example:
+![image](https://github.com/user-attachments/assets/fb2f7780-7c6a-4816-aea2-a4e7a12e6b47)
+
+
 ## Authorization
 
 All requests must include a Bearer token in the `Authorization` header. The token is the UUID of the user.
@@ -39,6 +43,7 @@ Authorization: Bearer f2be56e6-1b6a-49a1-9579-df8bdcc85604
     "email": "alice@example.com"
   }
   ```
+---
 
 ### Tokens
 
@@ -50,6 +55,10 @@ Authorization: Bearer f2be56e6-1b6a-49a1-9579-df8bdcc85604
     "password": "password123"
   }
   ```
+
+Example:
+![image](https://github.com/user-attachments/assets/c416c6b8-1ea3-4b5a-80d0-b20a5bc03661)
+
 
 ---
 
@@ -73,6 +82,11 @@ Authorization: Bearer f2be56e6-1b6a-49a1-9579-df8bdcc85604
 
 - `GET /mails/:id` – Get a specific mail by ID
 - `PATCH /mails/:id` – Update a mail (Only for drafts)
+
+Example:
+
+![image](https://github.com/user-attachments/assets/fb445f6e-f7fa-4fd8-8df5-828b7508aa2b)
+
   **Request JSON:**
   ```json
   {
@@ -108,6 +122,10 @@ Authorization: Bearer f2be56e6-1b6a-49a1-9579-df8bdcc85604
   }
   ```
 - `DELETE /labels/:id` – Delete a label
+
+Example:
+
+![image](https://github.com/user-attachments/assets/07928d4a-a465-4010-ab07-f1cd26dc6b90)
 
 ---
 

@@ -23,7 +23,7 @@
 #define MAX_PORT 65535
 #define BACKLOG 5
 #define BUFFER_SIZE 4096
-
+#define NUM_OF_THREADS 5
 
 class TCPServer {
 public:
