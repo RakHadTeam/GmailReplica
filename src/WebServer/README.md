@@ -10,7 +10,7 @@ docker compose up --build webserver server
 ```
 
 This will start the web server on port `3000` by default.
-And will start the blacklist server on port `4545`.
+And will start the blacklist server on port `4545`, and with configuration `1000 1 2` (Refer to [Server README](../Server/README.md)).
 
 ## Authorization
 
