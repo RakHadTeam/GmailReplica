@@ -6,7 +6,7 @@ export function searchMails(token, query) {
     if (!user) {
         return { status: 401, error: "Unauthorized" };
     }
-    console.log("Mails: ", user.mails);
+
     const filteredMails = user.mails
         .filter(
             (mailIndex) =>

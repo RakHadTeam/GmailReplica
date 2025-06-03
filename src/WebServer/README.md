@@ -16,6 +16,9 @@ And will start the blacklist server on port `4545`.
 
 All requests must include a Bearer token in the `Authorization` header. The token is the UUID of the user.
 
+- `Authorization: Bearer <user_id>`
+- The user ID is obtained by logging in with the `POST /tokens` endpoint.
+
 Example:
 ```
 Authorization: Bearer f2be56e6-1b6a-49a1-9579-df8bdcc85604
@@ -39,7 +42,7 @@ Authorization: Bearer f2be56e6-1b6a-49a1-9579-df8bdcc85604
 
 ### Tokens
 
-- `POST /tokens` – Get a token (user ID) for login
+- `POST /tokens` – Get a token (user ID) for authorization
   **Request JSON:**
   ```json
   {
@@ -59,7 +62,8 @@ Authorization: Bearer f2be56e6-1b6a-49a1-9579-df8bdcc85604
   {
     "subject": "Hello",
     "body": "World",
-    "recipient": "<recipient_user_id>"
+    "recipient": "<recipient_user_id>",
+    "draft": <optional boolean, default false>,
   }
   ```
 
@@ -68,15 +72,16 @@ Authorization: Bearer f2be56e6-1b6a-49a1-9579-df8bdcc85604
 - `GET /mails/search/:query` – Search received mails by subject or body
 
 - `GET /mails/:id` – Get a specific mail by ID
-- `PATCH /mails/:id` – Update a mail
+- `PATCH /mails/:id` – Update a mail (Only for drafts)
   **Request JSON:**
   ```json
   {
     "subject": "Updated Subject",
-    "body": "Updated Body"
+    "body": "Updated Body",
+    "draft": <if set to false, the mail will be sent>
   }
   ```
-- `DELETE /mails/:id` – Delete a mail
+- `DELETE /mails/:id` – Delete a mail (Only for the user inbox)
 
 ---
 
@@ -108,7 +113,7 @@ Authorization: Bearer f2be56e6-1b6a-49a1-9579-df8bdcc85604
 
 ### Blacklist
 
-- `POST /blacklist` – Add URL to the blacklist  
+- `POST /blacklist/` – Add URL to the blacklist  
   **Request JSON:**
   ```json
   {
@@ -116,7 +121,7 @@ Authorization: Bearer f2be56e6-1b6a-49a1-9579-df8bdcc85604
   }
   ```
 
-- `GET /blacklist` – Get all blacklisted URLs
+- `GET /blacklist/:id` – Get a specific blacklist entry by ID
 
 ---
 
