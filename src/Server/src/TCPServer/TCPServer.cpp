@@ -28,7 +28,7 @@ bool TCPServer::startServer(int portNumber) {
 		return false;
 	}
 
-	if (::listen(serverSocket, 5) < 0) {
+	if (::listen(serverSocket, NUM_OF_THREADS) < 0) {
 		::close(serverSocket);
 		return false;
 	}
