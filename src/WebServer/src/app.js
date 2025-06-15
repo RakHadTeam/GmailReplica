@@ -1,5 +1,5 @@
-import express from 'express';
-import apiRouter from './core/apiRouter.js';
+import express from "express";
+import apiRouter from "./routes/api.router.js";
 
 const app = express();
 
@@ -7,5 +7,8 @@ const app = express();
 app.use(express.json());
 
 app.use("/api", apiRouter);
+
+// Serve the react app
+app.use(express.static("src/views/build"));
 
 export default app;

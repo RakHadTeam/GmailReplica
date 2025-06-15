@@ -1,17 +1,20 @@
 {
-  "name": "webserver",
-  "version": "1.0.0",
-  "main": "src/index.js",
-	"type": "module",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-		"start": "node src/index.js"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "description": "",
-  "dependencies": {
-    "express": "^5.1.0"
-  }
+    "name": "webserver",
+    "version": "1.0.0",
+    "main": "src/index.js",
+    "type": "module",
+    "scripts": {
+        "test": "cd src/views && npm test",
+        "start": "node src/index.js",
+        "build": "cd src/views && npm run build",
+        "prod": "npm run build && node src/index.js",
+        "client": "cd src/views && npm start"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "description": "",
+    "dependencies": {
+        "express": "^5.1.0"
+    }
 }
