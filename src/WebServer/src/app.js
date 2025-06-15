@@ -8,4 +8,7 @@ app.use(express.json());
 
 app.use("/api", apiRouter);
 
+// Serve the react app
+app.use(express.static("src/views/build"));
+
 export default app;
