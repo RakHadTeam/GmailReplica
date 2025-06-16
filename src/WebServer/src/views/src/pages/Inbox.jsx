@@ -1,13 +1,34 @@
 import React, { useState, useRef, useEffect } from "react";
 
-const mockMails = [
-    { id: 1, sender: "alice@example.com", subject: "Meeting Reminder", preview: "Don’t forget our meeting at 10:00 AM tomorrow...", time: "9:32 AM" },
-    { id: 2, sender: "bob@example.com", subject: "New Project", preview: "Attached docs we discussed. Let me know your thoughts.", time: "Yesterday" },
-    { id: 3, sender: "team@newsletter.com", subject: "Weekly Roundup", preview: "Here’s what happened this week in tech...", time: "Mon" },
-];
-
 export function Inbox() {
-    const [contextMenu, setContextMenu] = useState(null); // { x, y, mailId }
+    const [mails, setMails] = useState([
+        {
+            id: 1,
+            sender: "alice@example.com",
+            subject: "Meeting Reminder",
+            preview: "Don’t forget our meeting at 10:00 AM tomorrow...",
+            time: "9:32 AM",
+            starred: false,
+        },
+        {
+            id: 2,
+            sender: "bob@example.com",
+            subject: "New Project",
+            preview: "Attached docs we discussed. Let me know your thoughts.",
+            time: "Yesterday",
+            starred: true,
+        },
+        {
+            id: 3,
+            sender: "team@newsletter.com",
+            subject: "Weekly Roundup",
+            preview: "Here’s what happened this week in tech...",
+            time: "Mon",
+            starred: false,
+        },
+    ]);
+
+    const [contextMenu, setContextMenu] = useState(null);
     const menuRef = useRef();
 
     const handleRightClick = (event, mailId) => {
@@ -15,9 +36,22 @@ export function Inbox() {
         setContextMenu({ x: event.pageX, y: event.pageY, mailId });
     };
 
-    const handleAction = (action) => {
-        alert(`"${action}" clicked for mail ID ${contextMenu.mailId}`);
+    const handleToggleStar = (mailId) => {
+        setMails((prev) =>
+            prev.map((mail) =>
+                mail.id === mailId ? { ...mail, starred: !mail.starred } : mail
+            )
+        );
         setContextMenu(null);
+    };
+
+    const handleAction = (action) => {
+        if (action === "Star") {
+            handleToggleStar(contextMenu.mailId);
+        } else {
+            alert(`"${action}" clicked for mail ID ${contextMenu.mailId}`);
+            setContextMenu(null);
+        }
     };
 
     useEffect(() => {
@@ -35,7 +69,7 @@ export function Inbox() {
             <h2 className="mb-4 text-center text-primary fw-bold">📬 Inbox</h2>
 
             <div className="list-group shadow">
-                {mockMails.map((mail) => (
+                {mails.map((mail) => (
                     <div
                         key={mail.id}
                         className="list-group-item list-group-item-action d-flex justify-content-between align-items-start"
@@ -50,7 +84,21 @@ export function Inbox() {
                         }}
                     >
                         <div className="ms-2 me-auto">
-                            <div className="fw-bold" style={{ color: "#343a40" }}>{mail.subject}</div>
+                            <div className="fw-bold d-flex align-items-center" style={{ color: "#343a40" }}>
+                                <span>{mail.subject}</span>
+                                <span
+                                    onClick={() => handleToggleStar(mail.id)}
+                                    style={{
+                                        marginLeft: "10px",
+                                        color: mail.starred ? "#ffc107" : "#ccc",
+                                        cursor: "pointer",
+                                        fontSize: "1.2rem",
+                                    }}
+                                    title={mail.starred ? "Unstar" : "Star"}
+                                >
+                                    {mail.starred ? "★" : "☆"}
+                                </span>
+                            </div>
                             <div className="text-muted small">{mail.sender}</div>
                             <div style={{ marginTop: "6px", color: "#555" }}>{mail.preview}</div>
                         </div>
@@ -78,7 +126,9 @@ export function Inbox() {
                     }}
                 >
                     <li className="list-group-item list-group-item-action" onClick={() => handleAction("Delete")}>🗑️ Delete</li>
-                    <li className="list-group-item list-group-item-action" onClick={() => handleAction("Star")}>⭐ Star</li>
+                    <li className="list-group-item list-group-item-action" onClick={() => handleAction("Star")}>
+                        {mails.find(m => m.id === contextMenu.mailId)?.starred ? "⭐ Unstar" : "⭐ Star"}
+                    </li>
                     <li className="list-group-item list-group-item-action" onClick={() => handleAction("Move to Label")}>🏷️ Move to Label</li>
                 </ul>
             )}
