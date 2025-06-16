@@ -11,6 +11,9 @@ const themes = {
         primaryBtn: "#6f42c1",
         secondaryBtn: "#a370d6",
         text: "#4b0082",
+        btnText: "#ffffff",
+        border: "#d6c1f0",
+        inputBg: "#f3e9fd"
     },
     dark_purple: {
         name: "dark_purple",
@@ -20,6 +23,9 @@ const themes = {
         primaryBtn: "#9a6ef0",
         secondaryBtn: "#b998f7",
         text: "#f0e6ff",
+        btnText: "#1e1e2f",
+        border: "#3e3e5e",
+        inputBg: "#2a2a3f"
     },
     green: {
         name: "green",
@@ -29,6 +35,9 @@ const themes = {
         primaryBtn: "#198754",
         secondaryBtn: "#28a745",
         text: "#14532d",
+        btnText: "#ffffff",
+        border: "#b6e2cc",
+        inputBg: "#e9fdf2"
     },
     dark_green: {
         name: "dark_green",
@@ -38,6 +47,9 @@ const themes = {
         primaryBtn: "#3cb371",
         secondaryBtn: "#66bb6a",
         text: "#c8e6c9",
+        btnText: "#1a2f21",
+        border: "#447a5d",
+        inputBg: "#1e3325"
     },
     blue: {
         name: "blue",
@@ -47,6 +59,9 @@ const themes = {
         primaryBtn: "#0d6efd",
         secondaryBtn: "#3b82f6",
         text: "#1e3a8a",
+        btnText: "#ffffff",
+        border: "#cce4ff",
+        inputBg: "#e5f3ff"
     },
     dark_blue: {
         name: "dark_blue",
@@ -56,6 +71,9 @@ const themes = {
         primaryBtn: "#3b82f6",
         secondaryBtn: "#60a5fa",
         text: "#d0e7ff",
+        btnText: "#1a2a40",
+        border: "#3a4e6c",
+        inputBg: "#1e2f48"
     },
     yellow: {
         name: "yellow",
@@ -65,6 +83,9 @@ const themes = {
         primaryBtn: "#ffc107",
         secondaryBtn: "#fcd34d",
         text: "#92400e",
+        btnText: "#000000",
+        border: "#ffe58f",
+        inputBg: "#fff8dc"
     },
     dark_yellow: {
         name: "dark_yellow",
@@ -74,6 +95,9 @@ const themes = {
         primaryBtn: "#f0c420",
         secondaryBtn: "#ffeb3b",
         text: "#fffde7",
+        btnText: "#1c1a00",
+        border: "#7e7200",
+        inputBg: "#3b3500"
     },
 };
 

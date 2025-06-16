@@ -32,12 +32,12 @@ export function Signin() {
 
     return (!signedin)  ? (
 
-        <div className="container-fluid bg-light py-5">
+        <div className="container-fluid py-5" style={{ backgroundColor: theme.bg, minHeight: '100vh' }}>
             <div className="d-flex flex-column align-items-center gap-5">
                 <div className="text-center" style={{ backgroundColor: theme.highlight, padding: '14px 24px', borderRadius: '6px', color: theme.text }}>
                     <h2 className="m-0">Welcome to RakMail!</h2>
                 </div>
-                <div className="card p-4 shadow" style={{ width: '100%', maxWidth: '450px', backgroundColor: theme.bg }}>
+                <div className="card p-4 shadow" style={{ width: '100%', maxWidth: '450px', backgroundColor: theme.bg, color: theme.text }}>
                     <h3 className="card-title text-center mb-4">Sign In</h3>
                     <form onSubmit={handleSubmit}>
                         <div className="mb-3">
@@ -62,7 +62,7 @@ export function Signin() {
                                 required
                             />
                         </div>
-                        <button type="submit" className="btn w-100" style={{ backgroundColor: theme.primaryBtn, color: 'white', border: 'none' }}>Sign In</button>
+                        <button type="submit" className="btn w-100" style={{ backgroundColor: theme.primaryBtn, color: theme.btnText, border: 'none' }}>Sign In</button>
                     </form>
                     <div className="text-center mt-3">
                         <small>
