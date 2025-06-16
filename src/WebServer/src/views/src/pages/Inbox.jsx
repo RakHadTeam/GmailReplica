@@ -32,6 +32,7 @@ export function Inbox() {
     ]);
 
     const [contextMenu, setContextMenu] = useState(null);
+    const [selectedMails, setSelectedMails] = useState([]);
     const menuRef = useRef();
 
     const handleRightClick = (event, mailId) => {
@@ -48,6 +49,17 @@ export function Inbox() {
         setContextMenu(null);
     };
 
+    const handleToggleStarBulk = () => {
+        setMails((prev) =>
+            prev.map((mail) =>
+                selectedMails.includes(mail.id)
+                    ? { ...mail, starred: !mail.starred }
+                    : mail
+            )
+        );
+        setContextMenu(null);
+    };
+
     const handleDelete = (mailId) => {
         setMails((prev) =>
             prev.map((mail) =>
@@ -57,15 +69,50 @@ export function Inbox() {
         setContextMenu(null);
     };
 
+    const handleDeleteBulk = () => {
+        setMails((prev) =>
+            prev.map((mail) =>
+                selectedMails.includes(mail.id)
+                    ? { ...mail, deleted: true }
+                    : mail
+            )
+        );
+        setContextMenu(null);
+        setSelectedMails([]);
+    };
+
     const handleAction = (action) => {
         if (action === "Star") {
-            handleToggleStar(contextMenu.mailId);
+            if (selectedMails.includes(contextMenu.mailId)) {
+                handleToggleStarBulk();
+            } else {
+                handleToggleStar(contextMenu.mailId);
+            }
         } else if (action === "Delete") {
-            handleDelete(contextMenu.mailId);
+            if (selectedMails.includes(contextMenu.mailId)) {
+                handleDeleteBulk();
+            } else {
+                handleDelete(contextMenu.mailId);
+            }
         } else {
             alert(`"${action}" clicked for mail ID ${contextMenu.mailId}`);
             setContextMenu(null);
         }
+    };
+
+    const handleSelect = (mailId) => {
+        setSelectedMails((prev) =>
+            prev.includes(mailId)
+                ? prev.filter((id) => id !== mailId)
+                : [...prev, mailId]
+        );
+    };
+
+    const handleSelectAll = () => {
+        const visibleMailIds = mails.filter(mail => !mail.deleted).map(mail => mail.id);
+        setSelectedMails((prev) =>
+            prev.length === visibleMailIds.length ? [] : visibleMailIds
+        );
     };
 
     useEffect(() => {
@@ -82,6 +129,21 @@ export function Inbox() {
         <div className="container py-4">
             <h2 className="mb-4 text-center text-primary fw-bold">📬 Inbox</h2>
 
+            <div className="mb-3 d-flex align-items-center justify-content-between">
+                <div>
+                    <button onClick={handleSelectAll} className="btn btn-outline-primary btn-sm">
+                        {selectedMails.length === mails.filter(m => !m.deleted).length ? "Deselect All" : "Select All"}
+                    </button>
+                    <span className="ms-3 text-muted">Selected: {selectedMails.length}</span>
+                </div>
+                {selectedMails.length > 0 && (
+                    <div>
+                        <button onClick={handleDeleteBulk} className="btn btn-outline-danger btn-sm me-2">Delete Selected</button>
+                        <button onClick={handleToggleStarBulk} className="btn btn-outline-warning btn-sm">Toggle Star</button>
+                    </div>
+                )}
+            </div>
+
             <div className="list-group shadow">
                 {mails.filter(mail => !mail.deleted).map((mail) => (
                     <div
@@ -97,6 +159,13 @@ export function Inbox() {
                             cursor: "context-menu",
                         }}
                     >
+                        <input
+                            type="checkbox"
+                            className="form-check-input me-3 mt-2"
+                            checked={selectedMails.includes(mail.id)}
+                            onChange={() => handleSelect(mail.id)}
+                        />
+
                         <div className="ms-2 me-auto">
                             <div className="fw-bold d-flex align-items-center" style={{ color: "#343a40" }}>
                                 <span>{mail.subject}</span>
