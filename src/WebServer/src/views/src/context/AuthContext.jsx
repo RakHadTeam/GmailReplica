@@ -11,7 +11,7 @@ export const AuthProvider = ({ children }) => {
         const checkLoggedin = async () => {
             setLoading(true);
             try {
-                const response = await fetch("/api/mails/");
+                const response = await fetch("/api/me/");
                 console.log(response)
                 if (response.ok) {
                     // setSignedin(true)
