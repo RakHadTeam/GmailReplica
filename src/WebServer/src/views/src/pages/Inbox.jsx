@@ -1,5 +1,4 @@
 import React, { useState, useRef, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
 
 export function Inbox() {
     const [mails, setMails] = useState([
@@ -41,8 +40,8 @@ export function Inbox() {
     const [contextMenu, setContextMenu] = useState(null);
     const [selectedMails, setSelectedMails] = useState([]);
     const [activeLabel, setActiveLabel] = useState("All");
+    const [openMailId, setOpenMailId] = useState(null);
     const menuRef = useRef();
-    const navigate = useNavigate();
 
     const handleRightClick = (event, mailId) => {
         event.preventDefault();
@@ -50,7 +49,11 @@ export function Inbox() {
     };
 
     const handleOpenMail = (mailId) => {
-        navigate(`/mail/${mailId}`);
+        setOpenMailId(mailId);
+    };
+
+    const handleCloseDetail = () => {
+        setOpenMailId(null);
     };
 
     const handleToggleStar = (mailId) => {
@@ -130,7 +133,7 @@ export function Inbox() {
 
     const filteredMails = mails.filter(mail => {
         return !mail.deleted && (activeLabel === "All" || mail.label === activeLabel);
-    });
+    }).slice(-50);
 
     useEffect(() => {
         const handleClickOutside = (e) => {
@@ -143,6 +146,8 @@ export function Inbox() {
     }, []);
 
     const uniqueLabels = ["All", ...new Set(mails.map(mail => mail.label))];
+
+    const openMail = mails.find(m => m.id === openMailId);
 
     return (
         <div className="container py-4">
@@ -226,6 +231,19 @@ export function Inbox() {
                     </div>
                 ))}
             </div>
+
+            {openMail && (
+                <div className="card mt-4">
+                    <div className="card-header d-flex justify-content-between align-items-center">
+                        <h5 className="mb-0">{openMail.subject}</h5>
+                        <button onClick={handleCloseDetail} className="btn-close" />
+                    </div>
+                    <div className="card-body">
+                        <p className="text-muted">From: {openMail.sender}</p>
+                        <p>{openMail.body}</p>
+                    </div>
+                </div>
+            )}
 
             {contextMenu && (
                 <ul
