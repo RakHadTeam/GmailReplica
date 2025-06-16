@@ -10,6 +10,7 @@ export function Inbox() {
             time: "9:32 AM",
             starred: false,
             deleted: false,
+            label: "Work",
         },
         {
             id: 2,
@@ -19,6 +20,7 @@ export function Inbox() {
             time: "Yesterday",
             starred: true,
             deleted: false,
+            label: "Personal",
         },
         {
             id: 3,
@@ -28,11 +30,13 @@ export function Inbox() {
             time: "Mon",
             starred: false,
             deleted: false,
+            label: "Updates",
         },
     ]);
 
     const [contextMenu, setContextMenu] = useState(null);
     const [selectedMails, setSelectedMails] = useState([]);
+    const [activeLabel, setActiveLabel] = useState("All");
     const menuRef = useRef();
 
     const handleRightClick = (event, mailId) => {
@@ -109,11 +113,15 @@ export function Inbox() {
     };
 
     const handleSelectAll = () => {
-        const visibleMailIds = mails.filter(mail => !mail.deleted).map(mail => mail.id);
+        const visibleMailIds = filteredMails.map(mail => mail.id);
         setSelectedMails((prev) =>
             prev.length === visibleMailIds.length ? [] : visibleMailIds
         );
     };
+
+    const filteredMails = mails.filter(mail => {
+        return !mail.deleted && (activeLabel === "All" || mail.label === activeLabel);
+    });
 
     useEffect(() => {
         const handleClickOutside = (e) => {
@@ -125,6 +133,8 @@ export function Inbox() {
         return () => document.removeEventListener("click", handleClickOutside);
     }, []);
 
+    const uniqueLabels = ["All", ...new Set(mails.map(mail => mail.label))];
+
     return (
         <div className="container py-4">
             <h2 className="mb-4 text-center text-primary fw-bold">📬 Inbox</h2>
@@ -132,7 +142,7 @@ export function Inbox() {
             <div className="mb-3 d-flex align-items-center justify-content-between">
                 <div>
                     <button onClick={handleSelectAll} className="btn btn-outline-primary btn-sm">
-                        {selectedMails.length === mails.filter(m => !m.deleted).length ? "Deselect All" : "Select All"}
+                        {selectedMails.length === filteredMails.length ? "Deselect All" : "Select All"}
                     </button>
                     <span className="ms-3 text-muted">Selected: {selectedMails.length}</span>
                 </div>
@@ -144,8 +154,21 @@ export function Inbox() {
                 )}
             </div>
 
+            <div className="mb-3">
+                <label className="form-label me-2">Filter by Label:</label>
+                <select
+                    className="form-select form-select-sm w-auto d-inline-block"
+                    value={activeLabel}
+                    onChange={(e) => setActiveLabel(e.target.value)}
+                >
+                    {uniqueLabels.map(label => (
+                        <option key={label} value={label}>{label}</option>
+                    ))}
+                </select>
+            </div>
+
             <div className="list-group shadow">
-                {mails.filter(mail => !mail.deleted).map((mail) => (
+                {filteredMails.map((mail) => (
                     <div
                         key={mail.id}
                         className="list-group-item list-group-item-action d-flex justify-content-between align-items-start"
