@@ -9,6 +9,7 @@ export function Inbox() {
             preview: "Don’t forget our meeting at 10:00 AM tomorrow...",
             time: "9:32 AM",
             starred: false,
+            deleted: false,
         },
         {
             id: 2,
@@ -17,6 +18,7 @@ export function Inbox() {
             preview: "Attached docs we discussed. Let me know your thoughts.",
             time: "Yesterday",
             starred: true,
+            deleted: false,
         },
         {
             id: 3,
@@ -25,6 +27,7 @@ export function Inbox() {
             preview: "Here’s what happened this week in tech...",
             time: "Mon",
             starred: false,
+            deleted: false,
         },
     ]);
 
@@ -45,9 +48,20 @@ export function Inbox() {
         setContextMenu(null);
     };
 
+    const handleDelete = (mailId) => {
+        setMails((prev) =>
+            prev.map((mail) =>
+                mail.id === mailId ? { ...mail, deleted: true } : mail
+            )
+        );
+        setContextMenu(null);
+    };
+
     const handleAction = (action) => {
         if (action === "Star") {
             handleToggleStar(contextMenu.mailId);
+        } else if (action === "Delete") {
+            handleDelete(contextMenu.mailId);
         } else {
             alert(`"${action}" clicked for mail ID ${contextMenu.mailId}`);
             setContextMenu(null);
@@ -69,7 +83,7 @@ export function Inbox() {
             <h2 className="mb-4 text-center text-primary fw-bold">📬 Inbox</h2>
 
             <div className="list-group shadow">
-                {mails.map((mail) => (
+                {mails.filter(mail => !mail.deleted).map((mail) => (
                     <div
                         key={mail.id}
                         className="list-group-item list-group-item-action d-flex justify-content-between align-items-start"
@@ -126,9 +140,7 @@ export function Inbox() {
                     }}
                 >
                     <li className="list-group-item list-group-item-action" onClick={() => handleAction("Delete")}>🗑️ Delete</li>
-                    <li className="list-group-item list-group-item-action" onClick={() => handleAction("Star")}>
-                        {mails.find(m => m.id === contextMenu.mailId)?.starred ? "⭐ Unstar" : "⭐ Star"}
-                    </li>
+                    <li className="list-group-item list-group-item-action" onClick={() => handleAction("Star")}>⭐ {mails.find(m => m.id === contextMenu.mailId)?.starred ? "Unstar" : "Star"}</li>
                     <li className="list-group-item list-group-item-action" onClick={() => handleAction("Move to Label")}>🏷️ Move to Label</li>
                 </ul>
             )}
