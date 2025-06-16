@@ -3,6 +3,7 @@ import { Route, Routes, useNavigate } from "react-router-dom";
 import { AuthContext } from "./context/AuthContext.jsx";
 import { useTheme } from './context/ThemeContext.jsx';
 import { Signin } from "./pages/Signin.jsx";
+import { Inbox } from "./pages/Inbox.jsx";
 import { Main } from "./pages/Main.jsx";
 // import { Signup } from "./pages/Signup.jsx";
 
@@ -18,10 +19,10 @@ function App() {
 
     useEffect(() => {
         if (loading) return;
-        if (!signedin) {
+        if (signedin) {
             navigate('/signin', { replace: true });
         } else {
-            navigate('/', { replace: true });
+            navigate('/inbox', { replace: true });
         }
     }, [signedin, loading]);
 
@@ -54,6 +55,7 @@ function App() {
             <Routes>
                 <Route path="/" element={<Main />} />
                 <Route path="/signin" element={<Signin />} />
+                <Route path="/inbox" element={<Inbox/>}/>
                 {/* <Route path="/signup" element={<Signup />} /> */}
             </Routes>
         </>
