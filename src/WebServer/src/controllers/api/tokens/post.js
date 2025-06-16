@@ -1,3 +1,4 @@
+import { generateToken } from "../../../core/jwt.js";
 import { validateCredentials } from "../../../models/token.model.js";
 
 export function postTokens(req, res) {
@@ -14,8 +15,13 @@ export function postTokens(req, res) {
         return res.status(status).json({ error: "Invalid credentials" });
     }
 
-    const token = `Bearer ${user.id}`;
+    const token = generateToken(user);
 
-    // Respond with token
-    return res.status(status).json({ token });
+    res.cookie("token", token, {
+        httpOnly: true,
+        secure: false,
+        sameSite: "Strict",
+        maxAge: 60 * 60 * 1000
+    })
+        .json({ token });
 }
