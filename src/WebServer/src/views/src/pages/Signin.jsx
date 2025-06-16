@@ -12,7 +12,22 @@ export function Signin() {
     const handleSubmit = (e) => {
         e.preventDefault();
         // Handle login logic here
+        const res = fetch('/api/tokens', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ email, password }),
+        });
 
+        res.then(response => {
+            if (response.ok) {
+                setSignedin(true);
+            } else {
+                // Handle error, e.g., show an error message
+                console.error('Login failed');
+            }
+        });
     };
 
     return (!signedin)  ? (
