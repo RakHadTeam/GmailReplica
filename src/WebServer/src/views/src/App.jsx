@@ -4,7 +4,7 @@ import { AuthContext } from "./context/AuthContext.jsx";
 import { useTheme } from './context/ThemeContext.jsx';
 import { Signin } from "./pages/Signin.jsx";
 import { Main } from "./pages/Main.jsx";
-import { Signup } from "./pages/Signup.jsx";
+// import { Signup } from "./pages/Signup.jsx";
 
 function App() {
     const { signedin, setSignedin, loading } = useContext(AuthContext);
@@ -54,7 +54,7 @@ function App() {
             <Routes>
                 <Route path="/" element={<Main />} />
                 <Route path="/signin" element={<Signin />} />
-                <Route path="/signup" element={<Signup />} />
+                {/* <Route path="/signup" element={<Signup />} /> */}
             </Routes>
         </>
     );
