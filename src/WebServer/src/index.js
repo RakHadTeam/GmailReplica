@@ -1,4 +1,4 @@
 import app from './app.js';
-const PORT = 3000;
-
-app.listen(PORT);
+import dotenv from 'dotenv';
+dotenv.config();
+app.listen(process.env.PORT);
