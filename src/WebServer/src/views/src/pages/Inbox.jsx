@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
 export function Inbox() {
     const [mails, setMails] = useState([
@@ -7,6 +8,7 @@ export function Inbox() {
             sender: "alice@example.com",
             subject: "Meeting Reminder",
             preview: "Don’t forget our meeting at 10:00 AM tomorrow...",
+            body: "Full content of the meeting reminder email.",
             time: "9:32 AM",
             starred: false,
             deleted: false,
@@ -17,6 +19,7 @@ export function Inbox() {
             sender: "bob@example.com",
             subject: "New Project",
             preview: "Attached docs we discussed. Let me know your thoughts.",
+            body: "Here's everything you need to know about the new project...",
             time: "Yesterday",
             starred: true,
             deleted: false,
@@ -27,6 +30,7 @@ export function Inbox() {
             sender: "team@newsletter.com",
             subject: "Weekly Roundup",
             preview: "Here’s what happened this week in tech...",
+            body: "This week's news covers React updates, Node releases, and more.",
             time: "Mon",
             starred: false,
             deleted: false,
@@ -38,10 +42,15 @@ export function Inbox() {
     const [selectedMails, setSelectedMails] = useState([]);
     const [activeLabel, setActiveLabel] = useState("All");
     const menuRef = useRef();
+    const navigate = useNavigate();
 
     const handleRightClick = (event, mailId) => {
         event.preventDefault();
         setContextMenu({ x: event.pageX, y: event.pageY, mailId });
+    };
+
+    const handleOpenMail = (mailId) => {
+        navigate(`/mail/${mailId}`);
     };
 
     const handleToggleStar = (mailId) => {
@@ -173,19 +182,21 @@ export function Inbox() {
                         key={mail.id}
                         className="list-group-item list-group-item-action d-flex justify-content-between align-items-start"
                         onContextMenu={(e) => handleRightClick(e, mail.id)}
+                        onClick={() => handleOpenMail(mail.id)}
                         style={{
                             backgroundColor: "#f9f9f9",
                             border: "1px solid #dee2e6",
                             borderRadius: "6px",
                             marginBottom: "10px",
                             padding: "15px 20px",
-                            cursor: "context-menu",
+                            cursor: "pointer",
                         }}
                     >
                         <input
                             type="checkbox"
                             className="form-check-input me-3 mt-2"
                             checked={selectedMails.includes(mail.id)}
+                            onClick={(e) => e.stopPropagation()}
                             onChange={() => handleSelect(mail.id)}
                         />
 
@@ -193,7 +204,10 @@ export function Inbox() {
                             <div className="fw-bold d-flex align-items-center" style={{ color: "#343a40" }}>
                                 <span>{mail.subject}</span>
                                 <span
-                                    onClick={() => handleToggleStar(mail.id)}
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        handleToggleStar(mail.id);
+                                    }}
                                     style={{
                                         marginLeft: "10px",
                                         color: mail.starred ? "#ffc107" : "#ccc",
