@@ -5,23 +5,23 @@ FROM gcc:15.1.0
 RUN apt-get update && apt-get install -y cmake && rm -rf /var/lib/apt/lists/*
 
 # Copy source code
-COPY . /usr/src/Server
-WORKDIR /usr/src/Server
+COPY . /usr/src/BlacklistServer
+WORKDIR /usr/src/BlacklistServer
 
 # Build the project
 # Remove the existing build directory if it exists, then create a new one
-RUN if [ -d "/usr/src/Server/build" ]; then rm -rf /usr/src/Server/build; fi && mkdir /usr/src/Server/build
+RUN if [ -d "/usr/src/BlacklistServer/build" ]; then rm -rf /usr/src/BlacklistServer/build; fi && mkdir /usr/src/BlacklistServer/build
 
 # Set the working directory to the newly created build directory
-WORKDIR /usr/src/Server/build
+WORKDIR /usr/src/BlacklistServer/build
 
 # Install build dependencies
 RUN cmake .. && make
 
 # Mount a volume for data
-VOLUME [ "/usr/src/Server/build/data" ]
+VOLUME [ "/usr/src/BlacklistServer/build/data" ]
 
 # Set working directory to build output
-WORKDIR /usr/src/Server/build
+WORKDIR /usr/src/BlacklistServer/build
 # Run the compiled binary
 ENTRYPOINT [ "./ServerExecutable" ]

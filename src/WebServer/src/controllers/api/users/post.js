@@ -1,28 +1,44 @@
+import multer from "multer";
+import path from "path";
 import { createUser } from "../../../models/user.model.js";
+import fs from "fs";
 
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, "uploads/");
+    },
+    filename: function (req, file, cb) {
+        const ext = path.extname(file.originalname);
+        cb(null, `${Date.now()}-${file.fieldname}${ext}`);
+    }
+});
+
+export const upload = multer({ storage });
 
 export function postUsers(req, res) {
-    const { username, password, email, fullname, picture } = req.body;
+    const { email, password, fullname, theme } = req.body;
 
     // Validate input
-    if (!username || !password || !fullname || !email) {
+    if (!email || !password || !fullname) {
         return res
             .status(400)
-            .json({ error: "Username, password, full name, and email are required" });
+            .json({ error: "Email, password and full name are required" });
     }
+    console.log("Creating user: ", email, fullname, password);
     let newUser = {
-        username,
-        password,
         email,
+        password,
         fullname,
-        picture,
+        theme: theme ?? "default",
+        picture: req.file ? req.file.filename : null,
         createdAt: new Date().toISOString(),
         mails: [],
         labels: [],
     };
 
+    console.log("New user object: ", newUser);
+
     const { status } = createUser(newUser);
 
     res.status(status).send();
-
 }

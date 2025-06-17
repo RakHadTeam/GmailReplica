@@ -1,11 +1,10 @@
 import { useContext, useEffect } from "react";
 import { Route, Routes, useNavigate } from "react-router-dom";
 import { AuthContext } from "./context/AuthContext.jsx";
-import { useTheme } from './context/ThemeContext.jsx';
-import { Signin } from "./pages/Signin.jsx";
+import { useTheme } from "./context/ThemeContext.jsx";
 import { Inbox } from "./pages/Inbox.jsx";
-import { Main } from "./pages/Main.jsx";
-// import { Signup } from "./pages/Signup.jsx";
+import { Signin } from "./pages/Signin.jsx";
+import { Signup } from "./pages/Signup.jsx";
 
 function App() {
     const { signedin, setSignedin, loading } = useContext(AuthContext);
@@ -19,10 +18,10 @@ function App() {
 
     useEffect(() => {
         if (loading) return;
-        if (signedin) {
-            navigate('/signin', { replace: true });
+        if (!signedin) {
+            navigate("/signin", { replace: true });
         } else {
-            navigate('/inbox', { replace: true });
+            navigate("/inbox", { replace: true });
         }
     }, [signedin, loading]);
 
@@ -41,22 +40,26 @@ function App() {
                 <button
                     onClick={toggleDarkTheme}
                     style={{
-                        backgroundColor: theme.primaryBtn,
-                        color: "white",
-                        border: "none",
+                        backgroundColor: theme.dark
+                            ? theme.primaryBtn
+                            : "transparent",
+                        color: theme.primaryText,
+                        border: theme.dark
+                            ? "none"
+                            : `2px solid ${theme.primaryBtn}88`,
                         borderRadius: "4px",
                         padding: "6px 10px",
                         cursor: "pointer",
                     }}
                 >
-                    Toggle Dark Mode
+                    {theme.dark ? "☀" : "☾"}
                 </button>
             </div>
             <Routes>
-                <Route path="/" element={<Main />} />
+                <Route path="/" element={<Inbox />} />
                 <Route path="/signin" element={<Signin />} />
-                <Route path="/inbox" element={<Inbox/>}/>
-                {/* <Route path="/signup" element={<Signup />} /> */}
+                <Route path="/inbox" element={<Inbox />} />
+                <Route path="/signup" element={<Signup />} />
             </Routes>
         </>
     );

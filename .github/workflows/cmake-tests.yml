@@ -26,4 +26,4 @@ jobs:
         run: docker compose version
 
       - name: Build and run tests with Docker Compose
-        run: docker compose up --build --abort-on-container-exit tests
+        run: docker compose up --build --abort-on-container-exit blacklist_tests

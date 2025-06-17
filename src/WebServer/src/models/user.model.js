@@ -5,15 +5,15 @@ export function getUserById(id) {
     return globals.users.find((user) => user.id === id);
 }
 
-export function getUserByUsername(username) {
-    return globals.users.find((user) => user.username === username);
+export function getUserByEmail(email) {
+    return globals.users.find((user) => user.email === email);
 }
 
 export function createUser(data) {
     const id = randomUUID();
 
-    if (getUserByUsername(data.username)) {
-        return { status: 400, error: "Username already exists" };
+    if (getUserByEmail(data.email)) {
+        return { status: 400, error: "Email already exists" };
     }
 
     const newUser = { id, ...data };

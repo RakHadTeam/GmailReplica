@@ -9,7 +9,7 @@ export async function postMail(req, res) {
         return res.status(400).json({ error: "Missing required fields" });
     }
 
-    const { status, error, id } = await createMail(token, { subject, body, recipient, draft });
+    const { status, error, id } = await createMail(token, { subject, body, recipient, draft, createdAt: new Date() });
 
     if (error) {
         return res.status(status ?? 400).json({ error });
