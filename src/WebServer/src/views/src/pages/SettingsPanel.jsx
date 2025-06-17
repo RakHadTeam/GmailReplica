@@ -20,8 +20,11 @@ export function SettingsPanel({ onClose }) {
                 className="bg-white p-4 rounded shadow"
                 style={{ width: "400px" }}
             >
-                <div className="d-flex justify-content-between align-items-center mb-3">
-                    <h5 className="mb-0">⚙️ Settings</h5>
+                <div className="d-flex justify-content-between align-items-center mb-4">
+                    <div className="d-flex align-items-center gap-2">
+                        <span style={{ fontSize: "1.5rem" }}>⚙️</span>
+                        <h5 className="mb-0">Settings</h5>
+                    </div>
                     <button className="btn-close" onClick={onClose}></button>
                 </div>
 
@@ -38,7 +41,7 @@ export function SettingsPanel({ onClose }) {
                         />
                     </div>
 
-                    <div className="mb-3">
+                    <div className="mb-4">
                         <label htmlFor="profileImage" className="form-label">
                             Profile Image
                         </label>
@@ -50,9 +53,19 @@ export function SettingsPanel({ onClose }) {
                         />
                     </div>
 
-                    <button type="submit" className="btn btn-primary w-100">
-                        Save Changes
-                    </button>
+                    <div className="d-grid">
+                        <button type="submit" className="btn btn-primary mb-2">
+                            Save Changes
+                        </button>
+                    </div>
+
+                    <hr className="my-3" />
+
+                    <div className="d-grid">
+                        <button type="button" className="btn btn-light border text-danger" onClick={() => {}}>
+                            🔓 Logout
+                        </button>
+                    </div>
                 </form>
             </div>
         </div>
