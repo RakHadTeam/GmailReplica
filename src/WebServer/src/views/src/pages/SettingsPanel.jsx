@@ -1,12 +1,14 @@
 import React, { useState, useEffect, useContext } from "react";
 import { AuthContext } from "../context/AuthContext.jsx";
 import { useNavigate } from "react-router-dom";
+import { useTheme } from "../context/ThemeContext.jsx";
 
 export function SettingsPanel({ onClose }) {
     const [fullName, setFullName] = useState("");
     const [profileImage, setProfileImage] = useState(null);
     const [currentUser, setCurrentUser] = useState(null);
     const { setSignedin } = useContext(AuthContext);
+    const { theme } = useTheme();
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -28,7 +30,7 @@ export function SettingsPanel({ onClose }) {
                 if (!userRes.ok) throw new Error("Failed to fetch user data");
                 const userData = await userRes.json();
                 setCurrentUser(userData);
-                setFullName(userData.fullname); // prefill the name field
+                setFullName(userData.fullname);
             } catch (err) {
                 console.error("Error fetching user info:", err);
             }
@@ -100,7 +102,14 @@ export function SettingsPanel({ onClose }) {
                 zIndex: 1050,
             }}
         >
-            <div className="bg-white p-4 rounded shadow" style={{ width: "400px" }}>
+            <div
+                className="p-4 rounded shadow"
+                style={{
+                    width: "400px",
+                    backgroundColor: theme.bg,
+                    color: theme.text,
+                }}
+            >
                 <div className="d-flex justify-content-between align-items-center mb-4">
                     <div className="d-flex align-items-center gap-2">
                         <span style={{ fontSize: "1.5rem" }}>⚙️</span>
@@ -111,7 +120,14 @@ export function SettingsPanel({ onClose }) {
 
                 {currentUser && (
                     <div className="mb-3 text-center">
-                        <div className="alert alert-secondary" role="alert">
+                        <div
+                            className="alert alert-secondary"
+                            role="alert"
+                            style={{
+                                backgroundColor: theme.highlight,
+                                color: theme.text,
+                            }}
+                        >
                             Logged in as <strong>{currentUser.fullname}</strong>
                         </div>
                         {currentUser.picture && (
@@ -119,7 +135,12 @@ export function SettingsPanel({ onClose }) {
                                 src={`/uploads/${currentUser.picture}`}
                                 alt="Profile"
                                 className="rounded-circle"
-                                style={{ width: "80px", height: "80px", objectFit: "cover" }}
+                                style={{
+                                    width: "80px",
+                                    height: "80px",
+                                    objectFit: "cover",
+                                    border: `2px solid ${theme.primaryBtn}`,
+                                }}
                             />
                         )}
                     </div>
@@ -127,7 +148,9 @@ export function SettingsPanel({ onClose }) {
 
                 <form onSubmit={handleSubmit}>
                     <div className="mb-3">
-                        <label htmlFor="fullName" className="form-label">Change Full Name</label>
+                        <label htmlFor="fullName" className="form-label">
+                            Change Full Name
+                        </label>
                         <input
                             type="text"
                             className="form-control"
@@ -139,7 +162,9 @@ export function SettingsPanel({ onClose }) {
                     </div>
 
                     <div className="mb-4">
-                        <label htmlFor="profileImage" className="form-label">Profile Image</label>
+                        <label htmlFor="profileImage" className="form-label">
+                            Profile Image
+                        </label>
                         <input
                             type="file"
                             className="form-control"
@@ -150,7 +175,17 @@ export function SettingsPanel({ onClose }) {
                     </div>
 
                     <div className="d-grid">
-                        <button type="submit" className="btn btn-primary mb-2">Save Changes</button>
+                        <button
+                            type="submit"
+                            className="btn mb-2"
+                            style={{
+                                backgroundColor: theme.primaryBtn,
+                                color: theme.btnText,
+                                border: "none",
+                            }}
+                        >
+                            Save Changes
+                        </button>
                     </div>
 
                     <hr className="my-3" />
@@ -158,8 +193,13 @@ export function SettingsPanel({ onClose }) {
                     <div className="d-grid">
                         <button
                             type="button"
-                            className="btn btn-light border text-danger"
+                            className="btn border text-danger"
                             onClick={handleLogout}
+                            style={{
+                                backgroundColor: theme.bg,
+                                borderColor: theme.primaryBtn,
+                                color: "red",
+                            }}
                         >
                             🔓 Logout
                         </button>
