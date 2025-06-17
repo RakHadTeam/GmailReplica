@@ -1,4 +1,5 @@
-import { useEffect, useRef, useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
+import { SettingsPanel } from "./SettingsPanel";
 
 export function Inbox() {
     const [mails, setMails] = useState([
@@ -44,7 +45,9 @@ export function Inbox() {
     const [selectedMails, setSelectedMails] = useState([]);
     const [activeLabel, setActiveLabel] = useState("All");
     const [openMailId, setOpenMailId] = useState(null);
+    const [settingsOpen, setSettingsOpen] = useState(false);
     const menuRef = useRef();
+    const toggleSettings = () => setSettingsOpen(prev => !prev);
 
     const handleRightClick = (event, mailId) => {
         event.preventDefault();
@@ -166,8 +169,17 @@ export function Inbox() {
     const openMail = mails.find((m) => m.id === openMailId);
 
     return (
+        
         <div className="container py-4">
             <h2 className="mb-4 text-center text-primary fw-bold">📬 Inbox</h2>
+<div className="position-absolute top-0 start-0 m-3">
+    <button
+        className="btn btn-outline-secondary btn-sm"
+        onClick={toggleSettings}
+    >
+        ⚙️ Settings
+    </button>
+</div>
 
             <div className="mb-3 d-flex align-items-center justify-content-between">
                 <div>
@@ -294,6 +306,7 @@ export function Inbox() {
                 </div>
             )}
 
+
             {contextMenu && (
                 <ul
                     ref={menuRef}
@@ -336,6 +349,7 @@ export function Inbox() {
                     </li>
                 </ul>
             )}
+                         {settingsOpen && <SettingsPanel onClose={toggleSettings} />}
         </div>
     );
 }
