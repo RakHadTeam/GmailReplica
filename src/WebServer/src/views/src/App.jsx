@@ -4,8 +4,7 @@ import { AuthContext } from "./context/AuthContext.jsx";
 import { useTheme } from './context/ThemeContext.jsx';
 import { Signin } from "./pages/Signin.jsx";
 import { Inbox } from "./pages/Inbox.jsx";
-import { Main } from "./pages/Main.jsx";
-// import { Signup } from "./pages/Signup.jsx";
+import { Signup } from "./pages/Signup.jsx";
 
 function App() {
     const { signedin, setSignedin, loading } = useContext(AuthContext);
@@ -19,7 +18,7 @@ function App() {
 
     useEffect(() => {
         if (loading) return;
-        if (signedin) {
+        if (!signedin) {
             navigate('/signin', { replace: true });
         } else {
             navigate('/inbox', { replace: true });
@@ -42,7 +41,7 @@ function App() {
                     onClick={toggleDarkTheme}
                     style={{
                         backgroundColor: theme.primaryBtn,
-                        color: "white",
+                        color: theme.primaryText,
                         border: "none",
                         borderRadius: "4px",
                         padding: "6px 10px",
@@ -53,10 +52,10 @@ function App() {
                 </button>
             </div>
             <Routes>
-                <Route path="/" element={<Main />} />
+                <Route path="/" element={<Inbox />} />
                 <Route path="/signin" element={<Signin />} />
                 <Route path="/inbox" element={<Inbox/>}/>
-                {/* <Route path="/signup" element={<Signup />} /> */}
+                <Route path="/signup" element={<Signup />} />
             </Routes>
         </>
     );
