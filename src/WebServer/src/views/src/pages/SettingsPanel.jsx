@@ -12,7 +12,6 @@ export function SettingsPanel({ onClose }) {
     useEffect(() => {
         const fetchUser = async () => {
             try {
-                // Step 1: Get user ID
                 const res = await fetch("/api/me", {
                     method: "GET",
                     credentials: "include",
@@ -21,7 +20,6 @@ export function SettingsPanel({ onClose }) {
                 if (!res.ok) throw new Error("Failed to fetch /api/me");
                 const { userId } = await res.json();
 
-                // Step 2: Get full user info by ID
                 const userRes = await fetch(`/api/users/${userId}`, {
                     method: "GET",
                     credentials: "include",
@@ -30,6 +28,7 @@ export function SettingsPanel({ onClose }) {
                 if (!userRes.ok) throw new Error("Failed to fetch user data");
                 const userData = await userRes.json();
                 setCurrentUser(userData);
+                setFullName(userData.fullname); // prefill the name field
             } catch (err) {
                 console.error("Error fetching user info:", err);
             }
@@ -40,13 +39,16 @@ export function SettingsPanel({ onClose }) {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        if (!currentUser) return;
 
         const formData = new FormData();
-        if (fullName.trim()) formData.append("fullname", fullName);
-        if (profileImage) formData.append("picture", profileImage);
+        formData.append("fullname", fullName);
+        if (profileImage) {
+            formData.append("picture", profileImage);
+        }
 
         try {
-            const res = await fetch("/api/users/me", {
+            const res = await fetch(`/api/users/${currentUser.id}`, {
                 method: "PATCH",
                 body: formData,
                 credentials: "include",
@@ -108,8 +110,18 @@ export function SettingsPanel({ onClose }) {
                 </div>
 
                 {currentUser && (
-                    <div className="alert alert-secondary" role="alert">
-                        Logged in as <strong>{currentUser.fullname}</strong>
+                    <div className="mb-3 text-center">
+                        <div className="alert alert-secondary" role="alert">
+                            Logged in as <strong>{currentUser.fullname}</strong>
+                        </div>
+                        {currentUser.picture && (
+                            <img
+                                src={`/uploads/${currentUser.picture}`}
+                                alt="Profile"
+                                className="rounded-circle"
+                                style={{ width: "80px", height: "80px", objectFit: "cover" }}
+                            />
+                        )}
                     </div>
                 )}
 
