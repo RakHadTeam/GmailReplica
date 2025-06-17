@@ -7,5 +7,5 @@ export function getUserByIdHandler(req, res) {
     if (!user) {
         return res.status(404).json({ error: "User not found" });
     }
-    res.status(200).json(user);
+    res.status(200).json(user.id);
 }

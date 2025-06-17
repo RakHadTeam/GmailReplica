@@ -3,9 +3,9 @@ import { deleteLabelById } from "../../../../models/label.model.js";
 export function deleteLabel(req, res) {
     const { id } = req.params;
 
-    const token = req.headers.authorization?.split(" ")[1];
+    const userId = req.userId;
 
-    const { error, status } = deleteLabelById(token, id);
+    const { error, status } = deleteLabelById(userId, id);
     if (error) {
         return res.status(status).json({ error });
     }

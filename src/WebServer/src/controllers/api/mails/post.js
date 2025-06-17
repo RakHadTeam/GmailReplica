@@ -1,15 +1,15 @@
 import { createMail } from "../../../models/mails.model.js";
 
 export async function postMail(req, res) {
-    const token = req.headers.authorization?.split(" ")[1];
+    const userId = req.userId;
     const { subject, body, recipient, draft } = req.body;
-
+    
 
     if (!subject || !body || !recipient) {
         return res.status(400).json({ error: "Missing required fields" });
     }
 
-    const { status, error, id } = await createMail(token, { subject, body, recipient, draft, createdAt: new Date() });
+    const { status, error, id } = await createMail(userId, { subject, body, recipient, draft, createdAt: new Date() });
 
     if (error) {
         return res.status(status ?? 400).json({ error });

@@ -4,9 +4,9 @@ export function patchMail(req, res) {
     const { id } = req.params;
     const { subject, body, recipient, draft } = req.body;
 
-    const token = req.headers.authorization?.split(" ")[1];
+    const userId = req.userId;
 
-    const { status, error } = updateMailById(token, id, {
+    const { status, error } = updateMailById(userId, id, {
         subject,
         body,
         recipient,

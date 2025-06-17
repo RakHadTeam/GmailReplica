@@ -1,9 +1,10 @@
 import globals from "../core/globals.js";
 import { getAllLinksFromBody } from "./mails.model.js";
 import { getUserById, getUserByEmail } from "./user.model.js";
+import { getUserIdFromToken } from "../core/jwt.js";
 
-export function getMailById(token, id) {
-    const user = getUserById(token);
+export function getMailById(userId, id) {
+    const user = getUserById(userId);
     if (!user) {
         return { status: 401 };
     }
@@ -14,8 +15,8 @@ export function getMailById(token, id) {
     return { status: 200, mail: globals.mails[mailIndex] };
 }
 
-export function deleteMailById(token, id) {
-    const user = getUserById(token);
+export function deleteMailById(userId, id) {
+    const user = getUserById(userId);
     if (!user) {
         return { status: 401 };
     }
@@ -31,8 +32,8 @@ export function deleteMailById(token, id) {
     return { status: 204 };
 }
 
-export function updateMailById(token, id, updates) {
-    const { mail, status, error } = getMailById(token, id);
+export function updateMailById(userId, id, updates) {
+    const { mail, status, error } = getMailById(userId, id);
     if (error) {
         return { status, error };
     }

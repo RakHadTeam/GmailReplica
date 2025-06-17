@@ -1,12 +1,9 @@
 import { getLatestMails } from "../../../models/mails.model.js";
 
 export function getMails(req, res) {
-    const token = req.headers.authorization?.split(" ")[1];
-    if (!token) {
-        return res.status(401).json({ error: "Unauthorized" });
-    }
+    const userId = req.userId;
 
-    const { status, error, mails } = getLatestMails(token);
+    const { status, error, mails } = getLatestMails(userId);
     if (error) {
         return res.status(status ?? 400).json({ error });
     }

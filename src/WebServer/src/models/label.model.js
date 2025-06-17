@@ -1,7 +1,10 @@
 import { getUserById } from "./user.model.js";
+import { getUserIdFromToken } from "../core/jwt.js";
 
 export function getLabelById(token, id) {
-    const user = getUserById(token);
+    const userId = getUserIdFromToken(token);
+
+    const user = getUserById(userId);
     if (!user) {
         return { status: 401, error: "Unauthorized" }; // Unauthorized
     }
@@ -13,14 +16,18 @@ export function getLabelById(token, id) {
 }
 
 export function updateLabel(token, id, updates) {
-    const { label, status, error } = getLabelById(token, id);
+    const userId = getUserIdFromToken(token);
+
+    const { label, status, error } = getLabelById(userId, id);
     if (error) return { status, error }; // If the label was not found, return the status
     Object.assign(label, updates);
     return { status: 204 }; // No Content
 }
 
 export function deleteLabelById(token, id) {
-    const user = getUserById(token);
+    const userId = getUserIdFromToken(token);
+
+    const user = getUserById(userId);
     if (!user) {
         return { status: 401, error: "Unauthorized" }; // Unauthorized
     }

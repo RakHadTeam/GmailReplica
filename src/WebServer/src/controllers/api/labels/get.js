@@ -1,11 +1,14 @@
 import { getAllLabels } from "../../../models/labels.model.js";
 
 export function getLabels(req, res) {
-    const token = req.headers.authorization?.split(" ")[1];
+    const userId = req.userId;
 
-    const { status, labels, error } = getAllLabels(token);
+    const { status, labels, error } = getAllLabels(userId);
+
     if (error) {
-        return res.status(status).end(); // If there's an error, respond with the status code
+        return res.status(status ?? 400).json({ error });
     }
-    res.status(status).json(labels); // Respond with HTTP 200 and the labels as JSON
+
+    res.status(status).json(labels);
 }
+
