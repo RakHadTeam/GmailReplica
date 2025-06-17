@@ -3,9 +3,9 @@ import { getMailById } from "../../../../models/mail.model.js";
 export function getMailByIdHandler(req, res) {
     const { id } = req.params;
 
-    const token = req.headers.authorization?.split(" ")[1];
+    const userId = req.userId;
 
-    const { status, error, mail } = getMailById(token, id);
+    const { status, error, mail } = getMailById(userId, id);
 
     if (error) {
         return res.status(status).json({ error });

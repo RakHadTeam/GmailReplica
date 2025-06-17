@@ -1,10 +1,11 @@
 import { randomUUID } from "crypto";
 import globals from "../core/globals.js";
 import { sendBlacklistCommand } from "./blacklist.model.js";
+import { getUserIdFromToken } from "../core/jwt.js";
 import { getUserByEmail, getUserById } from "./user.model.js";
 
-export function getLatestMails(token) {
-    const user = getUserById(token);
+export function getLatestMails(userId) {
+    const user = getUserById(userId);
     if (!user) {
         return { status: 401, error: "Unauthorized" };
     }
@@ -31,8 +32,8 @@ export function getAllLinksFromBody(body) {
     return links;
 }
 
-export async function createMail(token, { subject, body, recipient, draft }) {
-    const sender = getUserById(token);
+export async function createMail(userId, { subject, body, recipient, draft }) {
+    const sender = getUserById(userId);
     if (!sender) {
         return { status: 401, error: "Unauthorized" };
     }

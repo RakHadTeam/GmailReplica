@@ -1,8 +1,9 @@
 import globals from "../core/globals.js";
 import { getUserById } from "./user.model.js";
+import { getUserIdFromToken } from "../core/jwt.js";
 
-export function searchMails(token, query) {
-    const user = getUserById(token);
+export function searchMails(userId, query) {
+    const user = getUserById(userId);
     if (!user) {
         return { status: 401, error: "Unauthorized" };
     }

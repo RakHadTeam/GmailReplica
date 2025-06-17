@@ -2,7 +2,7 @@ import { createLabel } from "../../../models/labels.model.js";
 
 
 export function postLabels(req, res) {
-    const token = req.headers.authorization?.split(" ")[1];
+    const userId = req.userId;
 
     const { name } = req.body;
 
@@ -14,7 +14,7 @@ export function postLabels(req, res) {
         name
     };
 
-    const { status, label } = createLabel(token, newLabel)
+    const { status, label } = createLabel(userId, newLabel)
 
     res.status(status).location(`/api/labels/${label.id}`).send();
 }

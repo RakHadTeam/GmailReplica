@@ -6,3 +6,4 @@ export function validateCredentials(email, password) {
     );
     return { status: user ? 200 : 401, user };
 }
+

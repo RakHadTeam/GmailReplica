@@ -13,3 +13,10 @@ export function verifyToken(token) {
         return null;
     }
 }
+
+export function getUserIdFromToken(token) {
+    const secret = process.env.JWT_SECRET;
+
+    const decoded = verifyToken(token);
+    return decoded.id ?? null;
+}
