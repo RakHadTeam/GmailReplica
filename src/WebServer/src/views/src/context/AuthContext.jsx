@@ -12,11 +12,15 @@ export const AuthProvider = ({ children }) => {
         const checkLoggedin = async () => {
             setLoading(true);
             try {
-                const response = await fetch("/api/me/");
+                const response = await fetch("/api/me/", {
+                    credentials: "include",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                });
                 console.log(response)
                 if (response.ok) {
-                    // setSignedin(true)
-                    setSignedin(false);
+                    setSignedin(true)
                 }
             } catch (error) {
                 console.error("Error checking login status:", error);

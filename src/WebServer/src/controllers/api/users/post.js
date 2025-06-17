@@ -10,12 +10,13 @@ export function postUsers(req, res) {
             .status(400)
             .json({ error: "Username, password, full name, and email are required" });
     }
+    console.log("Creating user: ", username, email, fullname, password);
     let newUser = {
         username,
         password,
         email,
         fullname,
-        picture,
+        // picture,
         createdAt: new Date().toISOString(),
         mails: [],
         labels: [],

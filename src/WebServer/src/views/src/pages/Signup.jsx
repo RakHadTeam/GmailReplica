@@ -14,27 +14,31 @@ export function Signup() {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        const formData = new FormData();
-        formData.append("fullname", fullname);
-        formData.append("email", email);
-        formData.append("username", username);
-        formData.append("password", password);
-        formData.append("picture", picture);
+        const body = {
+            fullname,
+            email,
+            username,
+            password,
+            // picture is omitted since it's a file; handle file upload separately if needed
+        };
 
         fetch("/api/users", {
             method: "POST",
-            body: formData,
+            headers: {
+            "Content-Type": "application/json",
+            },
+            body: JSON.stringify(body),
             credentials: "include",
         })
             .then((response) => {
-                if (response.ok) {
-                    console.log("Signup successful");
-                } else {
-                    console.error("Signup failed");
-                }
+            if (response.ok) {
+                console.log("Signup successful");
+            } else {
+                console.error("Signup failed");
+            }
             })
             .catch((error) => {
-                console.error("Error during signup:", error);
+            console.error("Error during signup:", error);
             });
     };
 
@@ -111,7 +115,6 @@ export function Signup() {
                                 id="picture"
                                 accept="image/*"
                                 onChange={(e) => setPicture(e.target.files[0])}
-                                required
                             />
                         </div>
                         <div className="mb-3">
