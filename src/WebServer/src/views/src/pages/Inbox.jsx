@@ -172,14 +172,14 @@ export function Inbox() {
         
         <div className="container py-4">
             <h2 className="mb-4 text-center text-primary fw-bold">📬 Inbox</h2>
-<div className="position-absolute top-0 start-0 m-3">
-    <button
-        className="btn btn-outline-secondary btn-sm"
-        onClick={toggleSettings}
-    >
-        ⚙️ Settings
-    </button>
-</div>
+        <div className="position-absolute top-0 start-0 m-3">
+            <button
+                className="btn btn-outline-secondary btn-sm"
+                onClick={toggleSettings}
+            >
+                ⚙️ Settings
+            </button>
+        </div>
 
             <div className="mb-3 d-flex align-items-center justify-content-between">
                 <div>
