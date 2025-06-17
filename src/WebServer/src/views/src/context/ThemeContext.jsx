@@ -5,6 +5,7 @@ export const ThemeContext = createContext();
 const themes = {
     purple: {
         name: "purple",
+        dark: false,
         bg: "#f9f4fc",
         card: "#ffffff",
         highlight: "#ede6f7",
@@ -17,6 +18,7 @@ const themes = {
     },
     dark_purple: {
         name: "dark_purple",
+        dark: true,
         bg: "#121212",
         card: "#1e1e2f",
         highlight: "#2e2e4d",
@@ -29,6 +31,7 @@ const themes = {
     },
     green: {
         name: "green",
+        dark: false,
         bg: "#f0fdf4",
         card: "#ffffff",
         highlight: "#dcfce7",
@@ -41,6 +44,7 @@ const themes = {
     },
     dark_green: {
         name: "dark_green",
+        dark: true,
         bg: "#0e1d13",
         card: "#1a2f21",
         highlight: "#23402d",
@@ -53,6 +57,7 @@ const themes = {
     },
     blue: {
         name: "blue",
+        dark: false,
         bg: "#f0f9ff",
         card: "#ffffff",
         highlight: "#dbeafe",
@@ -65,6 +70,7 @@ const themes = {
     },
     dark_blue: {
         name: "dark_blue",
+        dark: true,
         bg: "#0b1624",
         card: "#1a2a40",
         highlight: "#2a3b5c",
@@ -77,6 +83,7 @@ const themes = {
     },
     yellow: {
         name: "yellow",
+        dark: false,
         bg: "#fffbea",
         card: "#ffffff",
         highlight: "#fff3cd",
@@ -89,6 +96,7 @@ const themes = {
     },
     dark_yellow: {
         name: "dark_yellow",
+        dark: true,
         bg: "#1c1a00",
         card: "#3b3500",
         highlight: "#4e4600",
@@ -102,7 +110,7 @@ const themes = {
 };
 
 export function ThemeProvider({ children }) {
-    const [theme, setTheme] = useState(themes.purple); // default theme
+    const [theme, setTheme] = useState(themes.green); // default theme
     const [darkTheme, setDarkTheme] = useState(false);
 
     const changeTheme = (themeName) => {

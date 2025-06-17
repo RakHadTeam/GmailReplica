@@ -44,7 +44,10 @@ export function Signup() {
     };
 
     return (
-        <div className="container-fluid bg-light py-5">
+        <div
+            className="container-fluid py-5"
+            style={{ backgroundColor: theme.bg, minHeight: "100vh" }}
+        >
             <div className="d-flex flex-column align-items-center gap-5">
                 <div
                     className="text-center"
@@ -60,9 +63,10 @@ export function Signup() {
                 <div
                     className="card p-4 shadow"
                     style={{
-                        width: "160%",
+                        width: "100%",
                         maxWidth: "450px",
                         backgroundColor: theme.bg,
+                        color: theme.text,
                     }}
                 >
                     <h3 className="card-title text-center mb-4">Sign Up</h3>
@@ -123,7 +127,7 @@ export function Signup() {
                             className="btn w-100"
                             style={{
                                 backgroundColor: theme.primaryBtn,
-                                color: "white",
+                                color: theme.btnText,
                                 border: "none",
                             }}
                         >
@@ -134,7 +138,7 @@ export function Signup() {
                         <label className="form-label me-2">Choose Theme:</label>
                         <select
                             onChange={(e) => changeTheme(e.target.value)}
-                            value={theme.name}
+                            value={theme.name.includes('dark_') ? theme.name.slice(5) : theme.name}
                             className="form-select w-auto d-inline-block"
                         >
                             <option value="purple">Purple</option>

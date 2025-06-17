@@ -40,15 +40,15 @@ function App() {
                 <button
                     onClick={toggleDarkTheme}
                     style={{
-                        backgroundColor: theme.primaryBtn,
+                        backgroundColor: theme.dark ? theme.primaryBtn : "transparent",
                         color: theme.primaryText,
-                        border: "none",
+                        border: theme.dark ? "none" : `2px solid ${theme.primaryBtn}88`,
                         borderRadius: "4px",
                         padding: "6px 10px",
                         cursor: "pointer",
                     }}
                 >
-                    Toggle Dark Mode
+                    {theme.dark ? "☀" : "☾"}
                 </button>
             </div>
             <Routes>
