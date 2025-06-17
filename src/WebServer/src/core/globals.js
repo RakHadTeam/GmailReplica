@@ -5,7 +5,7 @@ export default {
     users,
     mails,
     blacklistServer: {
-        host: "server",
+        host: "blacklist_server",
         port: 4545,
     },
 };

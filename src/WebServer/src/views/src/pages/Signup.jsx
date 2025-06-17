@@ -7,6 +7,7 @@ export function Signup() {
     const [email, setEmail] = useState("");
     const [picture, setPicture] = useState(null);
     const [password, setPassword] = useState("");
+    const [passwordError, setPasswordError] = useState("");
 
     const { theme, changeTheme } = useTheme();
 
@@ -14,6 +15,15 @@ export function Signup() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+
+        if (!/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/.test(password)) {
+            setPasswordError(
+                "Password must be at least 8 characters long and include both letters and numbers."
+            );
+            return;
+        } else {
+            setPasswordError("");
+        }
 
         const formData = new FormData();
         formData.append("fullname", fullname);
@@ -115,12 +125,22 @@ export function Signup() {
                             </label>
                             <input
                                 type="password"
-                                className="form-control"
+                                className={`form-control ${
+                                    passwordError ? "is-invalid" : ""
+                                }`}
                                 id="password"
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
                                 required
                             />
+                            {passwordError && (
+                                <div
+                                    className="invalid-feedback"
+                                    style={{ color: theme.primaryBtn }}
+                                >
+                                    {passwordError}
+                                </div>
+                            )}
                         </div>
                         <button
                             type="submit"
@@ -138,11 +158,15 @@ export function Signup() {
                         <label className="form-label me-2">Choose Theme:</label>
                         <select
                             onChange={(e) => changeTheme(e.target.value)}
-                            value={theme.name.includes('dark_') ? theme.name.slice(5) : theme.name}
+                            value={
+                                theme.name.includes("dark_")
+                                    ? theme.name.slice(5)
+                                    : theme.name
+                            }
                             className="form-select w-auto d-inline-block"
                         >
-                            <option value="purple">Purple</option>
                             <option value="green">Green</option>
+                            <option value="purple">Purple</option>
                             <option value="blue">Blue</option>
                             <option value="yellow">Yellow</option>
                         </select>

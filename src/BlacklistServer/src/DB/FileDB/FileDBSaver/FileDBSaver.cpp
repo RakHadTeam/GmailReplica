@@ -36,10 +36,6 @@ void FileDBSaver::saveURL(const std::string& url) {
 	outFile.close();
 }
 
-#include <DB/FileDB/FileDBSaver/FileDBSaver.h>
-#include <fstream>
-#include <filesystem>
-
 void FileDBSaver::deleteURL(const std::string& url) {
     namespace fs = std::filesystem;
     fs::path fullPath = fs::path(dataFolderPath) / blacklistFileName;

@@ -1,9 +1,9 @@
 import { useContext, useEffect } from "react";
 import { Route, Routes, useNavigate } from "react-router-dom";
 import { AuthContext } from "./context/AuthContext.jsx";
-import { useTheme } from './context/ThemeContext.jsx';
-import { Signin } from "./pages/Signin.jsx";
+import { useTheme } from "./context/ThemeContext.jsx";
 import { Inbox } from "./pages/Inbox.jsx";
+import { Signin } from "./pages/Signin.jsx";
 import { Signup } from "./pages/Signup.jsx";
 
 function App() {
@@ -19,9 +19,9 @@ function App() {
     useEffect(() => {
         if (loading) return;
         if (!signedin) {
-            navigate('/signin', { replace: true });
+            navigate("/signin", { replace: true });
         } else {
-            navigate('/inbox', { replace: true });
+            navigate("/inbox", { replace: true });
         }
     }, [signedin, loading]);
 
@@ -40,9 +40,13 @@ function App() {
                 <button
                     onClick={toggleDarkTheme}
                     style={{
-                        backgroundColor: theme.dark ? theme.primaryBtn : "transparent",
+                        backgroundColor: theme.dark
+                            ? theme.primaryBtn
+                            : "transparent",
                         color: theme.primaryText,
-                        border: theme.dark ? "none" : `2px solid ${theme.primaryBtn}88`,
+                        border: theme.dark
+                            ? "none"
+                            : `2px solid ${theme.primaryBtn}88`,
                         borderRadius: "4px",
                         padding: "6px 10px",
                         cursor: "pointer",
@@ -54,7 +58,7 @@ function App() {
             <Routes>
                 <Route path="/" element={<Inbox />} />
                 <Route path="/signin" element={<Signin />} />
-                <Route path="/inbox" element={<Inbox/>}/>
+                <Route path="/inbox" element={<Inbox />} />
                 <Route path="/signup" element={<Signup />} />
             </Routes>
         </>
