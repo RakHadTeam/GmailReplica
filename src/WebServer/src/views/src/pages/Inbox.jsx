@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
 
 export function Inbox() {
     const [mails, setMails] = useState([
@@ -6,34 +6,37 @@ export function Inbox() {
             id: 1,
             sender: "alice@example.com",
             subject: "Meeting Reminder",
-            preview: "Don’t forget our meeting at 10:00 AM tomorrow...",
             body: "Full content of the meeting reminder email.",
-            time: "9:32 AM",
-            starred: false,
-            deleted: false,
-            label: "Work",
+            createdAt: new Date().toLocaleDateString("en-US", {
+                month: "short",
+                day: "numeric",
+                year: "numeric",
+            }),
+            labels: ["Work"],
         },
         {
             id: 2,
             sender: "bob@example.com",
             subject: "New Project",
-            preview: "Attached docs we discussed. Let me know your thoughts.",
             body: "Here's everything you need to know about the new project...",
-            time: "Yesterday",
-            starred: true,
-            deleted: false,
-            label: "Personal",
+            createdAt: new Date(2023, 9, 1).toLocaleDateString("en-US", {
+                month: "short",
+                day: "numeric",
+                year: "numeric",
+            }),
+            labels: ["Personal"],
         },
         {
             id: 3,
             sender: "team@newsletter.com",
             subject: "Weekly Roundup",
-            preview: "Here’s what happened this week in tech...",
             body: "This week's news covers React updates, Node releases, and more.",
-            time: "Mon",
-            starred: false,
-            deleted: false,
-            label: "Updates",
+            createdAt: new Date(2023, 9, 2).toLocaleDateString("en-US", {
+                month: "short",
+                day: "numeric",
+                year: "numeric",
+            }),
+            labels: ["Updates"],
         },
     ]);
 
@@ -59,20 +62,25 @@ export function Inbox() {
     const handleToggleStar = (mailId) => {
         setMails((prev) =>
             prev.map((mail) =>
-                mail.id === mailId ? { ...mail, starred: !mail.starred } : mail
+                mail.id === mailId
+                    ? {
+                          ...mail,
+                          labels: mail.labels.includes("Starred")
+                              ? mail.labels.filter(
+                                    (label) => label !== "Starred"
+                                )
+                              : [...mail.labels, "Starred"],
+                      }
+                    : mail
             )
         );
         setContextMenu(null);
     };
 
     const handleToggleStarBulk = () => {
-        setMails((prev) =>
-            prev.map((mail) =>
-                selectedMails.includes(mail.id)
-                    ? { ...mail, starred: !mail.starred }
-                    : mail
-            )
-        );
+        for (const mailId of selectedMails) {
+            handleToggleStar(mailId);
+        }
         setContextMenu(null);
     };
 
@@ -86,13 +94,9 @@ export function Inbox() {
     };
 
     const handleDeleteBulk = () => {
-        setMails((prev) =>
-            prev.map((mail) =>
-                selectedMails.includes(mail.id)
-                    ? { ...mail, deleted: true }
-                    : mail
-            )
-        );
+        for (const mailId of selectedMails) {
+            handleDelete(mailId);
+        }
         setContextMenu(null);
         setSelectedMails([]);
     };
@@ -125,15 +129,20 @@ export function Inbox() {
     };
 
     const handleSelectAll = () => {
-        const visibleMailIds = filteredMails.map(mail => mail.id);
+        const visibleMailIds = filteredMails.map((mail) => mail.id);
         setSelectedMails((prev) =>
             prev.length === visibleMailIds.length ? [] : visibleMailIds
         );
     };
 
-    const filteredMails = mails.filter(mail => {
-        return !mail.deleted && (activeLabel === "All" || mail.label === activeLabel);
-    }).slice(-50);
+    const filteredMails = mails
+        .filter((mail) => {
+            return (
+                !mail.deleted &&
+                (activeLabel === "All" || mail.labels.includes(activeLabel))
+            );
+        })
+        .slice(-50);
 
     useEffect(() => {
         const handleClickOutside = (e) => {
@@ -145,9 +154,16 @@ export function Inbox() {
         return () => document.removeEventListener("click", handleClickOutside);
     }, []);
 
-    const uniqueLabels = ["All", ...new Set(mails.map(mail => mail.label))];
-
-    const openMail = mails.find(m => m.id === openMailId);
+    const uniqueLabels = [
+        ...new Set(
+            ["All", "Starred"].concat(
+                mails
+                    .flatMap((mail) => mail.labels)
+                    .filter((label) => label !== "Bin" && label !== "Sent")
+            )
+        ),
+    ];
+    const openMail = mails.find((m) => m.id === openMailId);
 
     return (
         <div className="container py-4">
@@ -155,15 +171,32 @@ export function Inbox() {
 
             <div className="mb-3 d-flex align-items-center justify-content-between">
                 <div>
-                    <button onClick={handleSelectAll} className="btn btn-outline-primary btn-sm">
-                        {selectedMails.length === filteredMails.length ? "Deselect All" : "Select All"}
+                    <button
+                        onClick={handleSelectAll}
+                        className="btn btn-outline-primary btn-sm"
+                    >
+                        {selectedMails.length === filteredMails.length
+                            ? "Deselect All"
+                            : "Select All"}
                     </button>
-                    <span className="ms-3 text-muted">Selected: {selectedMails.length}</span>
+                    <span className="ms-3 text-muted">
+                        Selected: {selectedMails.length}
+                    </span>
                 </div>
                 {selectedMails.length > 0 && (
                     <div>
-                        <button onClick={handleDeleteBulk} className="btn btn-outline-danger btn-sm me-2">Delete Selected</button>
-                        <button onClick={handleToggleStarBulk} className="btn btn-outline-warning btn-sm">Toggle Star</button>
+                        <button
+                            onClick={handleDeleteBulk}
+                            className="btn btn-outline-danger btn-sm me-2"
+                        >
+                            Delete Selected
+                        </button>
+                        <button
+                            onClick={handleToggleStarBulk}
+                            className="btn btn-outline-warning btn-sm"
+                        >
+                            Toggle Star
+                        </button>
                     </div>
                 )}
             </div>
@@ -175,8 +208,10 @@ export function Inbox() {
                     value={activeLabel}
                     onChange={(e) => setActiveLabel(e.target.value)}
                 >
-                    {uniqueLabels.map(label => (
-                        <option key={label} value={label}>{label}</option>
+                    {uniqueLabels.map((label) => (
+                        <option key={label} value={label}>
+                            {label}
+                        </option>
                     ))}
                 </select>
             </div>
@@ -206,7 +241,10 @@ export function Inbox() {
                         />
 
                         <div className="ms-2 me-auto">
-                            <div className="fw-bold d-flex align-items-center" style={{ color: "#343a40" }}>
+                            <div
+                                className="fw-bold d-flex align-items-center"
+                                style={{ color: "#343a40" }}
+                            >
                                 <span>{mail.subject}</span>
                                 <span
                                     onClick={(e) => {
@@ -215,19 +253,27 @@ export function Inbox() {
                                     }}
                                     style={{
                                         marginLeft: "10px",
-                                        color: mail.starred ? "#ffc107" : "#ccc",
+                                        color: mail.labels.includes("Starred")
+                                            ? "#ffc107"
+                                            : "#ccc",
                                         cursor: "pointer",
                                         fontSize: "1.2rem",
                                     }}
-                                    title={mail.starred ? "Unstar" : "Star"}
+                                    title={mail.labels.includes("Starred") ? "Unstar" : "Star"}
                                 >
-                                    {mail.starred ? "★" : "☆"}
+                                    {mail.labels.includes("Starred") ? "★" : "☆"}
                                 </span>
                             </div>
-                            <div className="text-muted small">{mail.sender}</div>
-                            <div style={{ marginTop: "6px", color: "#555" }}>{mail.preview}</div>
+                            <div className="text-muted small">
+                                {mail.sender}
+                            </div>
+                            <div style={{ marginTop: "6px", color: "#555" }}>
+                                {mail.body.slice(0, 100)}...
+                            </div>
                         </div>
-                        <span className="badge bg-secondary rounded-pill">{mail.time}</span>
+                        <span className="badge bg-secondary rounded-pill">
+                            {mail.createdAt}
+                        </span>
                     </div>
                 ))}
             </div>
@@ -236,7 +282,10 @@ export function Inbox() {
                 <div className="card mt-4">
                     <div className="card-header d-flex justify-content-between align-items-center">
                         <h5 className="mb-0">{openMail.subject}</h5>
-                        <button onClick={handleCloseDetail} className="btn-close" />
+                        <button
+                            onClick={handleCloseDetail}
+                            className="btn-close"
+                        />
                     </div>
                     <div className="card-body">
                         <p className="text-muted">From: {openMail.sender}</p>
@@ -253,6 +302,7 @@ export function Inbox() {
                         position: "absolute",
                         top: contextMenu.y,
                         left: contextMenu.x,
+                        cursor: "pointer",
                         zIndex: 1000,
                         backgroundColor: "#ffffff",
                         border: "1px solid #dee2e6",
@@ -263,9 +313,27 @@ export function Inbox() {
                         margin: "0",
                     }}
                 >
-                    <li className="list-group-item list-group-item-action" onClick={() => handleAction("Delete")}>🗑️ Delete</li>
-                    <li className="list-group-item list-group-item-action" onClick={() => handleAction("Star")}>⭐ {mails.find(m => m.id === contextMenu.mailId)?.starred ? "Unstar" : "Star"}</li>
-                    <li className="list-group-item list-group-item-action" onClick={() => handleAction("Move to Label")}>🏷️ Move to Label</li>
+                    <li
+                        className="list-group-item list-group-item-action"
+                        onClick={() => handleAction("Delete")}
+                    >
+                        🗑️ Delete
+                    </li>
+                    <li
+                        className="list-group-item list-group-item-action"
+                        onClick={() => handleAction("Star")}
+                    >
+                        ⭐{" "}
+                        {mails.find((m) => m.id === contextMenu.mailId)?.starred
+                            ? "Unstar"
+                            : "Star"}
+                    </li>
+                    <li
+                        className="list-group-item list-group-item-action"
+                        onClick={() => handleAction("Move to Label")}
+                    >
+                        🏷️ Move to Label
+                    </li>
                 </ul>
             )}
         </div>

@@ -1,7 +1,7 @@
 import { randomUUID } from "crypto";
 import globals from "../core/globals.js";
 import { sendBlacklistCommand } from "./blacklist.model.js";
-import { getUserById, getUserByUsername } from "./user.model.js";
+import { getUserByEmail, getUserById } from "./user.model.js";
 
 export function getLatestMails(token) {
     const user = getUserById(token);
@@ -50,8 +50,7 @@ export async function createMail(token, { subject, body, recipient, draft }) {
         }
     }
 
-    const recipientUser =
-        getUserById(recipient) || getUserByUsername(recipient);
+    const recipientUser = getUserById(recipient) || getUserByEmail(recipient);
     if (!recipientUser && !draft) {
         return { status: 404, error: "Recipient not found" };
     }

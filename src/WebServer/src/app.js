@@ -1,6 +1,18 @@
 import express from "express";
 import apiRouter from "./routes/api.router.js";
 import cookieParser from "cookie-parser";
+import fs from "fs";
+
+const UPLOAD_DIR = "uploads";
+
+// delete the upload directory if it exists
+if (fs.existsSync(UPLOAD_DIR)) {
+    fs.rmSync(UPLOAD_DIR, { recursive: true, force: true });
+}
+
+if (!fs.existsSync(UPLOAD_DIR)) {
+    fs.mkdirSync(UPLOAD_DIR);
+}
 
 const app = express();
 

@@ -1,44 +1,45 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useTheme } from "../context/ThemeContext";
 
 export function Signup() {
     const [fullname, setFullname] = useState("");
     const [email, setEmail] = useState("");
-    const [username, setUsername] = useState("");
     const [picture, setPicture] = useState(null);
     const [password, setPassword] = useState("");
 
     const { theme, changeTheme } = useTheme();
 
+    const navigation = useNavigate();
+
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        const body = {
-            fullname,
-            email,
-            username,
-            password,
-            // picture is omitted since it's a file; handle file upload separately if needed
-        };
+        const formData = new FormData();
+        formData.append("fullname", fullname);
+        formData.append("email", email);
+        formData.append("password", password);
+        formData.append("theme", theme.name);
+        if (picture) {
+            formData.append("picture", picture);
+        }
 
         fetch("/api/users", {
             method: "POST",
-            headers: {
-            "Content-Type": "application/json",
-            },
-            body: JSON.stringify(body),
+            body: formData,
             credentials: "include",
         })
             .then((response) => {
-            if (response.ok) {
-                console.log("Signup successful");
-            } else {
-                console.error("Signup failed");
-            }
+                if (response.ok) {
+                    console.log("Signup successful");
+                    // redirect to sign-in page or show success message
+                    navigation("/signin");
+                } else {
+                    console.error("Signup failed");
+                }
             })
             .catch((error) => {
-            console.error("Error during signup:", error);
+                console.error("Error during signup:", error);
             });
     };
 
@@ -89,19 +90,6 @@ export function Signup() {
                                 id="email"
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
-                                required
-                            />
-                        </div>
-                        <div className="mb-3">
-                            <label htmlFor="username" className="form-label">
-                                Username
-                            </label>
-                            <input
-                                type="text"
-                                className="form-control"
-                                id="username"
-                                value={username}
-                                onChange={(e) => setUsername(e.target.value)}
                                 required
                             />
                         </div>

@@ -1,6 +1,6 @@
 import globals from "../core/globals.js";
 import { getAllLinksFromBody } from "./mails.model.js";
-import { getUserById, getUserByUsername } from "./user.model.js";
+import { getUserById, getUserByEmail } from "./user.model.js";
 
 export function getMailById(token, id) {
     const user = getUserById(token);
@@ -51,7 +51,7 @@ export function updateMailById(token, id, updates) {
     if (updates.recipient) {
         const recipientUser =
             getUserById(updates.recipient) ||
-            getUserByUsername(updates.recipient);
+            getUserByEmail(updates.recipient);
         if (!recipientUser) {
             return { status: 404, error: "Recipient not found" };
         }
@@ -72,7 +72,7 @@ export function updateMailById(token, id, updates) {
         }
 
         const recipientUser =
-            getUserById(mail.recipient) || getUserByUsername(mail.recipient);
+            getUserById(mail.recipient) || getUserByEmail(mail.recipient);
 
         if (!recipientUser) {
             return { status: 404, error: "Recipient not found" };
