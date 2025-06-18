@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import { SettingsPanel } from "./SettingsPanel";
 import { useTheme } from "../context/ThemeContext";
+import ComposeMail from "./ComposeMail";
 
 export function Inbox() {
   const [mails, setMails] = useState([
@@ -201,37 +202,37 @@ export function Inbox() {
           </button>
         </div>
 
-        <div className="mb-3 d-flex align-items-center justify-content-between">
-          <div>
-            <button
-              onClick={handleSelectAll}
-              className="btn btn-outline-primary btn-sm"
-            >
-              {selectedMails.length === filteredMails.length
-                ? "Deselect All"
-                : "Select All"}
-            </button>
-            <span className="ms-3 text-muted">
-              Selected: {selectedMails.length}
-            </span>
-          </div>
-          {selectedMails.length > 0 && (
-            <div>
-              <button
-                onClick={handleDeleteBulk}
-                className="btn btn-outline-danger btn-sm me-2"
-              >
-                Delete Selected
-              </button>
-              <button
-                onClick={handleToggleStarBulk}
-                className="btn btn-outline-warning btn-sm"
-              >
-                Toggle Star
-              </button>
+            <div className="mb-3 d-flex align-items-center justify-content-between">
+                <div>
+                    <button
+                        onClick={handleSelectAll}
+                        className="btn btn-outline-primary btn-sm"
+                    >
+                        {selectedMails.length === filteredMails.length
+                            ? "Deselect All"
+                            : "Select All"}
+                    </button>
+                    <span className="ms-3 text-muted">
+                        Selected: {selectedMails.length}
+                    </span>
+                </div>
+                {selectedMails.length > 0 && (
+                    <div>
+                        <button
+                            onClick={handleDeleteBulk}
+                            className="btn btn-outline-danger btn-sm me-2"
+                        >
+                            Delete Selected
+                        </button>
+                        <button
+                            onClick={handleToggleStarBulk}
+                            className="btn btn-outline-warning btn-sm"
+                        >
+                            Toggle Star
+                        </button>
+                    </div>
+                )}
             </div>
-          )}
-        </div>
 
         <div className="mb-3">
           <label className="form-label me-2">Filter by Label:</label>
