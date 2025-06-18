@@ -21,7 +21,7 @@ export function deleteMailById(userId, id) {
         return { status: 401 };
     }
 
-    const { mail, status, error } = getMailById(token, id);
+    const { mail, status, error } = getMailById(userId, id);
 
     if (error) return { status, error };
 

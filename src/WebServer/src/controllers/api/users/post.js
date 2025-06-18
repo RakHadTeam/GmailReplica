@@ -33,7 +33,13 @@ export function postUsers(req, res) {
         picture: req.file ? req.file.filename : null,
         createdAt: new Date().toISOString(),
         mails: [],
-        labels: [],
+        labels: [
+            {
+                name: "Starred",
+                id: "Starred",
+                mails: []
+            }
+        ],
     };
 
     console.log("New user object: ", newUser);

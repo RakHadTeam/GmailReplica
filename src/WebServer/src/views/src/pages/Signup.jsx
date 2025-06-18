@@ -16,14 +16,14 @@ export function Signup() {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        if (!/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/.test(password)) {
-            setPasswordError(
-                "Password must be at least 8 characters long and include both letters and numbers."
-            );
-            return;
-        } else {
-            setPasswordError("");
-        }
+        // if (!/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/.test(password)) {
+        //     setPasswordError(
+        //         "Password must be at least 8 characters long and include both letters and numbers."
+        //     );
+        //     return;
+        // } else {
+        //     setPasswordError("");
+        // }
 
         const formData = new FormData();
         formData.append("fullname", fullname);

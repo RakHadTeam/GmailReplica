@@ -11,7 +11,8 @@ export function postLabels(req, res) {
     }
 
     let newLabel = {
-        name
+        name,
+        mails:[],
     };
 
     const { status, label } = createLabel(userId, newLabel)
