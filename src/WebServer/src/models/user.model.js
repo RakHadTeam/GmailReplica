@@ -20,3 +20,11 @@ export function createUser(data) {
     globals.users.push(newUser);
     return { status: 201 };
 }
+
+export function updateUserById(id, fieldsToUpdate) {
+    const user = getUserById(id);
+    if (!user) return false;
+
+    Object.assign(user, fieldsToUpdate);
+    return true;
+}
