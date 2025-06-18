@@ -10,7 +10,7 @@ import { requireAuth } from "../middleware/auth.middleware.js";
 export const apiRouter = express.Router();
 
 apiRouter.use("/tokens", tokensRouter); 
-apiRouter.use("/users", usersRouter); 
+apiRouter.use("/users", requireAuth, usersRouter); 
 apiRouter.use("/labels", requireAuth, labelsRouter);
 apiRouter.use("/mails", requireAuth, mailsRouter);
 apiRouter.use("/blacklist", requireAuth, blacklistRouter);
