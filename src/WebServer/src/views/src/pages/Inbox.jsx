@@ -1,47 +1,48 @@
 import React, { useState, useRef, useEffect } from "react";
 import { SettingsPanel } from "./SettingsPanel";
 import { useTheme } from "../context/ThemeContext";
+import ComposeMail from "./ComposeMail";
+
 
 export function Inbox() {
-  const [mails, setMails] = useState([
-    {
-      id: 1,
-      sender: "alice@example.com",
-      subject: "Meeting Reminder",
-      body: "Full content of the meeting reminder email.",
-      createdAt: new Date().toLocaleDateString("en-US", {
-        month: "short",
-        day: "numeric",
-        year: "numeric",
-      }),
-      labels: ["Work"],
-    },
-    {
-      id: 2,
-      sender: "bob@example.com",
-      subject: "New Project",
-      body: "Here's everything you need to know about the new project...",
-      createdAt: new Date(2023, 9, 1).toLocaleDateString("en-US", {
-        month: "short",
-        day: "numeric",
-        year: "numeric",
-      }),
-      labels: ["Personal"],
-    },
-    {
-      id: 3,
-      sender: "team@newsletter.com",
-      subject: "Weekly Roundup",
-      body: "This week's news covers React updates, Node releases, and more.",
-      createdAt: new Date(2023, 9, 2).toLocaleDateString("en-US", {
-        month: "short",
-        day: "numeric",
-        year: "numeric",
-      }),
-      labels: ["Updates"],
-    },
-  ]);
+  const [mails, setMails] = useState([]);
 
+  useEffect(() => {
+    let isMounted = true;
+
+    const fetchMails = async () => {
+      try {
+        const res = await fetch("/api/mails", { method: "GET", credentials: "include" });
+        if (!res.ok) throw new Error(`Fetch failed: ${res.status}`);
+        const mailsData = await res.json();
+
+        const mailsWithUser = await Promise.all(
+          mailsData.map(async (mail) => {
+            const userRes = await fetch(`/api/users/${mail.recipient}`, { credentials: "include" });
+            const user = userRes.ok ? await userRes.json() : {};
+            return {
+              ...mail,
+              recipientName: user.fullname || user.name || mail.recipient,
+              recipientEmail: user.email || "",
+              recipientPicture: user.picture || null,
+              labels: Array.isArray(mail.labels) ? mail.labels : [],
+            };
+          })
+        );
+
+        if (isMounted) setMails(mailsWithUser);
+      } catch (err) {
+        console.error("Error fetching mails:", err);
+      }
+    };
+
+    fetchMails();
+    const intervalId = setInterval(fetchMails, 15000);
+    return () => {
+      isMounted = false;
+      clearInterval(intervalId);
+    };
+  }, []);
   const [contextMenu, setContextMenu] = useState(null);
   const [selectedMails, setSelectedMails] = useState([]);
   const [activeLabel, setActiveLabel] = useState("All");
@@ -50,6 +51,8 @@ export function Inbox() {
   const menuRef = useRef();
   const { theme } = useTheme();
   const toggleSettings = () => setSettingsOpen((prev) => !prev);
+
+
 
   const handleRightClick = (event, mailId) => {
     event.preventDefault();
@@ -201,37 +204,39 @@ export function Inbox() {
           </button>
         </div>
 
-        <div className="mb-3 d-flex align-items-center justify-content-between">
-          <div>
-            <button
-              onClick={handleSelectAll}
-              className="btn btn-outline-primary btn-sm"
-            >
-              {selectedMails.length === filteredMails.length
-                ? "Deselect All"
-                : "Select All"}
-            </button>
-            <span className="ms-3 text-muted">
-              Selected: {selectedMails.length}
-            </span>
-          </div>
-          {selectedMails.length > 0 && (
-            <div>
-              <button
-                onClick={handleDeleteBulk}
-                className="btn btn-outline-danger btn-sm me-2"
-              >
-                Delete Selected
-              </button>
-              <button
-                onClick={handleToggleStarBulk}
-                className="btn btn-outline-warning btn-sm"
-              >
-                Toggle Star
-              </button>
+            <div className="mb-3 d-flex align-items-center justify-content-between">
+                <div>
+                    <ComposeMail />
+                    <button
+                        onClick={handleSelectAll}
+                        className="btn btn-outline-primary btn-sm"
+                    >
+                        {selectedMails.length === filteredMails.length
+                            ? "Deselect All"
+                            : "Select All"}
+                    </button>
+                    <span className="ms-3 text-muted">
+                        Selected: {selectedMails.length}
+                    </span>
+                                    
+                </div>
+                {selectedMails.length > 0 && (
+                    <div>
+                        <button
+                            onClick={handleDeleteBulk}
+                            className="btn btn-outline-danger btn-sm me-2"
+                        >
+                            Delete Selected
+                        </button>
+                        <button
+                            onClick={handleToggleStarBulk}
+                            className="btn btn-outline-warning btn-sm"
+                        >
+                            Toggle Star
+                        </button>
+                    </div>
+                )}
             </div>
-          )}
-        </div>
 
         <div className="mb-3">
           <label className="form-label me-2">Filter by Label:</label>
@@ -295,7 +300,7 @@ export function Inbox() {
                     {mail.labels.includes("Starred") ? "★" : "☆"}
                   </span>
                 </div>
-                <div className="text-muted small">{mail.sender}</div>
+                <div className="text-muted small">{mail.recipient}</div>
                 <div style={{ marginTop: "6px", color: theme.text }}>
                   {mail.body.slice(0, 100)}...
                 </div>
@@ -319,10 +324,26 @@ export function Inbox() {
               <h5 className="mb-0">{openMail.subject}</h5>
               <button onClick={handleCloseDetail} className="btn-close" />
             </div>
-            <div className="card-body">
-              <p className="text-muted">From: {openMail.sender}</p>
-              <p>{openMail.body}</p>
-            </div>
+<div className="card-body">
+  <div className="d-flex align-items-center gap-3">
+    {openMail.recipientPicture && (
+      <img
+        src={`/uploads/${openMail.recipientPicture}`}
+        alt="Profile"
+        className="rounded-circle"
+        style={{
+          width: "48px",
+          height: "48px",
+          objectFit: "cover",
+          border: `2px solid ${theme.primaryBtn}`,
+        }}
+      />
+    )}
+    <p className="text-muted mb-0">From: {openMail.recipientEmail}</p>
+  </div>
+  <hr />
+  <p>{openMail.body}</p>
+</div>
           </div>
         )}
 
