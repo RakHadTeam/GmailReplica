@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import ComposeMail from "./ComposeMail";
 
 export function Inbox() {
     const [mails, setMails] = useState([
@@ -171,6 +172,7 @@ export function Inbox() {
 
             <div className="mb-3 d-flex align-items-center justify-content-between">
                 <div>
+                    <ComposeMail />
                     <button
                         onClick={handleSelectAll}
                         className="btn btn-outline-primary btn-sm"
@@ -182,6 +184,7 @@ export function Inbox() {
                     <span className="ms-3 text-muted">
                         Selected: {selectedMails.length}
                     </span>
+                                    
                 </div>
                 {selectedMails.length > 0 && (
                     <div>
