@@ -1,6 +1,7 @@
 import express from "express";
 import { postUsers, upload } from "../controllers/api/users/post.js";
 import { userRouter } from "./user.router.js";
+import { requireAuth } from "../middleware/auth.middleware.js";
 
 export const usersRouter = express.Router({ mergeParams: true });
 
