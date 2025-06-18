@@ -216,6 +216,7 @@ export function Inbox() {
                     <span className="ms-3 text-muted">
                         Selected: {selectedMails.length}
                     </span>
+                                    
                 </div>
                 {selectedMails.length > 0 && (
                     <div>
