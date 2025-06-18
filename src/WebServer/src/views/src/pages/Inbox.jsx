@@ -204,6 +204,7 @@ export function Inbox() {
 
             <div className="mb-3 d-flex align-items-center justify-content-between">
                 <div>
+                    <ComposeMail />
                     <button
                         onClick={handleSelectAll}
                         className="btn btn-outline-primary btn-sm"
