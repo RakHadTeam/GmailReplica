@@ -1,7 +1,25 @@
-import { useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
+import useLabels from "./useLabels.js";
 
-export default function useMailState() {
+const MailContext = createContext();
+
+export const MailProvider = ({ children }) => {
     const [mails, setMails] = useState([]);
+    const [filteredMails, setFilteredMails] = useState([]);
+    const { starredIds, labels, activeLabel } = useLabels();
+    const [selectedMails, setSelectedMails] = useState([]);
+
+    useEffect(() => {
+        setFilteredMails(
+            mails.filter((mail) => {
+                if (activeLabel === "All") return true;
+                if (activeLabel === "Starred")
+                    return starredIds.includes(mail.id);
+                const lbl = labels.find((l) => l.id === activeLabel);
+                return Array.isArray(lbl?.mails) && lbl.mails.includes(mail.id);
+            })
+        );
+    }, [mails, activeLabel, starredIds, labels]);
 
     const fetchMails = async () => {
         try {
@@ -16,8 +34,7 @@ export default function useMailState() {
                     const user = uRes.ok ? await uRes.json() : {};
                     return {
                         ...mail,
-                        recipientName:
-                            user.fullname || user.name || mail.recipient,
+                        recipientName: user.fullname || user.name || mail.recipient,
                         recipientEmail: user.email || "",
                         recipientPicture: user.picture || null,
                     };
@@ -29,5 +46,20 @@ export default function useMailState() {
         }
     };
 
-    return { mails, fetchMails };
+    return (
+        <MailContext.Provider value={{
+            mails,
+            fetchMails,
+            filteredMails,
+            setFilteredMails,
+            selectedMails,
+            setSelectedMails,
+        }}>
+            {children}
+        </MailContext.Provider>
+    );
+};
+
+export default function useMails() {
+    return useContext(MailContext);
 }

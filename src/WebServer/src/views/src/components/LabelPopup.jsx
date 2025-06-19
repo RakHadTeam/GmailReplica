@@ -2,16 +2,16 @@
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useTheme } from "../context/ThemeContext";
+import useLabelHandlers from "../hooks/useLabelHandlers.js";
 import useLabels from "../hooks/useLabels.js";
+import useUiState from "../hooks/useUIStates.js";
 
-export default function LabelPopup({
-    onClose,
-    position,
-    handleLabelToggle,
-    toggleLabelManager,
-}) {
+export default function LabelPopup({ position }) {
     const { darkTheme } = useTheme();
     const { labels, fetchLabels } = useLabels();
+    const { handleLabelToggle } = useLabelHandlers();
+    const { toggleLabelManager, setShowLabelPopup } = useUiState();
+
     const [newLabel, setNewLabel] = useState("");
     const [error, setError] = useState("");
     const [searchTerm, setSearchTerm] = useState("");
@@ -19,10 +19,12 @@ export default function LabelPopup({
     const navigate = useNavigate();
     const popupRef = useRef(null);
 
+    const closeLabelPopup = () => setShowLabelPopup(false);
+
     useEffect(() => {
         function handleClickOutside(event) {
             if (popupRef.current && !popupRef.current.contains(event.target)) {
-                onClose();
+                closeLabelPopup();
             }
         }
 
@@ -85,7 +87,10 @@ export default function LabelPopup({
             >
                 <div className="d-flex justify-content-between align-items-center p-3 border-bottom">
                     <h5 className="m-0">Labels</h5>
-                    <button className="btn-close" onClick={onClose}></button>
+                    <button
+                        className="btn-close"
+                        onClick={closeLabelPopup}
+                    ></button>
                 </div>
 
                 {error && (

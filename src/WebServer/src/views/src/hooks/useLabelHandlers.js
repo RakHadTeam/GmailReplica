@@ -1,13 +1,13 @@
+import useLabels from "./useLabels.js";
+import useMails from "./useMails.js";
+import useUiState from "./useUIStates.js";
+
 // useLabelHandlers.js
-export default function useLabelHandlers({
-    labels,
-    selectedMails,
-    contextMenu,
-    fetchLabels,
-    fetchMails,
-    setShowLabelMenu,
-    setContextMenu,
-}) {
+export default function useLabelHandlers() {
+    const { labels, fetchLabels } = useLabels();
+    const { selectedMails, fetchMails } = useMails();
+    const { setContextMenu, contextMenu, setShowLabelMenu } = useUiState();
+
     const handleLabelToggle = async (labelId) => {
         const targets = selectedMails.length
             ? selectedMails

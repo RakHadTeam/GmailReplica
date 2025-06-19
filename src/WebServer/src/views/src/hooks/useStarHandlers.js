@@ -1,12 +1,12 @@
+import useLabels from "./useLabels.js";
+import useMails from "./useMails.js";
+import useUiState from "./useUIStates.js";
+
 // useStarHandlers.js
-export default function useStarHandlers({
-    labels,
-    setStarredIds,
-    fetchLabels,
-    fetchMails,
-    setContextMenu,
-    selectedMails,
-}) {
+export default function useStarHandlers() {
+    const { labels, fetchLabels, setStarredIds } = useLabels();
+    const { selectedMails, fetchMails } = useMails();
+    const { setContextMenu } = useUiState();
     const handleToggleStar = async (id) => {
         setContextMenu(null);
 

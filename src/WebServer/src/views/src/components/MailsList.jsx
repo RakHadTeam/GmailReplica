@@ -1,24 +1,46 @@
+import { useEffect } from "react";
 import { useTheme } from "../context/ThemeContext";
+import useMailHandlers from "../hooks/useMailHandlers.js";
+import useMails from "../hooks/useMails.js";
+import useStarHandlers from "../hooks/useStarHandlers.js";
+import useUiState from "../hooks/useUIStates.js";
+import useLabels from "../hooks/useLabels.js";
 
-export default function MailList({
-    mails,
-    selectedMails,
-    handleSelect,
-    handleRightClick,
-    handleOpenMail,
-    handleToggleStar,
-    starredIds,
-}) {
+export default function MailList() {
+    const { mails, selectedMails } = useMails();
+    const { setShowLabelPopup, setContextMenu } = useUiState();
+    const { starredIds } = useLabels();
+    const { handleSelect, handleOpenMail } = useMailHandlers();
+    const { handleToggleStar } = useStarHandlers();
+
+    const handleRightClick = (e, mailId) => {
+        e.preventDefault();
+        setContextMenu({ x: e.pageX, y: e.pageY, mailId });
+        setShowLabelPopup(false);
+    };
+
+    useEffect( () => {
+        console.log("MailList component mounted");
+        console.log("Mails:", mails);
+    }, [mails]);
+
     const { darkTheme } = useTheme();
     return (
         <div className="w-100">
-            <div className={`table w-100 ${darkTheme ? "bg-dark text-white" : "bg-white text-dark"}`}>
+            <div
+                className={`table w-100 ${
+                    darkTheme ? "bg-dark text-white" : "bg-white text-dark"
+                }`}
+            >
                 {mails.map((mail) => {
                     const isSelected = selectedMails.includes(mail.id);
+                    console.log("Mail ID:", mail.id, "Selected:", isSelected);
                     return (
                         <div
                             key={mail.id}
-                            className={`d-flex align-items-center border-bottom py-2 px-3 hover-bg ${isSelected ? 'bg-primary bg-opacity-10' : ''} ${darkTheme ? "bg-dark text-white" : ""}`}
+                            className={`d-flex align-items-center border-bottom py-2 px-3 hover-bg ${
+                                isSelected ? "bg-primary bg-opacity-10" : ""
+                            } ${darkTheme ? "bg-dark text-white" : ""}`}
                             onContextMenu={(e) => handleRightClick(e, mail.id)}
                             onClick={() => handleOpenMail(mail.id)}
                         >
@@ -52,27 +74,37 @@ export default function MailList({
                             </span>
                             <div className="d-flex align-items-center flex-grow-1 overflow-hidden text-truncate">
                                 <div
-                                    className={`me-2 text-truncate ${darkTheme ? "text-white" : ""}`}
-                                    style={{ width: "200px", background: "none" }}
+                                    className={`me-2 text-truncate ${
+                                        darkTheme ? "text-white" : ""
+                                    }`}
+                                    style={{
+                                        width: "200px",
+                                        background: "none",
+                                    }}
                                 >
                                     {mail.recipientName}
                                 </div>
                                 <div
-                                    className={`small text-truncate ${darkTheme ? "text-white" : ""}`}
+                                    className={`small text-truncate ${
+                                        darkTheme ? "text-white" : ""
+                                    }`}
                                     style={{ background: "none" }}
                                 >
                                     {mail.body.slice(0, 100)}…
                                 </div>
                             </div>
                             <div className="text-nowrap small ms-auto">
-                                {new Date(mail.createdAt).toLocaleString("en-US", {
-                                    month: "short",
-                                    day: "numeric",
-                                    year: "numeric",
-                                    hour: "numeric",
-                                    minute: "2-digit",
-                                    hour12: true,
-                                })}
+                                {new Date(mail.createdAt).toLocaleString(
+                                    "en-US",
+                                    {
+                                        month: "short",
+                                        day: "numeric",
+                                        year: "numeric",
+                                        hour: "numeric",
+                                        minute: "2-digit",
+                                        hour12: true,
+                                    }
+                                )}
                             </div>
                         </div>
                     );

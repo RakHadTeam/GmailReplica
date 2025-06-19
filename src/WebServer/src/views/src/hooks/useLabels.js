@@ -1,8 +1,11 @@
-import { useState } from "react";
+import { createContext, useContext, useState } from "react";
 
-export default function useLabels() {
+const LabelContext = createContext();
+
+export const LabelProvider = ({ children }) => {
     const [labels, setLabels] = useState([]);
     const [starredIds, setStarredIds] = useState([]);
+    const [activeLabel, setActiveLabel] = useState("All");
 
     const fetchLabels = async () => {
         try {
@@ -19,5 +22,21 @@ export default function useLabels() {
         }
     };
 
-    return { labels, setLabels, starredIds, setStarredIds, fetchLabels };
+    return (
+        <LabelContext.Provider value={{
+            labels,
+            setLabels,
+            starredIds,
+            setStarredIds,
+            fetchLabels,
+            activeLabel,
+            setActiveLabel,
+        }}>
+            {children}
+        </LabelContext.Provider>
+    );
+};
+
+export default function useLabels() {
+    return useContext(LabelContext);
 }

@@ -1,20 +1,15 @@
-import useLabels from "../hooks/useLabels.js";
+import useMailHandlers from "../hooks/useMailHandlers.js";
+import useStarHandlers from "../hooks/useStarHandlers.js";
+import useUiState from "../hooks/useUIStates.js";
 import LabelPopup from "./LabelPopup";
 
-export default function ContextMenu({
-    contextMenu,
-    menuRef,
-    handleDelete,
-    handleToggleStar,
-    selectedMails,
-    handleLabelToggle,
-    showLabelMenu,
-    setShowLabelMenu,
-}) {
-    const { labels } = useLabels();
+export default function ContextMenu() {
+    const { contextMenu, menuRef, showLabelPopup, setShowLabelPopup } =
+        useUiState();
+    const { handleDelete } = useMailHandlers();
+    const { handleToggleStar } = useStarHandlers();
 
     if (!contextMenu) return null;
-    const targets = selectedMails.length ? selectedMails : [contextMenu.mailId];
 
     return (
         <div
@@ -43,25 +38,20 @@ export default function ContextMenu({
                 Star
             </button>
             <div
-                onMouseEnter={() => setShowLabelMenu(true)}
-                onMouseLeave={() => setShowLabelMenu(false)}
+                onMouseEnter={() => setShowLabelPopup(true)}
+                onMouseLeave={() => setShowLabelPopup(false)}
                 className="position-relative"
             >
                 <button className="btn btn-light w-100 text-start d-flex align-items-center gap-2">
                     <span className="material-symbols-rounded">label</span>
                     Add Label
                 </button>
-                {showLabelMenu && (
+                {showLabelPopup && (
                     <div
                         className="position-absolute"
                         style={{ top: 0, left: "100%" }}
                     >
-                        <LabelPopup
-                            labels={labels}
-                            selectedMails={targets}
-                            handleLabelToggle={handleLabelToggle}
-                            position={{ x: 0, y: 0 }}
-                        />
+                        <LabelPopup position={{ x: 0, y: 0 }} />
                     </div>
                 )}
             </div>

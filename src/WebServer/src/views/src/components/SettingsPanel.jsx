@@ -2,9 +2,11 @@ import { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext.jsx";
 import { useTheme } from "../context/ThemeContext.jsx";
+import useUiState from "../hooks/useUIStates.js";
 
-export default function SettingsPanel({ onClose }) {
+export default function SettingsPanel() {
     const [fullName, setFullName] = useState("");
+    const { toggleSettings } = useUiState();
     const [profileImage, setProfileImage] = useState(null);
     const [currentUser, setCurrentUser] = useState(null);
     const { setSignedin } = useContext(AuthContext);
@@ -58,7 +60,7 @@ export default function SettingsPanel({ onClose }) {
 
             if (res.ok) {
                 alert("Settings updated successfully!");
-                onClose();
+                toggleSettings();
             } else {
                 alert("Failed to update settings.");
             }
@@ -90,20 +92,33 @@ export default function SettingsPanel({ onClose }) {
     return (
         <div className="position-fixed top-0 start-0 vw-100 vh-100 d-flex align-items-center justify-content-center bg-dark bg-opacity-50 z-3">
             <div
-                className={`card p-4 rounded-4 shadow w-100 ${darkTheme ? "bg-dark text-white" : "bg-white text-dark"}`}
+                className={`card p-4 rounded-4 shadow w-100 ${
+                    darkTheme ? "bg-dark text-white" : "bg-white text-dark"
+                }`}
                 style={{ maxWidth: "400px" }}
             >
                 <div className="d-flex justify-content-between align-items-center mb-4">
                     <div className="d-flex align-items-center gap-2">
-                        <span className="material-symbols-rounded" style={{ fontSize: "1.5rem" }}>settings</span>
+                        <span
+                            className="material-symbols-rounded"
+                            style={{ fontSize: "1.5rem" }}
+                        >
+                            settings
+                        </span>
                         <h5 className="mb-0">Settings</h5>
                     </div>
-                    <button className="btn-close" onClick={onClose}></button>
+                    <button
+                        className="btn-close"
+                        onClick={toggleSettings}
+                    ></button>
                 </div>
 
                 {currentUser && (
                     <div className="mb-3 text-center">
-                        <div className="alert alert-secondary bg-opacity-10 text-center" role="alert">
+                        <div
+                            className="alert alert-secondary bg-opacity-10 text-center"
+                            role="alert"
+                        >
                             Logged in as <strong>{currentUser.fullname}</strong>
                         </div>
                         {currentUser.picture && (
@@ -150,7 +165,10 @@ export default function SettingsPanel({ onClose }) {
                     </div>
 
                     <div className="d-grid">
-                        <button type="submit" className="btn btn-primary w-100 mb-2">
+                        <button
+                            type="submit"
+                            className="btn btn-primary w-100 mb-2"
+                        >
                             Save Changes
                         </button>
                     </div>
@@ -163,7 +181,13 @@ export default function SettingsPanel({ onClose }) {
                             className="btn btn-outline-danger w-100 d-flex align-items-center justify-content-center"
                             onClick={handleLogout}
                         >
-                            <span className="material-symbols-rounded me-2" style={{ verticalAlign: "middle" }}>logout</span> Logout
+                            <span
+                                className="material-symbols-rounded me-2"
+                                style={{ verticalAlign: "middle" }}
+                            >
+                                logout
+                            </span>{" "}
+                            Logout
                         </button>
                     </div>
                 </form>

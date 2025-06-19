@@ -1,10 +1,11 @@
 import React, { useContext } from "react";
 import { useTheme } from "../context/ThemeContext";
 import useLabels from "../hooks/useLabels.js";
+import useUiState from "../hooks/useUIStates.js";
 
-export default function MailFilter({ activeLabel, setActiveLabel }) {
-    const { darkTheme } = useTheme()
-    const { labels } = useLabels();
+export default function MailFilter() {
+    const { darkTheme } = useTheme();
+    const { labels, activeLabel, setActiveLabel } = useLabels();
     return (
         <div className="mb-3">
             <label className="form-label me-2">Filter:</label>

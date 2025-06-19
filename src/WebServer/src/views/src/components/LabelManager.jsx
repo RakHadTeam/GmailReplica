@@ -2,8 +2,11 @@ import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useTheme } from "../context/ThemeContext.jsx";
 import useLabels from "../hooks/useLabels.js";
+import useUiState from "../hooks/useUIStates.js";
 
-export default function LabelManager({ onLabelsChange, onClose }) {
+export default function LabelManager() {
+    const { setLabels } = useLabels();
+    const { toggleLabelManager } = useUiState();
     const { darkTheme } = useTheme();
     const [searchTerm, setSearchTerm] = useState("");
     const navigate = useNavigate();
@@ -17,7 +20,7 @@ export default function LabelManager({ onLabelsChange, onClose }) {
     useEffect(() => {
         function handleClickOutside(event) {
             if (popupRef.current && !popupRef.current.contains(event.target)) {
-                onClose();
+                toggleLabelManager();
             }
         }
         document.addEventListener("mousedown", handleClickOutside);
@@ -65,7 +68,7 @@ export default function LabelManager({ onLabelsChange, onClose }) {
                 },
             });
             if (!res.ok) throw new Error("Failed to delete label");
-            onLabelsChange(labels.filter((label) => label.id !== id));
+            setLabels(labels.filter((label) => label.id !== id));
         } catch (err) {
             console.error(err);
             setError("Error deleting label.");
@@ -88,7 +91,7 @@ export default function LabelManager({ onLabelsChange, onClose }) {
                     <button
                         className="btn-close"
                         aria-label="Close"
-                        onClick={onClose}
+                        onClick={toggleLabelManager}
                     ></button>
                 </div>
 

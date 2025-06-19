@@ -1,27 +1,30 @@
 import { useState } from "react";
 import { useTheme } from "../context/ThemeContext";
+import useMailHandlers from "../hooks/useMailHandlers.js";
+import useMails from "../hooks/useMails.js";
+import useUiState from "../hooks/useUIStates.js";
 import ComposeMail from "./ComposeMail.jsx";
 import LabelPopup from "./LabelPopup";
-import useLabels from "../hooks/useLabels.js";
+import SettingsPanel from "./SettingsPanel.jsx";
 
-export default function InboxHeader({
-    toggleSettings,
-    toggleLabels,
-    handleSelectAll,
-    selectedMails,
-    filteredMails,
-    handleDeleteBulk,
-    handleToggleStarBulk,
-    toggleLabelManager,
-    handleLabelToggle,
-    onLabelsChange,
-}) {
-    const [labelPopupPos, setLabelPopupPos] = useState(null);
-    const [showCompose, setShowCompose] = useState(false);
-    const { labels } = useLabels();
+export default function InboxHeader() {
+    const { filteredMails, selectedMails } = useMails();
+    const { handleDeleteBulk, handleSelectAll } = useMailHandlers();
+    const {
+        settingsOpen,
+        toggleSettings,
+        handleToggleStarBulk,
+        showLabelPopup,
+        setShowLabelPopup,
+        showCompose,
+        toggleShowCompose,
+    } = useUiState();
+
     const { darkTheme } = useTheme();
-
-    const closeLabelPopup = () => setLabelPopupPos(null);
+    const [labelPopupPosition, setLabelPopupPosition] = useState({
+        x: 0,
+        y: 0,
+    });
 
     return (
         <>
@@ -75,11 +78,11 @@ export default function InboxHeader({
                                 onClick={(e) => {
                                     const rect =
                                         e.target.getBoundingClientRect();
-                                    setLabelPopupPos({
+                                    setLabelPopupPosition({
                                         x: rect.left,
-                                        y: rect.bottom + window.scrollY,
+                                        y: rect.bottom,
                                     });
-                                    toggleLabels();
+                                    setShowLabelPopup(true);
                                 }}
                             >
                                 label
@@ -95,7 +98,11 @@ export default function InboxHeader({
                     )}
                 </div>
                 <div className="ms-auto d-flex align-items-center">
-                    <small className={`me-3 ${darkTheme ? "text-light" : "text-muted"}`}>
+                    <small
+                        className={`me-3 ${
+                            darkTheme ? "text-light" : "text-muted"
+                        }`}
+                    >
                         1–50 of {filteredMails.length}
                     </small>
                     <span
@@ -111,17 +118,17 @@ export default function InboxHeader({
                         chevron_right
                     </span>
                     <span
-                      className="material-symbols-rounded me-2"
-                      style={{ cursor: "pointer" }}
-                      onClick={toggleSettings}
+                        className="material-symbols-rounded me-2"
+                        style={{ cursor: "pointer" }}
+                        onClick={toggleSettings}
                     >
-                      settings
+                        settings
                     </span>
                     <button
                         className={`btn btn-sm ${
                             darkTheme ? "btn-primary" : "btn-outline-primary"
                         } ms-3`}
-                        onClick={() => setShowCompose(true)}
+                        onClick={toggleShowCompose}
                     >
                         <span className="material-symbols-rounded me-1">
                             edit
@@ -130,17 +137,13 @@ export default function InboxHeader({
                     </button>
                 </div>
             </div>
-            {labelPopupPos && selectedMails.length > 0 && (
-                <LabelPopup
-                    labels={labels}
-                    onLabelsChange={onLabelsChange}
-                    position={labelPopupPos}
-                    onClose={closeLabelPopup}
-                    handleLabelToggle={handleLabelToggle}
-                    toggleLabelManager={toggleLabelManager}
-                />
+            {showLabelPopup && (
+                <div className="position-absolute">
+                    <LabelPopup position={{ x: 220, y: 0 }} />
+                </div>
             )}
-            {showCompose && <ComposeMail show={showCompose} onClose={() => setShowCompose(false)} />}
+            {showCompose && <ComposeMail />}
+            {settingsOpen && <SettingsPanel />}
         </>
     );
 }
