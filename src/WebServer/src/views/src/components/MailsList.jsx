@@ -10,7 +10,7 @@ import MailDetail from "./MailDetail.jsx";
 export default function MailList() {
     const { filteredMails, selectedMails, setSelectedMails } = useMails();
     const { setShowLabelPopup, setContextMenu, openMailId } = useUIs();
-    const { starredIds } = useLabels();
+    const { starredIds, activeLabel } = useLabels();
     const { handleSelect, handleOpenMail, handleCloseDetail } = useMailHandlers();
     const { handleToggleStar } = useStarHandlers();
 
@@ -69,22 +69,34 @@ export default function MailList() {
                                     ? "check_box"
                                     : "check_box_outline_blank"}
                             </span>
-                            <span
-                                className="me-3"
-                                style={{
-                                    color: starredIds.includes(mail.id)
-                                        ? "#fbbc04"
-                                        : "#ccc",
-                                    fontSize: "20px",
-                                    cursor: "pointer",
-                                }}
-                                onClick={(e) => {
-                                    e.stopPropagation();
-                                    handleToggleStar(mail.id);
-                                }}
-                            >
-                                {starredIds.includes(mail.id) ? "★" : "☆"}
-                            </span>
+                            {activeLabel === "Bin" ? (
+                                <span
+                                    className="material-symbols-rounded me-3"
+                                    style={{
+                                        color: darkTheme ? "white" : "black",
+                                        fontSize: "20px",
+                                    }}
+                                >
+                                    delete
+                                </span>
+                            ) : (
+                                <span
+                                    className="me-3"
+                                    style={{
+                                        color: starredIds.includes(mail.id)
+                                            ? "#fbbc04"
+                                            : "#ccc",
+                                        fontSize: "20px",
+                                        cursor: "pointer",
+                                    }}
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        handleToggleStar(mail.id);
+                                    }}
+                                >
+                                    {starredIds.includes(mail.id) ? "★" : "☆"}
+                                </span>
+                            )}
                             <div className="d-flex align-items-center flex-grow-1 overflow-hidden text-truncate">
                                 <div
                                     className={`me-2 text-truncate ${
