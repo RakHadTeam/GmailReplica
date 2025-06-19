@@ -9,12 +9,12 @@ import SettingsPanel from "../components/SettingsPanel";
 import { useTheme } from "../context/ThemeContext";
 import useLabels from "../hooks/useLabels.js";
 import useMails from "../hooks/useMails.js";
-import useUIState from "../hooks/useUIStates.js";
+import useUIs from "../hooks/useUIs.js";
 
 export function Inbox() {
     const { fetchMails } = useMails();
     const { fetchLabels } = useLabels();
-    const { settingsOpen, labelManagerOpen } = useUIState();
+    const { settingsOpen, labelManagerOpen } = useUIs();
     const { darkTheme } = useTheme();
 
     useEffect(() => {

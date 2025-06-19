@@ -1,16 +1,17 @@
-// src/components/LabelManager.jsx
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useTheme } from "../context/ThemeContext";
 import useLabelHandlers from "../hooks/useLabelHandlers.js";
 import useLabels from "../hooks/useLabels.js";
-import useUiState from "../hooks/useUIStates.js";
+import useMails from "../hooks/useMails.js";
+import useUIs from "../hooks/useUIs.js";
 
-export default function LabelPopup({ position }) {
+export default function LabelPopup({ closeLabelPopup, position }) {
     const { darkTheme } = useTheme();
     const { labels, fetchLabels } = useLabels();
-    const { handleLabelToggle } = useLabelHandlers();
-    const { toggleLabelManager, setShowLabelPopup } = useUiState();
+    const { handleLabelToggleOnMailId } = useLabelHandlers();
+    const { toggleLabelManager, setShowLabelPopup } = useUIs();
+    const { selectedMails } = useMails();
 
     const [newLabel, setNewLabel] = useState("");
     const [error, setError] = useState("");
@@ -19,18 +20,20 @@ export default function LabelPopup({ position }) {
     const navigate = useNavigate();
     const popupRef = useRef(null);
 
-    const closeLabelPopup = () => setShowLabelPopup(false);
-
     useEffect(() => {
-        function handleClickOutside(event) {
+        const handleClickOutside = (event) => {
             if (popupRef.current && !popupRef.current.contains(event.target)) {
                 closeLabelPopup();
             }
-        }
+        };
 
-        document.addEventListener("mousedown", handleClickOutside);
+        const delayedClickHandler = (event) => {
+            setTimeout(() => handleClickOutside(event), 0);
+        };
+
+        document.addEventListener("mousedown", delayedClickHandler);
         return () => {
-            document.removeEventListener("mousedown", handleClickOutside);
+            document.removeEventListener("mousedown", delayedClickHandler);
         };
     }, []);
 
@@ -68,6 +71,19 @@ export default function LabelPopup({ position }) {
             name.toLowerCase().includes(searchTerm.toLowerCase()) &&
             name.toLowerCase() !== "starred"
     );
+
+    const getLabelState = (labelId) => {
+        const label = labels.find((l) => l.id === labelId);
+        if (!label) return "none";
+
+        const withLabel = selectedMails.filter((mail) =>
+            label.mails.includes(mail)
+        ).length;
+
+        if (withLabel === selectedMails.length) return "all";
+        if (withLabel > 0) return "some";
+        return "none";
+    };
 
     return (
         <div
@@ -117,21 +133,54 @@ export default function LabelPopup({ position }) {
                     className="list-group list-group-flush mb-2 mx-3"
                     style={{ maxHeight: "250px", overflowY: "auto" }}
                 >
-                    {filteredLabels.map(({ id, name }) => (
-                        <label
-                            key={id}
-                            className="list-group-item d-flex align-items-center"
-                        >
-                            <div className="d-flex align-items-center gap-2">
-                                <input
-                                    type="checkbox"
-                                    className="form-check-input"
-                                    onChange={(e) => handleLabelToggle(id)}
-                                />
-                                {name}
-                            </div>
-                        </label>
-                    ))}
+                    {filteredLabels.map(({ id, name }) => {
+                        const state = getLabelState(id);
+                        let icon = "check_box_outline_blank";
+                        if (state === "all") icon = "check_box";
+                        else if (state === "some")
+                            icon = "indeterminate_check_box";
+
+                        return (
+                            <label
+                                key={id}
+                                className="list-group-item d-flex align-items-center"
+                                style={{ cursor: "pointer" }}
+                                onClick={() => {
+                                    if (state === "some") {
+                                        selectedMails.forEach((mail) => {
+                                            const hasLabel = labels
+                                                .find((l) => l.id === id)
+                                                ?.mails.includes(mail);
+                                            if (hasLabel) {
+                                                console.log(
+                                                    `Removing label ${id} from mail ${mail}`
+                                                );
+                                                handleLabelToggleOnMailId(
+                                                    id,
+                                                    mail
+                                                );
+                                            }
+                                        });
+                                    } else if (state === "all") {
+                                        selectedMails.forEach((mail) => {
+                                            handleLabelToggleOnMailId(id, mail);
+                                        });
+                                    } else {
+                                        selectedMails.forEach((mail) => {
+                                            handleLabelToggleOnMailId(id, mail);
+                                        });
+                                    }
+                                }}
+                            >
+                                <div className="d-flex align-items-center gap-2">
+                                    <span className="material-symbols-rounded">
+                                        {icon}
+                                    </span>
+                                    {name}
+                                </div>
+                            </label>
+                        );
+                    })}
                 </div>
 
                 <div className="border-top pt-2 mx-3 mb-3">

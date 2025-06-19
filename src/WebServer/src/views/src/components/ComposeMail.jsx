@@ -1,10 +1,10 @@
 import { useState } from "react";
 import { useTheme } from "../context/ThemeContext";
-import useUiState from "../hooks/useUIStates.js";
+import useUIs from "../hooks/useUIs.js";
 
 export default function ComposeMail() {
     const { darkTheme } = useTheme();
-    const { toggleShowCompose } = useUiState();
+    const { toggleShowCompose } = useUIs();
 
     const [recipient, setRecipient] = useState("");
     const [subject, setSubject] = useState("");
@@ -75,15 +75,6 @@ export default function ComposeMail() {
                     <div className="d-flex justify-content-between align-items-center px-3 py-2 border-bottom">
                         <div className="fw-semibold">New Message</div>
                         <div className="d-flex gap-2 align-items-center">
-                            <button className="btn btn-sm btn-icon">
-                                <span
-                                    className={`material-symbols-rounded ${
-                                        darkTheme ? "text-white" : ""
-                                    }`}
-                                >
-                                    open_in_full
-                                </span>
-                            </button>
                             <button
                                 className="btn btn-sm btn-icon"
                                 onClick={handleClose}

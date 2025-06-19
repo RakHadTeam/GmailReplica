@@ -1,45 +1,19 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext.jsx";
 import { useTheme } from "../context/ThemeContext.jsx";
-import useUiState from "../hooks/useUIStates.js";
+import useUIs from "../hooks/useUIs.js";
 
 export default function SettingsPanel() {
-    const [fullName, setFullName] = useState("");
-    const { toggleSettings } = useUiState();
-    const [profileImage, setProfileImage] = useState(null);
-    const [currentUser, setCurrentUser] = useState(null);
-    const { setSignedin } = useContext(AuthContext);
+    const {
+        fullName, setFullName,
+        profileImage, setProfileImage,
+        currentUser, setCurrentUser,
+        setSignedin
+    } = useContext(AuthContext);
+    const { toggleSettings } = useUIs();
     const { darkTheme } = useTheme();
     const navigate = useNavigate();
-
-    useEffect(() => {
-        const fetchUser = async () => {
-            try {
-                const res = await fetch("/api/me", {
-                    method: "GET",
-                    credentials: "include",
-                });
-
-                if (!res.ok) throw new Error("Failed to fetch /api/me");
-                const { userId } = await res.json();
-
-                const userRes = await fetch(`/api/users/${userId}`, {
-                    method: "GET",
-                    credentials: "include",
-                });
-
-                if (!userRes.ok) throw new Error("Failed to fetch user data");
-                const userData = await userRes.json();
-                setCurrentUser(userData);
-                setFullName(userData.fullname);
-            } catch (err) {
-                console.error("Error fetching user info:", err);
-            }
-        };
-
-        fetchUser();
-    }, []);
 
     const handleSubmit = async (e) => {
         e.preventDefault();

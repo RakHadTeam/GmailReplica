@@ -1,10 +1,10 @@
 import useMails from "./useMails.js";
-import useUiState from "./useUIStates.js";
+import useUIs from "./useUIs.js";
 
-// useMailHandlers.js
 export default function useMailHandlers() {
-    const { fetchMails, filteredMails, selectedMails, setSelectedMails } = useMails();
-    const { setOpenMailId, setContextMenu } = useUiState();
+    const { filteredMails, selectedMails, setSelectedMails, setMails } =
+        useMails();
+    const { setOpenMailId, setContextMenu } = useUIs();
 
     const handleOpenMail = (mailId) => setOpenMailId(mailId);
     const handleCloseDetail = () => setOpenMailId(null);
@@ -28,7 +28,7 @@ export default function useMailHandlers() {
         } catch (err) {
             console.error(err);
         }
-        await fetchMails();
+        setMails((prev) => prev.filter((mail) => mail.id !== id));
         setContextMenu(null);
     };
 
@@ -41,7 +41,7 @@ export default function useMailHandlers() {
                 }).catch(console.error)
             )
         );
-        await fetchMails();
+        setMails((prev) => prev.filter((mail) => !selectedMails.includes(mail.id)));
         setSelectedMails([]);
         setContextMenu(null);
     };

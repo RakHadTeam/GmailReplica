@@ -1,30 +1,35 @@
-import { useState } from "react";
 import { useTheme } from "../context/ThemeContext";
+import useLabels from "../hooks/useLabels.js";
 import useMailHandlers from "../hooks/useMailHandlers.js";
 import useMails from "../hooks/useMails.js";
-import useUiState from "../hooks/useUIStates.js";
+import useStarHandlers from "../hooks/useStarHandlers.js";
+import useUIs from "../hooks/useUIs.js";
 import ComposeMail from "./ComposeMail.jsx";
 import LabelPopup from "./LabelPopup";
 import SettingsPanel from "./SettingsPanel.jsx";
 
 export default function InboxHeader() {
-    const { filteredMails, selectedMails } = useMails();
-    const { handleDeleteBulk, handleSelectAll } = useMailHandlers();
+    const { filteredMails, selectedMails, setSelectedMails, fetchMails } =
+        useMails();
+    const { handleDeleteBulk, handleSelectAll, handleSelect } =
+        useMailHandlers();
+    const { fetchLabels } = useLabels();
     const {
         settingsOpen,
         toggleSettings,
-        handleToggleStarBulk,
         showLabelPopup,
         setShowLabelPopup,
         showCompose,
         toggleShowCompose,
-    } = useUiState();
+    } = useUIs();
+
+    const { handleToggleStarBulk } = useStarHandlers();
 
     const { darkTheme } = useTheme();
-    const [labelPopupPosition, setLabelPopupPosition] = useState({
-        x: 0,
-        y: 0,
-    });
+
+    const closeLabelPopup = () => {
+        setShowLabelPopup(false);
+    };
 
     return (
         <>
@@ -37,7 +42,18 @@ export default function InboxHeader() {
                     <span
                         className="material-symbols-rounded me-3"
                         style={{ cursor: "pointer" }}
-                        onClick={handleSelectAll}
+                        onClick={() => {
+                            if (selectedMails.length === filteredMails.length) {
+                                handleSelectAll(); // deselect all
+                            }
+                            if (selectedMails.length > 0) {
+                                setSelectedMails([]); // clear selection
+                            } else {
+                                filteredMails.forEach((mail) =>
+                                    handleSelect(mail.id)
+                                ); // select all
+                            }
+                        }}
                     >
                         {selectedMails.length > 0
                             ? selectedMails.length === filteredMails.length
@@ -48,6 +64,10 @@ export default function InboxHeader() {
                     <span
                         className="material-symbols-rounded me-3"
                         style={{ cursor: "pointer" }}
+                        onClick={() => {
+                            fetchMails();
+                            fetchLabels();
+                        }}
                     >
                         refresh
                     </span>
@@ -68,29 +88,21 @@ export default function InboxHeader() {
                             <span
                                 className="material-symbols-rounded me-3"
                                 style={{ cursor: "pointer" }}
-                                onClick={handleToggleStarBulk}
+                                onClick={() => handleToggleStarBulk()}
                             >
                                 star
                             </span>
                             <span
                                 className="material-symbols-rounded me-3"
                                 style={{ cursor: "pointer" }}
-                                onClick={(e) => {
-                                    const rect =
-                                        e.target.getBoundingClientRect();
-                                    setLabelPopupPosition({
-                                        x: rect.left,
-                                        y: rect.bottom,
-                                    });
-                                    setShowLabelPopup(true);
-                                }}
+                                onClick={() => setShowLabelPopup(true)}
                             >
                                 label
                             </span>
                             <span
                                 className="material-symbols-rounded me-3 text-danger"
                                 style={{ cursor: "pointer" }}
-                                onClick={handleDeleteBulk}
+                                onClick={() => handleDeleteBulk()}
                             >
                                 delete
                             </span>
@@ -139,7 +151,10 @@ export default function InboxHeader() {
             </div>
             {showLabelPopup && (
                 <div className="position-absolute">
-                    <LabelPopup position={{ x: 220, y: 0 }} />
+                    <LabelPopup
+                        position={{ x: 200, y: -10 }}
+                        closeLabelPopup={closeLabelPopup}
+                    />
                 </div>
             )}
             {showCompose && <ComposeMail />}

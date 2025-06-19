@@ -1,14 +1,13 @@
-import { useEffect } from "react";
 import { useTheme } from "../context/ThemeContext";
+import useLabels from "../hooks/useLabels.js";
 import useMailHandlers from "../hooks/useMailHandlers.js";
 import useMails from "../hooks/useMails.js";
 import useStarHandlers from "../hooks/useStarHandlers.js";
-import useUiState from "../hooks/useUIStates.js";
-import useLabels from "../hooks/useLabels.js";
+import useUIs from "../hooks/useUIs.js";
 
 export default function MailList() {
-    const { mails, selectedMails } = useMails();
-    const { setShowLabelPopup, setContextMenu } = useUiState();
+    const { filteredMails, selectedMails, setSelectedMails } = useMails();
+    const { setShowLabelPopup, setContextMenu } = useUIs();
     const { starredIds } = useLabels();
     const { handleSelect, handleOpenMail } = useMailHandlers();
     const { handleToggleStar } = useStarHandlers();
@@ -16,13 +15,15 @@ export default function MailList() {
     const handleRightClick = (e, mailId) => {
         e.preventDefault();
         setContextMenu({ x: e.pageX, y: e.pageY, mailId });
+
+        // If mailId is not already selected, select only it
+        if (!selectedMails.includes(mailId)) {
+            setSelectedMails([]);
+            handleSelect(mailId);
+        }
+
         setShowLabelPopup(false);
     };
-
-    useEffect( () => {
-        console.log("MailList component mounted");
-        console.log("Mails:", mails);
-    }, [mails]);
 
     const { darkTheme } = useTheme();
     return (
@@ -32,9 +33,8 @@ export default function MailList() {
                     darkTheme ? "bg-dark text-white" : "bg-white text-dark"
                 }`}
             >
-                {mails.map((mail) => {
+                {filteredMails.map((mail) => {
                     const isSelected = selectedMails.includes(mail.id);
-                    console.log("Mail ID:", mail.id, "Selected:", isSelected);
                     return (
                         <div
                             key={mail.id}

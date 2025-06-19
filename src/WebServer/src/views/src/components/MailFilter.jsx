@@ -1,7 +1,5 @@
-import React, { useContext } from "react";
 import { useTheme } from "../context/ThemeContext";
 import useLabels from "../hooks/useLabels.js";
-import useUiState from "../hooks/useUIStates.js";
 
 export default function MailFilter() {
     const { darkTheme } = useTheme();
@@ -10,7 +8,9 @@ export default function MailFilter() {
         <div className="mb-3">
             <label className="form-label me-2">Filter:</label>
             <select
-                className={`form-select form-select-sm w-auto d-inline-block ${darkTheme ? "bg-dark text-white border-secondary" : ""}`}
+                className={`form-select form-select-sm w-auto d-inline-block ${
+                    darkTheme ? "bg-dark text-white border-secondary" : ""
+                }`}
                 value={activeLabel}
                 onChange={(e) => setActiveLabel(e.target.value)}
             >

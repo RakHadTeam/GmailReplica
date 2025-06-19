@@ -1,5 +1,5 @@
 import { useContext, useEffect } from "react";
-import { Route, Routes, useNavigate } from "react-router-dom";
+import { Route, Routes, useNavigate, useLocation } from "react-router-dom";
 import { AuthContext } from "./context/AuthContext.jsx";
 import { useTheme } from "./context/ThemeContext.jsx";
 import { Inbox } from "./pages/Inbox.jsx";
@@ -7,23 +7,23 @@ import { Signin } from "./pages/Signin.jsx";
 import { Signup } from "./pages/Signup.jsx";
 
 function App() {
-    const { signedin, setSignedin, loading } = useContext(AuthContext);
+    const { signedin } = useContext(AuthContext);
     const navigate = useNavigate();
+    const location = useLocation();
+
 
     useEffect(() => {
-        if (signedin !== false) {
-            setSignedin(false);
-        }
-    }, []);
-
-    useEffect(() => {
-        if (loading) return;
-        if (!signedin) {
+        if (
+            !signedin &&
+            location.pathname !== "/signup" &&
+            location.pathname !== "/signin"
+        ) {
             navigate("/signin", { replace: true });
-        } else {
+        }
+        if (signedin && location.pathname !== "/inbox") {
             navigate("/inbox", { replace: true });
         }
-    }, [signedin, loading]);
+    }, [signedin, navigate, location.pathname]);
 
     const { darkTheme, toggleDarkTheme } = useTheme();
 

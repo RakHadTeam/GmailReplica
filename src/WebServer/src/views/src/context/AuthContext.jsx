@@ -1,16 +1,15 @@
 import { createContext, useEffect, useState } from "react";
-import { API_URL } from "../index.js";
 
 export const AuthContext = createContext();
 
-export const AuthProvider = ({ children }) => { 
+export const AuthProvider = ({ children }) => {
     const [signedin, setSignedin] = useState(false);
-    const [loading, setLoading] = useState(true);
-
+    const [fullName, setFullName] = useState("");
+    const [profileImage, setProfileImage] = useState(null);
+    const [currentUser, setCurrentUser] = useState(null);
 
     useEffect(() => {
         const checkLoggedin = async () => {
-            setLoading(true);
             try {
                 const response = await fetch("/api/me/", {
                     credentials: "include",
@@ -19,19 +18,38 @@ export const AuthProvider = ({ children }) => {
                     },
                 });
                 if (response.ok) {
-                    setSignedin(true)
+                    setSignedin(true);
+                    const { userId } = await response.json();
+                    const userRes = await fetch(`/api/users/${userId}`, {
+                        method: "GET",
+                        credentials: "include",
+                    });
+                    if (!userRes.ok)
+                        throw new Error("Failed to fetch user data");
+                    const userData = await userRes.json();
+                    setCurrentUser(userData);
+                    setFullName(userData.fullname);
                 }
             } catch (error) {
                 console.error("Error checking login status:", error);
-            } finally {
-                setLoading(false);
             }
         };
         checkLoggedin();
     }, []);
 
     return (
-        <AuthContext.Provider value={{ signedin, setSignedin, loading }}>
+        <AuthContext.Provider
+            value={{
+                signedin,
+                setSignedin,
+                fullName,
+                setFullName,
+                profileImage,
+                setProfileImage,
+                currentUser,
+                setCurrentUser,
+            }}
+        >
             {children}
         </AuthContext.Provider>
     );

@@ -1,17 +1,15 @@
 import { useEffect, useRef, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { useTheme } from "../context/ThemeContext.jsx";
 import useLabels from "../hooks/useLabels.js";
-import useUiState from "../hooks/useUIStates.js";
+import useUIs from "../hooks/useUIs.js";
 
 export default function LabelManager() {
     const { setLabels } = useLabels();
-    const { toggleLabelManager } = useUiState();
+    const { toggleLabelManager } = useUIs();
     const { darkTheme } = useTheme();
     const [searchTerm, setSearchTerm] = useState("");
-    const navigate = useNavigate();
     const { labels, fetchLabels } = useLabels();
-    const [showCreatePrompt, setShowCreatePrompt] = useState(false);
+    const [, setShowCreatePrompt] = useState(false);
     const [newLabel, setNewLabel] = useState("");
     const [error, setError] = useState("");
 
@@ -26,7 +24,7 @@ export default function LabelManager() {
         document.addEventListener("mousedown", handleClickOutside);
         return () =>
             document.removeEventListener("mousedown", handleClickOutside);
-    }, []);
+    }, [toggleLabelManager]);
 
     const handleCreateLabel = async () => {
         const name = newLabel.trim();
@@ -42,10 +40,7 @@ export default function LabelManager() {
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ name }),
             });
-            if (res.status === 401) {
-                navigate("/signin");
-                return;
-            }
+
             if (!res.ok) throw new Error(`Create failed: ${res.status}`);
 
             // reload authoritative list
