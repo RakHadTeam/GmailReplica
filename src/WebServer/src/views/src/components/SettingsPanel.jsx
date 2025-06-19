@@ -6,10 +6,12 @@ import useUIs from "../hooks/useUIs.js";
 
 export default function SettingsPanel() {
     const {
-        fullName, setFullName,
-        profileImage, setProfileImage,
-        currentUser, setCurrentUser,
-        setSignedin
+        fullName,
+        setFullName,
+        profileImage,
+        setProfileImage,
+        currentUser,
+        setSignedin,
     } = useContext(AuthContext);
     const { toggleSettings } = useUIs();
     const { darkTheme } = useTheme();

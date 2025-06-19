@@ -69,7 +69,8 @@ export default function LabelPopup({ closeLabelPopup, position }) {
     const filteredLabels = labels.filter(
         ({ name }) =>
             name.toLowerCase().includes(searchTerm.toLowerCase()) &&
-            name.toLowerCase() !== "starred"
+            name.toLowerCase() !== "starred" &&
+            name.toLowerCase() !== "bin"
     );
 
     const getLabelState = (labelId) => {
