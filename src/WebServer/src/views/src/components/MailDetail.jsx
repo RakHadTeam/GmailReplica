@@ -1,8 +1,13 @@
 import { useTheme } from "../context/ThemeContext";
+import useMails from "../hooks/useMails.js";
+import useUIs from "../hooks/useUIs.js";
 
-export default function MailDetail({ openMail, handleCloseDetail }) {
+export default function MailDetail({ handleCloseDetail }) {
     const { darkTheme } = useTheme();
-    if (!openMail) return null;
+    const { openMailId } = useUIs();
+    const { mails } = useMails();
+    if (!openMailId) return null;
+    const openMail = mails.find((mail) => mail.id === openMailId);
     return (
         <div
             className={`card mt-4 border-0 ${
@@ -16,7 +21,7 @@ export default function MailDetail({ openMail, handleCloseDetail }) {
                 <button onClick={handleCloseDetail} className="btn-close" />
             </div>
             <div className="card-body">
-                <div className="d-flex align-items-center gap-3">
+                <div className="d-flex align-items-center gap-3 mb-3">
                     {openMail.recipientPicture && (
                         <img
                             src={`/uploads/${openMail.recipientPicture}`}
@@ -31,13 +36,14 @@ export default function MailDetail({ openMail, handleCloseDetail }) {
                         />
                     )}
                     <div>
-                        <div className="fw-semibold">
-                            From: {openMail.recipientEmail}
-                        </div>
+                        <div className="fw-bold">{openMail.recipientName}</div>
+                        <div className="text-muted small">{openMail.recipientEmail}</div>
                     </div>
                 </div>
-                <hr className={`${darkTheme ? "border-secondary" : ""}`} />
-                <p>{openMail.body}</p>
+
+                <div className="border-top pt-3" style={{ whiteSpace: "pre-wrap", paddingLeft: "1.5rem" }}>
+                    {openMail.body}
+                </div>
             </div>
         </div>
     );

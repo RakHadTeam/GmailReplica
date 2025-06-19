@@ -37,8 +37,6 @@ export function Inbox() {
 
                 <MailList />
 
-                <MailDetail />
-
                 <ContextMenu />
 
                 {settingsOpen && <SettingsPanel />}

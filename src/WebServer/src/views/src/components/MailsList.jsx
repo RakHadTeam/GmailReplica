@@ -1,15 +1,17 @@
+import { useEffect, useState } from "react";
 import { useTheme } from "../context/ThemeContext";
 import useLabels from "../hooks/useLabels.js";
 import useMailHandlers from "../hooks/useMailHandlers.js";
 import useMails from "../hooks/useMails.js";
 import useStarHandlers from "../hooks/useStarHandlers.js";
 import useUIs from "../hooks/useUIs.js";
+import MailDetail from "./MailDetail.jsx";
 
 export default function MailList() {
     const { filteredMails, selectedMails, setSelectedMails } = useMails();
-    const { setShowLabelPopup, setContextMenu } = useUIs();
+    const { setShowLabelPopup, setContextMenu, openMailId } = useUIs();
     const { starredIds } = useLabels();
-    const { handleSelect, handleOpenMail } = useMailHandlers();
+    const { handleSelect, handleOpenMail, handleCloseDetail } = useMailHandlers();
     const { handleToggleStar } = useStarHandlers();
 
     const handleRightClick = (e, mailId) => {
@@ -25,8 +27,19 @@ export default function MailList() {
         setShowLabelPopup(false);
     };
 
+    useEffect(() => {
+        handleOpenMail(openMailId);
+    }, [openMailId]);
+
     const { darkTheme } = useTheme();
-    return (
+
+
+
+    return openMailId != null ? (
+        <MailDetail
+            handleCloseDetail={handleCloseDetail}
+        />
+    ) : (
         <div className="w-100">
             <div
                 className={`table w-100 ${
@@ -90,7 +103,8 @@ export default function MailList() {
                                     }`}
                                     style={{ background: "none" }}
                                 >
-                                    {mail.body.slice(0, 100)}…
+                                    <span>{mail.subject}</span>{" "}
+                                    <span style={{ opacity: 0.7 }}>– {mail.body.slice(0, 80)}…</span>
                                 </div>
                             </div>
                             <div className="text-nowrap small ms-auto">

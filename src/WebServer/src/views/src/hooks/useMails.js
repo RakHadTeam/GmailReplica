@@ -49,6 +49,7 @@ export const MailProvider = ({ children }) => {
     return (
         <MailContext.Provider value={{
             mails,
+            setMails,
             fetchMails,
             filteredMails,
             setFilteredMails,
