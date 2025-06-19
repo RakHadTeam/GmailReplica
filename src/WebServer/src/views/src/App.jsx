@@ -1,16 +1,18 @@
-import { useContext, useEffect } from "react";
-import { Route, Routes, useNavigate, useLocation } from "react-router-dom";
+import { useContext, useEffect, useState } from "react";
+import { Route, Routes, useLocation, useNavigate } from "react-router-dom";
+import SettingsPanel from "./components/SettingsPanel.jsx";
 import { AuthContext } from "./context/AuthContext.jsx";
 import { useTheme } from "./context/ThemeContext.jsx";
 import { Inbox } from "./pages/Inbox.jsx";
 import { Signin } from "./pages/Signin.jsx";
 import { Signup } from "./pages/Signup.jsx";
+import useUIs from "./hooks/useUIs.js";
 
 function App() {
     const { signedin } = useContext(AuthContext);
     const navigate = useNavigate();
     const location = useLocation();
-
+    const { toggleSettings } = useUIs();
 
     useEffect(() => {
         if (
@@ -30,6 +32,7 @@ function App() {
     return (
         <>
             <div
+                className="d-flex gap-2 align-items-center"
                 style={{
                     position: "absolute",
                     top: 10,
@@ -39,10 +42,27 @@ function App() {
             >
                 <button
                     onClick={toggleDarkTheme}
-                    className={darkTheme ? "btn btn-primary" : "btn btn-outline-primary"}
+                    className={`btn btn-sm rounded-circle d-flex align-items-center justify-content-center ${
+                        darkTheme ? "btn-primary" : "btn-outline-primary"
+                    }`}
+                    style={{ width: "40px", height: "40px" }}
                 >
                     {darkTheme ? "☀" : "☾"}
                 </button>
+                {signedin && (
+                    <button
+                        className={`btn btn-sm rounded-circle d-flex align-items-center justify-content-center ${
+                            darkTheme ? "btn-secondary" : "btn-outline-secondary"
+                        }`}
+                        style={{ width: "40px", height: "40px" }}
+                        onClick={() => {
+                            toggleSettings();
+                            console.log("Settings clicked");
+                        }}
+                    >
+                        <span className="material-symbols-rounded">settings</span>
+                    </button>
+                )}
             </div>
             <Routes>
                 <Route path="/" element={<Inbox />} />

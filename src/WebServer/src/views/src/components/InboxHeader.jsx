@@ -4,7 +4,6 @@ import useMailHandlers from "../hooks/useMailHandlers.js";
 import useMails from "../hooks/useMails.js";
 import useStarHandlers from "../hooks/useStarHandlers.js";
 import useUIs from "../hooks/useUIs.js";
-import ComposeMail from "./ComposeMail.jsx";
 import LabelPopup from "./LabelPopup";
 import SettingsPanel from "./SettingsPanel.jsx";
 
@@ -15,12 +14,8 @@ export default function InboxHeader() {
         useMailHandlers();
     const { fetchLabels } = useLabels();
     const {
-        settingsOpen,
-        toggleSettings,
         showLabelPopup,
         setShowLabelPopup,
-        showCompose,
-        toggleShowCompose,
     } = useUIs();
 
     const { handleToggleStarBulk } = useStarHandlers();
@@ -34,9 +29,12 @@ export default function InboxHeader() {
     return (
         <>
             <div
-                className={`d-flex justify-content-between align-items-center mt-3 ${
+                className={`d-flex justify-content-between align-items-center mb-4 ${
                     darkTheme ? "text-white" : ""
                 }`}
+                style={{
+                    marginTop: "5rem",
+                }}
             >
                 <div className="d-flex align-items-center">
                     <span
@@ -129,24 +127,6 @@ export default function InboxHeader() {
                     >
                         chevron_right
                     </span>
-                    <span
-                        className="material-symbols-rounded me-2"
-                        style={{ cursor: "pointer" }}
-                        onClick={toggleSettings}
-                    >
-                        settings
-                    </span>
-                    <button
-                        className={`btn btn-sm ${
-                            darkTheme ? "btn-primary" : "btn-outline-primary"
-                        } ms-3`}
-                        onClick={toggleShowCompose}
-                    >
-                        <span className="material-symbols-rounded me-1">
-                            edit
-                        </span>
-                        Compose
-                    </button>
                 </div>
             </div>
             {showLabelPopup && (
@@ -157,8 +137,6 @@ export default function InboxHeader() {
                     />
                 </div>
             )}
-            {showCompose && <ComposeMail />}
-            {settingsOpen && <SettingsPanel />}
         </>
     );
 }
