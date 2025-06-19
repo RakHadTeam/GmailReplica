@@ -73,13 +73,20 @@ export default function LabelManager() {
     return (
         <div
             className="position-fixed top-0 start-0 w-100 h-100 d-flex justify-content-center align-items-center"
-            style={{ zIndex: 1050 }}
+            style={{
+                zIndex: 1050,
+                padding: "2rem",
+                backgroundColor: darkTheme
+                    ? "rgba(0, 0, 0, 0.6)"
+                    : "rgba(0, 0, 0, 0.3)",
+            }}
         >
             <div
                 ref={popupRef}
                 className={`p-4 rounded shadow border ${
                     darkTheme ? "bg-dark text-white" : "bg-white text-dark"
                 }`}
+                style={{ minWidth: "400px", maxWidth: "500px", width: "100%" }}
             >
                 <div className="d-flex justify-content-between align-items-center mb-3">
                     <h5 className="m-0">Manage Labels</h5>
@@ -123,7 +130,9 @@ export default function LabelManager() {
                 <ul className="list-group">
                     {labels
                         .filter(
-                            (label) => label.name.toLowerCase() !== "starred"
+                            (label) =>
+                                label.name.toLowerCase() !== "starred" &&
+                                label.name.toLowerCase() !== "bin"
                         )
                         .filter((label) =>
                             label.name

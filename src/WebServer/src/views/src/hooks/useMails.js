@@ -6,20 +6,21 @@ const MailContext = createContext();
 export const MailProvider = ({ children }) => {
     const [mails, setMails] = useState([]);
     const [filteredMails, setFilteredMails] = useState([]);
-    const { starredIds, labels, activeLabel } = useLabels();
+    const { starredIds, labels, activeLabel, binnedIds } = useLabels();
     const [selectedMails, setSelectedMails] = useState([]);
 
     useEffect(() => {
         setFilteredMails(
             mails.filter((mail) => {
-                if (activeLabel === "All") return true;
+                if (activeLabel === "Bin") return binnedIds.includes(mail.id);
+                if (activeLabel === "All") return !binnedIds.includes(mail.id);
                 if (activeLabel === "Starred")
                     return starredIds.includes(mail.id);
                 const lbl = labels.find((l) => l.id === activeLabel);
                 return Array.isArray(lbl?.mails) && lbl.mails.includes(mail.id);
             })
         );
-    }, [mails, activeLabel, starredIds, labels]);
+    }, [mails, binnedIds, activeLabel, starredIds, labels]);
 
     const fetchMails = async () => {
         try {
@@ -34,7 +35,8 @@ export const MailProvider = ({ children }) => {
                     const user = uRes.ok ? await uRes.json() : {};
                     return {
                         ...mail,
-                        recipientName: user.fullname || user.name || mail.recipient,
+                        recipientName:
+                            user.fullname || user.name || mail.recipient,
                         recipientEmail: user.email || "",
                         recipientPicture: user.picture || null,
                     };
@@ -47,15 +49,17 @@ export const MailProvider = ({ children }) => {
     };
 
     return (
-        <MailContext.Provider value={{
-            mails,
-            setMails,
-            fetchMails,
-            filteredMails,
-            setFilteredMails,
-            selectedMails,
-            setSelectedMails,
-        }}>
+        <MailContext.Provider
+            value={{
+                mails,
+                setMails,
+                fetchMails,
+                filteredMails,
+                setFilteredMails,
+                selectedMails,
+                setSelectedMails,
+            }}
+        >
             {children}
         </MailContext.Provider>
     );

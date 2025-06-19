@@ -3,11 +3,13 @@ import useMailHandlers from "../hooks/useMailHandlers.js";
 import useStarHandlers from "../hooks/useStarHandlers.js";
 import useUIs from "../hooks/useUIs.js";
 import LabelPopup from "./LabelPopup";
+import useLabels from "../hooks/useLabels.js";
 
 export default function ContextMenu() {
     const { contextMenu, menuRef } = useUIs();
-    const { handleDeleteBulk } = useMailHandlers();
+    const { handleDeleteBulk, handleUnbinBulk } = useMailHandlers();
     const { handleToggleStarBulk } = useStarHandlers();
+    const { activeLabel } = useLabels();
     const [showLabelPopupMenu, setShowLabelPopupMenu] = useState(false);
 
     const closeLabelPopupMenu = () => {
@@ -28,13 +30,38 @@ export default function ContextMenu() {
                 width: 200,
             }}
         >
-            <button
-                className="btn btn-light w-100 text-start d-flex align-items-center gap-2"
-                onClick={() => handleDeleteBulk()}
-            >
-                <span className="material-symbols-rounded">delete</span>
-                Delete
-            </button>
+            {activeLabel !== "Bin" ? (
+                <button
+                    className="btn btn-light w-100 text-start d-flex align-items-center gap-2"
+                    onClick={() => handleDeleteBulk()}
+                >
+                    <span className="material-symbols-rounded">
+                        delete_forever
+                    </span>
+                    Move to Bin
+                </button>
+            ) : (
+                <>
+                    <button
+                        className="btn btn-light w-100 text-start d-flex align-items-center gap-2"
+                        onClick={() => handleDeleteBulk()}
+                    >
+                        <span className="material-symbols-rounded">
+                            delete_forever
+                        </span>
+                        Delete Forever
+                    </button>
+                    <button
+                        className="btn btn-light w-100 text-start d-flex align-items-center gap-2"
+                        onClick={() => handleUnbinBulk()}
+                    >
+                        <span className="material-symbols-rounded">
+                            restore_from_trash
+                        </span>
+                        Unbin
+                    </button>
+                </>
+            )}
             <button
                 className="btn btn-light w-100 text-start d-flex align-items-center gap-2"
                 onClick={() => handleToggleStarBulk()}
