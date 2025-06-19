@@ -18,7 +18,6 @@ export const AuthProvider = ({ children }) => {
                         "Content-Type": "application/json",
                     },
                 });
-                console.log(response)
                 if (response.ok) {
                     setSignedin(true)
                 }

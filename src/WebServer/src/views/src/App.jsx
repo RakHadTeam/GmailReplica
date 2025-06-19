@@ -25,7 +25,7 @@ function App() {
         }
     }, [signedin, loading]);
 
-    const { theme, toggleDarkTheme } = useTheme();
+    const { darkTheme, toggleDarkTheme } = useTheme();
 
     return (
         <>
@@ -39,20 +39,9 @@ function App() {
             >
                 <button
                     onClick={toggleDarkTheme}
-                    style={{
-                        backgroundColor: theme.dark
-                            ? theme.primaryBtn
-                            : "transparent",
-                        color: theme.primaryText,
-                        border: theme.dark
-                            ? "none"
-                            : `2px solid ${theme.primaryBtn}88`,
-                        borderRadius: "4px",
-                        padding: "6px 10px",
-                        cursor: "pointer",
-                    }}
+                    className={darkTheme ? "btn btn-primary" : "btn btn-outline-primary"}
                 >
-                    {theme.dark ? "☀" : "☾"}
+                    {darkTheme ? "☀" : "☾"}
                 </button>
             </div>
             <Routes>

@@ -3,13 +3,14 @@ import { Link, useNavigate } from "react-router-dom";
 import { useTheme } from "../context/ThemeContext";
 
 export function Signup() {
-    const [fullname, setFullname] = useState("");
+    const [firstname, setFirstname] = useState("");
+    const [surname, setSurname] = useState("");
     const [email, setEmail] = useState("");
     const [picture, setPicture] = useState(null);
     const [password, setPassword] = useState("");
     const [passwordError, setPasswordError] = useState("");
 
-    const { theme, changeTheme } = useTheme();
+    const { darkTheme } = useTheme();
 
     const navigation = useNavigate();
 
@@ -25,11 +26,13 @@ export function Signup() {
         //     setPasswordError("");
         // }
 
+        const fullname = `${firstname} ${surname}`.trim();
+
         const formData = new FormData();
         formData.append("fullname", fullname);
         formData.append("email", email);
         formData.append("password", password);
-        formData.append("theme", theme.name);
+        formData.append("darkTheme", darkTheme);
         if (picture) {
             formData.append("picture", picture);
         }
@@ -41,8 +44,6 @@ export function Signup() {
         })
             .then((response) => {
                 if (response.ok) {
-                    console.log("Signup successful");
-                    // redirect to sign-in page or show success message
                     navigation("/signin");
                 } else {
                     console.error("Signup failed");
@@ -55,129 +56,123 @@ export function Signup() {
 
     return (
         <div
-            className="container-fluid py-5"
-            style={{ backgroundColor: theme.bg, minHeight: "100vh" }}
+            className={`min-vh-100 w-100 d-flex justify-content-center align-items-center ${
+                darkTheme ? "bg-black text-white" : "bg-light text-dark"
+            }`}
         >
-            <div className="d-flex flex-column align-items-center gap-5">
+            <div className="container d-flex justify-content-center align-items-center">
                 <div
-                    className="text-center"
-                    style={{
-                        backgroundColor: theme.highlight,
-                        padding: "16px 24px",
-                        borderRadius: "6px",
-                        color: theme.text,
-                    }}
+                    className={`card p-4 rounded-4 shadow ${
+                        darkTheme ? "bg-dark text-white" : "bg-white text-dark"
+                    }`}
+                    role="main"
+                    aria-label="Create a RakMail Account form"
+                    style={{ maxWidth: "400px", width: "100%" }}
                 >
-                    <h2 className="m-0">Join RakMail!</h2>
-                </div>
-                <div
-                    className="card p-4 shadow"
-                    style={{
-                        width: "100%",
-                        maxWidth: "450px",
-                        backgroundColor: theme.bg,
-                        color: theme.text,
-                    }}
-                >
-                    <h3 className="card-title text-center mb-4">Sign Up</h3>
+                    <h2 className="text-center mb-4">
+                        Create a RakMail Account
+                    </h2>
                     <form onSubmit={handleSubmit}>
-                        <div className="mb-3">
-                            <label htmlFor="fullname" className="form-label">
-                                Full Name
+                        <div className="form-group mb-3">
+                            <label htmlFor="firstname" className="form-label">
+                                First Name
                             </label>
                             <input
                                 type="text"
+                                id="firstname"
+                                name="firstname"
+                                value={firstname}
+                                onChange={(e) => setFirstname(e.target.value)}
+                                required
                                 className="form-control"
-                                id="fullname"
-                                value={fullname}
-                                onChange={(e) => setFullname(e.target.value)}
+                                autoComplete="given-name"
+                            />
+                        </div>
+                        <div className="form-group mb-3">
+                            <label htmlFor="surname" className="form-label">
+                                Surname
+                            </label>
+                            <input
+                                type="text"
+                                id="surname"
+                                name="surname"
+                                value={surname}
+                                onChange={(e) => setSurname(e.target.value)}
+                                className="form-control"
+                                autoComplete="family-name"
                                 required
                             />
                         </div>
-                        <div className="mb-3">
+                        <div className="form-group mb-3">
                             <label htmlFor="email" className="form-label">
                                 Email
                             </label>
                             <input
                                 type="email"
-                                className="form-control"
                                 id="email"
+                                name="email"
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
                                 required
+                                className="form-control"
+                                autoComplete="email"
                             />
                         </div>
-                        <div className="mb-3">
+                        <div className="form-group mb-3">
                             <label htmlFor="picture" className="form-label">
                                 Profile Picture
                             </label>
                             <input
                                 type="file"
-                                className="form-control"
                                 id="picture"
+                                name="picture"
                                 accept="image/*"
                                 onChange={(e) => setPicture(e.target.files[0])}
+                                className="form-control"
+                                style={{ padding: "6px 16px", height: "40px" }}
                             />
                         </div>
-                        <div className="mb-3">
+                        <div className="form-group mb-3">
                             <label htmlFor="password" className="form-label">
                                 Password
                             </label>
                             <input
                                 type="password"
-                                className={`form-control ${
-                                    passwordError ? "is-invalid" : ""
-                                }`}
                                 id="password"
+                                name="password"
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
                                 required
+                                className={`form-control${
+                                    passwordError ? " is-invalid" : ""
+                                }`}
+                                autoComplete="new-password"
                             />
                             {passwordError && (
-                                <div
-                                    className="invalid-feedback"
-                                    style={{ color: theme.primaryBtn }}
-                                >
+                                <div className="text-danger small" role="alert">
                                     {passwordError}
                                 </div>
                             )}
                         </div>
                         <button
                             type="submit"
-                            className="btn w-100"
-                            style={{
-                                backgroundColor: theme.primaryBtn,
-                                color: theme.btnText,
-                                border: "none",
-                            }}
+                            className={`btn w-100 fw-bold ${
+                                darkTheme
+                                    ? "btn-primary"
+                                    : "btn-outline-primary"
+                            }`}
                         >
                             Sign Up
                         </button>
                     </form>
                     <div className="text-center mt-3">
-                        <label className="form-label me-2">Choose Theme:</label>
-                        <select
-                            onChange={(e) => changeTheme(e.target.value)}
-                            value={
-                                theme.name.includes("dark_")
-                                    ? theme.name.slice(5)
-                                    : theme.name
-                            }
-                            className="form-select w-auto d-inline-block"
-                        >
-                            <option value="green">Green</option>
-                            <option value="purple">Purple</option>
-                            <option value="blue">Blue</option>
-                            <option value="yellow">Yellow</option>
-                        </select>
-                    </div>
-                    <div className="text-center mt-2">
                         <small>
                             Already have an account?{" "}
                             <Link
                                 to="/signin"
-                                className="text-decoration-none"
-                                style={{ color: theme.primaryBtn }}
+                                className={`text-decoration-none ${
+                                    darkTheme ? "text-white-50" : "text-primary"
+                                }`}
                             >
                                 Sign in
                             </Link>

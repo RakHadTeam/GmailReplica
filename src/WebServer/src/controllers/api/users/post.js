@@ -16,7 +16,7 @@ const storage = multer.diskStorage({
 export const upload = multer({ storage });
 
 export function postUsers(req, res) {
-    const { email, password, fullname, theme } = req.body;
+    const { email, password, fullname, darkTheme } = req.body;
 
     // Validate input
     if (!email || !password || !fullname) {
@@ -29,7 +29,7 @@ export function postUsers(req, res) {
         email,
         password,
         fullname,
-        theme: theme ?? "default",
+        darkTheme: darkTheme ?? false,
         picture: req.file ? req.file.filename : null,
         createdAt: new Date().toISOString(),
         mails: [],

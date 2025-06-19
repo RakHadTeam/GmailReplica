@@ -1,14 +1,14 @@
-import React, { useState, useEffect, useContext } from "react";
-import { AuthContext } from "../context/AuthContext.jsx";
+import { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { AuthContext } from "../context/AuthContext.jsx";
 import { useTheme } from "../context/ThemeContext.jsx";
 
-export function SettingsPanel({ onClose }) {
+export default function SettingsPanel({ onClose }) {
     const [fullName, setFullName] = useState("");
     const [profileImage, setProfileImage] = useState(null);
     const [currentUser, setCurrentUser] = useState(null);
     const { setSignedin } = useContext(AuthContext);
-    const { theme } = useTheme();
+    const { darkTheme } = useTheme();
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -88,31 +88,14 @@ export function SettingsPanel({ onClose }) {
     };
 
     return (
-        <div
-            style={{
-                position: "fixed",
-                top: 0,
-                left: 0,
-                width: "100vw",
-                height: "100vh",
-                backgroundColor: "rgba(0, 0, 0, 0.5)",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                zIndex: 1050,
-            }}
-        >
+        <div className="position-fixed top-0 start-0 vw-100 vh-100 d-flex align-items-center justify-content-center bg-dark bg-opacity-50 z-3">
             <div
-                className="p-4 rounded shadow"
-                style={{
-                    width: "400px",
-                    backgroundColor: theme.bg,
-                    color: theme.text,
-                }}
+                className={`card p-4 rounded-4 shadow w-100 ${darkTheme ? "bg-dark text-white" : "bg-white text-dark"}`}
+                style={{ maxWidth: "400px" }}
             >
                 <div className="d-flex justify-content-between align-items-center mb-4">
                     <div className="d-flex align-items-center gap-2">
-                        <span style={{ fontSize: "1.5rem" }}>⚙️</span>
+                        <span className="material-symbols-rounded" style={{ fontSize: "1.5rem" }}>settings</span>
                         <h5 className="mb-0">Settings</h5>
                     </div>
                     <button className="btn-close" onClick={onClose}></button>
@@ -120,26 +103,18 @@ export function SettingsPanel({ onClose }) {
 
                 {currentUser && (
                     <div className="mb-3 text-center">
-                        <div
-                            className="alert alert-secondary"
-                            role="alert"
-                            style={{
-                                backgroundColor: theme.highlight,
-                                color: theme.text,
-                            }}
-                        >
+                        <div className="alert alert-secondary bg-opacity-10 text-center" role="alert">
                             Logged in as <strong>{currentUser.fullname}</strong>
                         </div>
                         {currentUser.picture && (
                             <img
                                 src={`/uploads/${currentUser.picture}`}
                                 alt="Profile"
-                                className="rounded-circle"
+                                className="rounded-circle border border-2"
                                 style={{
                                     width: "80px",
                                     height: "80px",
                                     objectFit: "cover",
-                                    border: `2px solid ${theme.primaryBtn}`,
                                 }}
                             />
                         )}
@@ -175,15 +150,7 @@ export function SettingsPanel({ onClose }) {
                     </div>
 
                     <div className="d-grid">
-                        <button
-                            type="submit"
-                            className="btn mb-2"
-                            style={{
-                                backgroundColor: theme.primaryBtn,
-                                color: theme.btnText,
-                                border: "none",
-                            }}
-                        >
+                        <button type="submit" className="btn btn-primary w-100 mb-2">
                             Save Changes
                         </button>
                     </div>
@@ -193,15 +160,10 @@ export function SettingsPanel({ onClose }) {
                     <div className="d-grid">
                         <button
                             type="button"
-                            className="btn border text-danger"
+                            className="btn btn-outline-danger w-100 d-flex align-items-center justify-content-center"
                             onClick={handleLogout}
-                            style={{
-                                backgroundColor: theme.bg,
-                                borderColor: theme.primaryBtn,
-                                color: "red",
-                            }}
                         >
-                            🔓 Logout
+                            <span className="material-symbols-rounded me-2" style={{ verticalAlign: "middle" }}>logout</span> Logout
                         </button>
                     </div>
                 </form>
