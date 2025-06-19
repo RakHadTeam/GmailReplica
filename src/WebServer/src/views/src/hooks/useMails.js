@@ -8,26 +8,36 @@ export const MailProvider = ({ children }) => {
     const [filteredMails, setFilteredMails] = useState([]);
     const { starredIds, labels, activeLabel } = useLabels();
     const [selectedMails, setSelectedMails] = useState([]);
+    const [isDraft, setIsDraft] = useState(false);
 
     useEffect(() => {
         setFilteredMails(
-            mails.filter((mail) => {
+            mails.filter(mail => {
+                if (isDraft) return mail.draft === true;
                 if (activeLabel === "All") return true;
-                if (activeLabel === "Starred")
-                    return starredIds.includes(mail.id);
-                const lbl = labels.find((l) => l.id === activeLabel);
+                if (activeLabel === "Starred") return starredIds.includes(mail.id);
+                const lbl = labels.find(l => l.id === activeLabel);
                 return Array.isArray(lbl?.mails) && lbl.mails.includes(mail.id);
             })
         );
-    }, [mails, activeLabel, starredIds, labels]);
+    }, [mails, isDraft, activeLabel, starredIds, labels]);
 
     const fetchMails = async () => {
         try {
             const res = await fetch("/api/mails", { credentials: "include" });
             if (!res.ok) throw new Error(`Fetch mails failed: ${res.status}`);
             const data = await res.json();
+
             const enriched = await Promise.all(
-                data.map(async (mail) => {
+                data.map(async mail => {
+                    if (!mail.recipient) {
+                        return {
+                            ...mail,
+                            recipientName: "",
+                            recipientEmail: "",
+                            recipientPicture: null,
+                        };
+                    }
                     const uRes = await fetch(`/api/users/${mail.recipient}`, {
                         credentials: "include",
                     });
@@ -40,6 +50,7 @@ export const MailProvider = ({ children }) => {
                     };
                 })
             );
+
             setMails(enriched);
         } catch (err) {
             console.error(err);
@@ -47,15 +58,19 @@ export const MailProvider = ({ children }) => {
     };
 
     return (
-        <MailContext.Provider value={{
-            mails,
-            setMails,
-            fetchMails,
-            filteredMails,
-            setFilteredMails,
-            selectedMails,
-            setSelectedMails,
-        }}>
+        <MailContext.Provider
+            value={{
+                mails,
+                setMails,
+                fetchMails,
+                filteredMails,
+                setFilteredMails,
+                selectedMails,
+                setSelectedMails,
+                isDraft,
+                setIsDraft
+            }}
+        >
             {children}
         </MailContext.Provider>
     );
@@ -64,3 +79,4 @@ export const MailProvider = ({ children }) => {
 export default function useMails() {
     return useContext(MailContext);
 }
+

@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useTheme } from "../context/ThemeContext";
 import useLabels from "../hooks/useLabels.js";
 import useMailHandlers from "../hooks/useMailHandlers.js";
@@ -5,15 +6,19 @@ import useMails from "../hooks/useMails.js";
 import useStarHandlers from "../hooks/useStarHandlers.js";
 import useUIs from "../hooks/useUIs.js";
 import ComposeMail from "./ComposeMail.jsx";
+import DraftsToggle from "./DraftsToggle.jsx";
 import LabelPopup from "./LabelPopup";
 import SettingsPanel from "./SettingsPanel.jsx";
 
+
+
 export default function InboxHeader() {
-    const { filteredMails, selectedMails, setSelectedMails, fetchMails } =
+    const { filteredMails, selectedMails, setSelectedMails, fetchMails, setFilteredMails, mails } =
         useMails();
     const { handleDeleteBulk, handleSelectAll, handleSelect } =
         useMailHandlers();
     const { fetchLabels } = useLabels();
+    const [showDraftsOnly, setShowDraftsOnly] = useState(false);
     const {
         settingsOpen,
         toggleSettings,
@@ -34,9 +39,8 @@ export default function InboxHeader() {
     return (
         <>
             <div
-                className={`d-flex justify-content-between align-items-center mt-3 ${
-                    darkTheme ? "text-white" : ""
-                }`}
+                className={`d-flex justify-content-between align-items-center mt-3 ${darkTheme ? "text-white" : ""
+                    }`}
             >
                 <div className="d-flex align-items-center">
                     <span
@@ -111,9 +115,8 @@ export default function InboxHeader() {
                 </div>
                 <div className="ms-auto d-flex align-items-center">
                     <small
-                        className={`me-3 ${
-                            darkTheme ? "text-light" : "text-muted"
-                        }`}
+                        className={`me-3 ${darkTheme ? "text-light" : "text-muted"
+                            }`}
                     >
                         1–50 of {filteredMails.length}
                     </small>
@@ -136,10 +139,14 @@ export default function InboxHeader() {
                     >
                         settings
                     </span>
+
+                    <DraftsToggle
+                        active={showDraftsOnly}
+                        onToggle={setShowDraftsOnly}
+                    />
                     <button
-                        className={`btn btn-sm ${
-                            darkTheme ? "btn-primary" : "btn-outline-primary"
-                        } ms-3`}
+                        className={`btn btn-sm ${darkTheme ? "btn-primary" : "btn-outline-primary"
+                            } ms-3`}
                         onClick={toggleShowCompose}
                     >
                         <span className="material-symbols-rounded me-1">

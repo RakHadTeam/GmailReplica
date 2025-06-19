@@ -57,7 +57,7 @@ export const UIProvider = ({ children }) => {
                 showCompose,
                 toggleShowCompose,
                 menuRef,
-                labelIconRef,
+                labelIconRef
             }}
         >
             {children}
