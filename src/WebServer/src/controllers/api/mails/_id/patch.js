@@ -1,7 +1,7 @@
 import { updateMailById } from "../../../../models/mail.model.js";
 
 export function patchMail(req, res) {
-    const { id } = req.params;
+    const { id } = req.params; //get the mail ID from the request parameters
     const { subject, body, recipient, draft } = req.body;
 
     const userId = req.userId;
