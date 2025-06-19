@@ -5,6 +5,9 @@ import { BrowserRouter } from "react-router-dom";
 import App from "./App.jsx";
 import { AuthProvider } from "./context/AuthContext.jsx";
 import { ThemeProvider } from "./context/ThemeContext.jsx";
+import { LabelProvider } from "./hooks/useLabels.js";
+import { MailProvider } from "./hooks/useMails.js";
+import { UIProvider } from "./hooks/useUIs.js";
 import reportWebVitals from "./reportWebVitals.js";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
@@ -13,7 +16,13 @@ root.render(
         <BrowserRouter>
             <ThemeProvider>
                 <AuthProvider>
-                    <App />
+                    <UIProvider>
+                        <LabelProvider>
+                            <MailProvider>
+                                <App />
+                            </MailProvider>
+                        </LabelProvider>
+                    </UIProvider>
                 </AuthProvider>
             </ThemeProvider>
         </BrowserRouter>

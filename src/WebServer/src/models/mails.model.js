@@ -63,7 +63,7 @@ export async function createMail(userId, { subject, body, recipient, draft }) {
         sender: sender.id,
         recipient: recipientUser ? recipientUser.id : null,
         draft: draft || false,
-        date: new Date().toISOString(),
+        createdAt: new Date().toISOString(),
     };
 
     globals.mails.push(newMail);
