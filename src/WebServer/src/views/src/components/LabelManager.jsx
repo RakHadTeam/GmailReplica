@@ -132,7 +132,8 @@ export default function LabelManager() {
                         .filter(
                             (label) =>
                                 label.name.toLowerCase() !== "starred" &&
-                                label.name.toLowerCase() !== "bin"
+                                label.name.toLowerCase() !== "bin" &&
+                                label.name.toLowerCase() !== "spam"
                         )
                         .filter((label) =>
                             label.name

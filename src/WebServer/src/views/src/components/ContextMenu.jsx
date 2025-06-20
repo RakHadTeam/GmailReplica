@@ -4,13 +4,21 @@ import useStarHandlers from "../hooks/useStarHandlers.js";
 import useUIs from "../hooks/useUIs.js";
 import LabelPopup from "./LabelPopup";
 import useLabels from "../hooks/useLabels.js";
+import useSpamHandlers from "../hooks/useSpamHandlers.js";
+import useMails from "../hooks/useMails.js";
 
 export default function ContextMenu() {
     const { contextMenu, menuRef } = useUIs();
     const { handleDeleteBulk, handleUnbinBulk } = useMailHandlers();
     const { handleToggleStarBulk } = useStarHandlers();
-    const { activeLabel } = useLabels();
+    const { activeLabel, spammedIds, starredIds } = useLabels();
+    const { selectedMails } = useMails();
     const [showLabelPopupMenu, setShowLabelPopupMenu] = useState(false);
+    const { handleToggleSpamBulk } = useSpamHandlers();
+
+    const someSelectedMailsAreSpammed = selectedMails.some(id => spammedIds.includes(id));
+
+    const someSelectedMailsAreStarred = selectedMails.some(id => starredIds.includes(id));
 
     const closeLabelPopupMenu = () => {
         setShowLabelPopupMenu(false);
@@ -67,7 +75,16 @@ export default function ContextMenu() {
                 onClick={() => handleToggleStarBulk()}
             >
                 <span className="material-symbols-rounded">star</span>
-                Star
+                {someSelectedMailsAreStarred ? "Unstar" : "Star"}
+            </button>
+            <button
+                className="btn btn-light w-100 text-start d-flex align-items-center gap-2"
+                onClick={() => handleToggleSpamBulk()}
+            >
+                <span className="material-symbols-rounded">
+                    report
+                </span>
+                {someSelectedMailsAreSpammed ? "Mark as not Spam" : "Mark as Spam"}
             </button>
             <div
                 onMouseEnter={() => setShowLabelPopupMenu(true)}

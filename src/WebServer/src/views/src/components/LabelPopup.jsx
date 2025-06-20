@@ -70,7 +70,8 @@ export default function LabelPopup({ closeLabelPopup, position }) {
         ({ name }) =>
             name.toLowerCase().includes(searchTerm.toLowerCase()) &&
             name.toLowerCase() !== "starred" &&
-            name.toLowerCase() !== "bin"
+            name.toLowerCase() !== "bin" &&
+            name.toLowerCase() !== "spam"
     );
 
     const getLabelState = (labelId) => {
