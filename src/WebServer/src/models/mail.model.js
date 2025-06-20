@@ -41,23 +41,23 @@ export function updateMailById(userId, id, updates) {
         return { status, error };
     }
 
-    if (!mail.draft)
+    if (!mail.draft) {
         return { status: 400, error: "Only drafts can be updated" };
+    }
 
     if (updates.subject) {
         mail.subject = updates.subject;
     }
-
     if (updates.body) {
         mail.body = updates.body;
     }
-
     if (updates.recipient) {
-        const recipientUser =
-            getUserById(updates.recipient) || getUserByEmail(updates.recipient);
+        const recipientUser = getUserById(updates.recipient) || getUserByEmail(updates.recipient);
         if (recipientUser) {
             mail.recipient = recipientUser.id;
-        } else mail.recipient = updates.recipient;
+        } else {
+            mail.recipient = updates.recipient;
+        }
     }
 
     if (
@@ -70,33 +70,39 @@ export function updateMailById(userId, id, updates) {
             getAllLinksFromBody(mail.subject)
         );
         let spammed = false;
-
         for (const link of links) {
             if (isURLBlacklisted(link)) {
                 spammed = true;
             }
         }
 
-        const recipientUser =
-            getUserById(mail.recipient) || getUserByEmail(mail.recipient);
-
+        const recipientUser = getUserById(mail.recipient) || getUserByEmail(mail.recipient);
         if (!recipientUser) {
             return { status: 404, error: "Recipient not found" };
         }
 
-        // Add the mail to the recipient's mailbox
         const draftIndex = globals.mails.findIndex((m) => m.id === id);
-
         recipientUser.mails.push(draftIndex);
+
         if (spammed) {
-            const spamLabel = recipientUser.labels.find(
-                (label) => label.name === "Spam"
-            );
-            spamLabel.mails.push(newMail.id);
+            const spamLabel = recipientUser.labels.find(label => label.name === "Spam");
+            if (spamLabel && !spamLabel.mails.includes(id)) {
+                spamLabel.mails.push(id);
+            }
         }
 
         mail.draft = false;
+        mail.label = "Sent";
+
+        const sender = getUserById(userId);
+        if (sender) {
+            const sentLabel = sender.labels.find(label => label.name === "Sent");
+            if (sentLabel && !sentLabel.mails.includes(id)) {
+                sentLabel.mails.push(id);
+            }
+        }
     }
 
     return { status: 204, mail };
 }
+

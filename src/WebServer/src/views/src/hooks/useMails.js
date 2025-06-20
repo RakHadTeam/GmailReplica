@@ -8,7 +8,7 @@ export const MailProvider = ({ children }) => {
     const [searchResults, setSearchResults] = useState([]);
     const [mails, setMails] = useState([]);
     const [filteredMails, setFilteredMails] = useState([]);
-    const { starredIds, labels, activeLabel, binnedIds, spammedIds } = useLabels();
+    const { starredIds, labels, activeLabel, binnedIds, spammedIds, sentIds } = useLabels();
     const [selectedMails, setSelectedMails] = useState([]);
 
     useEffect(() => {
@@ -19,14 +19,16 @@ export const MailProvider = ({ children }) => {
                 if (activeLabel === "Drafts")
                     return mail.draft && !binnedIds.includes(mail.id);
                 if (activeLabel === "All")
-                    return !binnedIds.includes(mail.id) && !mail.draft && !spammedIds.includes(mail.id);
+                    return !binnedIds.includes(mail.id) && !mail.draft && !spammedIds.includes(mail.id) && (!sentIds.includes(mail.id) || mail.recipient===mail.sender);
                 if (activeLabel === "Starred")
                     return starredIds.includes(mail.id);
+                if (activeLabel === "Sent")
+                    return sentIds.includes(mail.id);
                 const lbl = labels.find((l) => l.id === activeLabel);
                 return Array.isArray(lbl?.mails) && lbl.mails.includes(mail.id);
             })
         );
-    }, [mails, binnedIds, activeLabel, starredIds, spammedIds, labels]);
+    }, [mails, binnedIds, activeLabel, starredIds, spammedIds, sentIds, labels]);
 
     const search = async (q) => {
         setSearchQuery(q);
