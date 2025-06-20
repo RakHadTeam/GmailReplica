@@ -70,11 +70,11 @@ export async function createMail(userId, { subject, body, recipient, draft }) {
     sender.mails.push(mailIndex);
 
     // Only push to recipient's mails if not a draft
-    if (!draft && recipientUser && recipientUser.id !== sender.id) {
-        recipientUser.mails.push(mailIndex);
+    if (!draft && recipientUser) {
+        if (recipientUser.id !== sender.id) recipientUser.mails.push(mailIndex);
         if (spammed) {
             const spamLabel = recipientUser.labels.find(
-                (label) => label.name === "Spam"
+                (label) => label.id === "Spam"
             );
             spamLabel.mails.push(newMail.id);
         }

@@ -163,14 +163,13 @@ export default function MailList() {
                             </div>
                             <div className="text-nowrap small ms-auto">
                                 {new Date(mail.createdAt).toLocaleString(
-                                    "en-US",
+                                    "en-IL",
                                     {
                                         month: "short",
                                         day: "numeric",
                                         year: "numeric",
                                         hour: "numeric",
                                         minute: "2-digit",
-                                        hour12: true,
                                     }
                                 )}
                             </div>

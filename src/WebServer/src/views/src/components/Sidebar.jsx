@@ -7,8 +7,14 @@ import ComposeMail from "./ComposeMail.jsx";
 export default function Sidebar() {
     const { darkTheme } = useTheme();
     const { mails, setFilteredMails } = useMails();
-    const { labels, activeLabel, starredIds, setActiveLabel, binnedIds } =
-        useLabels();
+    const {
+        labels,
+        activeLabel,
+        starredIds,
+        setActiveLabel,
+        binnedIds,
+        spammedIds,
+    } = useLabels();
     const { toggleShowCompose, showCompose, toggleLabelManager } = useUIs();
     return (
         <div
@@ -40,7 +46,7 @@ export default function Sidebar() {
                         {
                             mails.filter(
                                 (mail) =>
-                                    !mail.draft && !binnedIds.includes(mail.id)
+                                    !mail.draft && !binnedIds.includes(mail.id) && !spammedIds.includes(mail.id)
                             ).length
                         }
                     </span>
@@ -105,6 +111,12 @@ export default function Sidebar() {
                 >
                     <span className="material-symbols-rounded">report</span>
                     Spam
+                    <span className="ms-auto">
+                        {
+                            mails.filter((mail) => spammedIds.includes(mail.id))
+                                .length
+                        }
+                    </span>
                 </button>
                 <button
                     className={`btn d-flex align-items-center gap-2 text-start ${

@@ -6,7 +6,7 @@ const MailContext = createContext();
 export const MailProvider = ({ children }) => {
     const [mails, setMails] = useState([]);
     const [filteredMails, setFilteredMails] = useState([]);
-    const { starredIds, labels, activeLabel, binnedIds } = useLabels();
+    const { starredIds, labels, activeLabel, binnedIds, spammedIds } = useLabels();
     const [selectedMails, setSelectedMails] = useState([]);
 
     useEffect(() => {
@@ -16,7 +16,7 @@ export const MailProvider = ({ children }) => {
                 if (activeLabel === "Drafts")
                     return mail.draft && !binnedIds.includes(mail.id);
                 if (activeLabel === "All")
-                    return !binnedIds.includes(mail.id) && !mail.draft;
+                    return !binnedIds.includes(mail.id) && !mail.draft && !spammedIds.includes(mail.id);
                 if (activeLabel === "Starred")
                     return starredIds.includes(mail.id);
                 const lbl = labels.find((l) => l.id === activeLabel);
