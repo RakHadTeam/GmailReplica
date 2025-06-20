@@ -2,19 +2,19 @@ import { useEffect } from "react";
 import ContextMenu from "../components/ContextMenu";
 import InboxHeader from "../components/InboxHeader";
 import LabelManager from "../components/LabelManager";
-import MailDetail from "../components/MailDetail";
-import MailFilter from "../components/MailFilter";
 import MailList from "../components/MailsList";
 import SettingsPanel from "../components/SettingsPanel";
+import Sidebar from "../components/Sidebar.jsx";
 import { useTheme } from "../context/ThemeContext";
 import useLabels from "../hooks/useLabels.js";
 import useMails from "../hooks/useMails.js";
 import useUIs from "../hooks/useUIs.js";
+import SearchBar from "../components/SearchBar/SearchBar.jsx";
 
 export function Inbox() {
-    const { fetchMails } = useMails();
-    const { fetchLabels } = useLabels();
-    const { settingsOpen, labelManagerOpen } = useUIs();
+    const { fetchMails, mails } = useMails();
+    const { fetchLabels, labels } = useLabels();
+    const { labelManagerOpen, settingsOpen } = useUIs();
     const { darkTheme } = useTheme();
 
     useEffect(() => {
@@ -26,22 +26,27 @@ export function Inbox() {
 
     return (
         <div
-            className={`min-vh-100 w-100 ${
+            className={`min-vh-100  ${
                 darkTheme ? "bg-black text-white" : "bg-light text-dark"
             }`}
         >
-            <div className="container py-4">
-                <InboxHeader />
+            <div className="d-flex">
+                <div style={{ width: "240px", flexShrink: 0, minHeight: "100vh" }} className={darkTheme ? `bg-dark` : `bg-light`}>
+                    <Sidebar />
+                </div>
+                <div className="flex-grow-1" style={{  overflowY: "auto", overflowX: "hidden" }}>
+                    <div className="py-4 px-3 w-100">
 
-                <MailFilter />
+                        <InboxHeader />
 
-                <MailList />
+                        <MailList />
 
-                <ContextMenu />
+                        <ContextMenu />
 
+                        {labelManagerOpen && <LabelManager />}
+                    </div>
+                </div>
                 {settingsOpen && <SettingsPanel />}
-
-                {labelManagerOpen && <LabelManager />}
             </div>
         </div>
     );

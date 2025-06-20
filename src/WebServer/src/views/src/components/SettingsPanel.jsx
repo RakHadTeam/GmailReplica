@@ -3,16 +3,22 @@ import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext.jsx";
 import { useTheme } from "../context/ThemeContext.jsx";
 import useUIs from "../hooks/useUIs.js";
+import useMails from "../hooks/useMails.js";
+import useLabels from "../hooks/useLabels.js";
 
 export default function SettingsPanel() {
     const {
-        fullName, setFullName,
-        profileImage, setProfileImage,
-        currentUser, setCurrentUser,
-        setSignedin
+        fullName,
+        setFullName,
+        profileImage,
+        setProfileImage,
+        currentUser,
+        setSignedin,
     } = useContext(AuthContext);
     const { toggleSettings } = useUIs();
     const { darkTheme } = useTheme();
+    const { fetchMails } = useMails();
+    const { fetchLabels } = useLabels();
     const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
@@ -34,6 +40,8 @@ export default function SettingsPanel() {
 
             if (res.ok) {
                 alert("Settings updated successfully!");
+                fetchMails();
+                fetchLabels();
                 toggleSettings();
             } else {
                 alert("Failed to update settings.");
@@ -163,6 +171,77 @@ export default function SettingsPanel() {
                             </span>{" "}
                             Logout
                         </button>
+                    </div>
+
+                    <hr className="my-3" />
+                    <div className="mb-3">
+                        <label htmlFor="addUrl" className="form-label">
+                            Add URL to Blacklist
+                        </label>
+                        <input
+                            type="text"
+                            className="form-control"
+                            id="addUrl"
+                            placeholder="https://example.com"
+                            onKeyDown={async (e) => {
+                                if (e.key === "Enter") {
+                                    e.preventDefault();
+                                    const url = e.target.value.trim();
+                                    if (!url) return;
+                                    try {
+                                        const res = await fetch("/api/blacklist", {
+                                            method: "POST",
+                                            headers: {
+                                                "Content-Type": "application/json",
+                                            },
+                                            body: JSON.stringify({ url }),
+                                        });
+                                        if (res.ok) {
+                                            alert("URL added to blacklist!");
+                                            e.target.value = "";
+                                        } else {
+                                            alert("Failed to add URL.");
+                                        }
+                                    } catch (err) {
+                                        console.error(err);
+                                        alert("Error adding URL.");
+                                    }
+                                }
+                            }}
+                        />
+                    </div>
+
+                    <div className="mb-3">
+                        <label htmlFor="removeUrl" className="form-label">
+                            Remove URL from Blacklist
+                        </label>
+                        <input
+                            type="text"
+                            className="form-control"
+                            id="removeUrl"
+                            placeholder="https://example.com"
+                            onKeyDown={async (e) => {
+                                if (e.key === "Enter") {
+                                    e.preventDefault();
+                                    const url = e.target.value.trim();
+                                    if (!url) return;
+                                    try {
+                                        const res = await fetch(`/api/blacklist/${encodeURIComponent(url)}`, {
+                                            method: "DELETE",
+                                        });
+                                        if (res.ok) {
+                                            alert("URL removed from blacklist!");
+                                            e.target.value = "";
+                                        } else {
+                                            alert("Failed to remove URL.");
+                                        }
+                                    } catch (err) {
+                                        console.error(err);
+                                        alert("Error removing URL.");
+                                    }
+                                }
+                            }}
+                        />
                     </div>
                 </form>
             </div>

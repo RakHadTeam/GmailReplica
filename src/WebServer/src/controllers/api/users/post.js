@@ -1,7 +1,6 @@
 import multer from "multer";
 import path from "path";
 import { createUser } from "../../../models/user.model.js";
-import fs from "fs";
 
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
@@ -10,7 +9,7 @@ const storage = multer.diskStorage({
     filename: function (req, file, cb) {
         const ext = path.extname(file.originalname);
         cb(null, `${Date.now()}-${file.fieldname}${ext}`);
-    }
+    },
 });
 
 export const upload = multer({ storage });
@@ -37,7 +36,17 @@ export function postUsers(req, res) {
             {
                 name: "Starred",
                 id: "Starred",
-                mails: []
+                mails: [],
+            },
+            {
+                name: "Bin",
+                id: "Bin",
+                mails: [],
+            },
+            {
+                name: "Spam",
+                id: "Spam",
+                mails: [],
             }
         ],
     };

@@ -1,7 +1,6 @@
 import globals from "../core/globals.js";
 import { getAllLinksFromBody } from "./mails.model.js";
-import { getUserById, getUserByEmail } from "./user.model.js";
-import { getUserIdFromToken } from "../core/jwt.js";
+import { getUserByEmail, getUserById } from "./user.model.js";
 
 export function getMailById(userId, id) {
     const user = getUserById(userId);
@@ -29,6 +28,10 @@ export function deleteMailById(userId, id) {
     user.mails = user.mails.filter(
         (mailIndex) => globals.mails[mailIndex].id !== id
     );
+    user.labels.forEach((label) => {
+        label.mails = label.mails.filter((mailId) => mailId !== id);
+    });
+
     return { status: 204 };
 }
 
@@ -51,24 +54,26 @@ export function updateMailById(userId, id, updates) {
 
     if (updates.recipient) {
         const recipientUser =
-            getUserById(updates.recipient) ||
-            getUserByEmail(updates.recipient);
-        if (!recipientUser) {
-            return { status: 404, error: "Recipient not found" };
-        }
-        mail.recipient = recipientUser.id;
+            getUserById(updates.recipient) || getUserByEmail(updates.recipient);
+        if (recipientUser) {
+            mail.recipient = recipientUser.id;
+        } else mail.recipient = updates.recipient;
     }
 
-    if (updates.draft === false) {
+    if (
+        updates.draft === false &&
+        updates.recipient &&
+        updates.body &&
+        updates.subject
+    ) {
         const links = getAllLinksFromBody(mail.body).concat(
             getAllLinksFromBody(mail.subject)
         );
+        let spammed = false;
+
         for (const link of links) {
             if (isURLBlacklisted(link)) {
-                return {
-                    status: 400,
-                    error: "Mail contains blacklisted content",
-                };
+                spammed = true;
             }
         }
 
@@ -82,11 +87,13 @@ export function updateMailById(userId, id, updates) {
         // Add the mail to the recipient's mailbox
         const draftIndex = globals.mails.findIndex((m) => m.id === id);
 
-        if (recipientUser.mails.includes(draftIndex)) {
-            return { status: 400, error: "Mail already sent to recipient" };
-        }
-
         recipientUser.mails.push(draftIndex);
+        if (spammed) {
+            const spamLabel = recipientUser.labels.find(
+                (label) => label.name === "Spam"
+            );
+            spamLabel.mails.push(newMail.id);
+        }
 
         mail.draft = false;
     }
