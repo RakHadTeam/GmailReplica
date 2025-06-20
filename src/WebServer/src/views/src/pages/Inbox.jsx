@@ -9,10 +9,11 @@ import { useTheme } from "../context/ThemeContext";
 import useLabels from "../hooks/useLabels.js";
 import useMails from "../hooks/useMails.js";
 import useUIs from "../hooks/useUIs.js";
+import SearchBar from "../components/SearchBar.jsx";
 
 export function Inbox() {
-    const { fetchMails } = useMails();
-    const { fetchLabels } = useLabels();
+    const { fetchMails, mails } = useMails();
+    const { fetchLabels, labels } = useLabels();
     const { labelManagerOpen, settingsOpen } = useUIs();
     const { darkTheme } = useTheme();
 
@@ -25,16 +26,17 @@ export function Inbox() {
 
     return (
         <div
-            className={`min-vh-100 ${
+            className={`min-vh-100  ${
                 darkTheme ? "bg-black text-white" : "bg-light text-dark"
             }`}
         >
             <div className="d-flex">
-                <div style={{ width: "240px", flexShrink: 0 }}>
+                <div style={{ width: "240px", flexShrink: 0, minHeight: "100vh" }} className={darkTheme ? `bg-dark` : `bg-light`}>
                     <Sidebar />
                 </div>
-                <div className="flex-grow-1">
+                <div className="flex-grow-1" style={{  overflowY: "auto", overflowX: "hidden" }}>
                     <div className="py-4 px-3 w-100">
+
                         <InboxHeader />
 
                         <MailList />

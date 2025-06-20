@@ -17,5 +17,5 @@ export function postLabels(req, res) {
 
     const { status, label } = createLabel(userId, newLabel)
 
-    res.status(status).location(`/api/labels/${label.id}`).send();
+    res.status(status).location(`/api/labels/${label.id}`).json({ id: label.id })
 }

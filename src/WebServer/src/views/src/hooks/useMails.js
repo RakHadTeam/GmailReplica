@@ -13,7 +13,10 @@ export const MailProvider = ({ children }) => {
         setFilteredMails(
             mails.filter((mail) => {
                 if (activeLabel === "Bin") return binnedIds.includes(mail.id);
-                if (activeLabel === "All") return !binnedIds.includes(mail.id);
+                if (activeLabel === "Drafts")
+                    return mail.draft && !binnedIds.includes(mail.id);
+                if (activeLabel === "All")
+                    return !binnedIds.includes(mail.id) && !mail.draft;
                 if (activeLabel === "Starred")
                     return starredIds.includes(mail.id);
                 const lbl = labels.find((l) => l.id === activeLabel);
@@ -27,8 +30,18 @@ export const MailProvider = ({ children }) => {
             const res = await fetch("/api/mails", { credentials: "include" });
             if (!res.ok) throw new Error(`Fetch mails failed: ${res.status}`);
             const data = await res.json();
+
             const enriched = await Promise.all(
                 data.map(async (mail) => {
+                    if (mail.draft && !mail.recipient) {
+                        return {
+                            ...mail,
+                            recipientName: "",
+                            recipientEmail: "",
+                            recipientPicture: null,
+                        };
+                    }
+
                     const uRes = await fetch(`/api/users/${mail.recipient}`, {
                         credentials: "include",
                     });
@@ -36,12 +49,13 @@ export const MailProvider = ({ children }) => {
                     return {
                         ...mail,
                         recipientName:
-                            user.fullname || user.name || mail.recipient,
+                            user.fullname || mail.recipient,
                         recipientEmail: user.email || "",
                         recipientPicture: user.picture || null,
                     };
                 })
             );
+
             setMails(enriched);
         } catch (err) {
             console.error(err);

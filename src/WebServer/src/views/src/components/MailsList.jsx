@@ -1,3 +1,4 @@
+// src/components/MailList.jsx
 import { useEffect, useState } from "react";
 import { useTheme } from "../context/ThemeContext";
 import useLabels from "../hooks/useLabels.js";
@@ -5,42 +6,58 @@ import useMailHandlers from "../hooks/useMailHandlers.js";
 import useMails from "../hooks/useMails.js";
 import useStarHandlers from "../hooks/useStarHandlers.js";
 import useUIs from "../hooks/useUIs.js";
+import ComposeMail from "./ComposeMail.jsx";
 import MailDetail from "./MailDetail.jsx";
 
 export default function MailList() {
-    const { filteredMails, selectedMails, setSelectedMails } = useMails();
-    const { setShowLabelPopup, setContextMenu, openMailId } = useUIs();
+    const {
+        setShowLabelPopup,
+        setContextMenu,
+        openMailId,
+        showCompose,
+        toggleShowCompose,
+    } = useUIs();
     const { starredIds, activeLabel } = useLabels();
-    const { handleSelect, handleOpenMail, handleCloseDetail } = useMailHandlers();
+    const { handleSelect, handleOpenMail, handleCloseDetail } =
+        useMailHandlers();
     const { handleToggleStar } = useStarHandlers();
+    const { mails, filteredMails, selectedMails, setSelectedMails } =
+        useMails();
+
+    const [openMail, setOpenMail] = useState(null);
+
+    const { darkTheme } = useTheme();
 
     const handleRightClick = (e, mailId) => {
         e.preventDefault();
         setContextMenu({ x: e.pageX, y: e.pageY, mailId });
-
-        // If mailId is not already selected, select only it
         if (!selectedMails.includes(mailId)) {
             setSelectedMails([]);
             handleSelect(mailId);
         }
-
         setShowLabelPopup(false);
     };
 
     useEffect(() => {
-        handleOpenMail(openMailId);
+        if (openMailId != null) {
+            const mail = mails.find((m) => m.id === openMailId);
+            setOpenMail(mail);
+        } else setOpenMail(null);
     }, [openMailId]);
 
-    const { darkTheme } = useTheme();
+    if (openMail && !openMail.draft) {
+        return <MailDetail handleCloseDetail={handleCloseDetail} />;
+    }
 
+    return (
+        <div className="w-100 position-relative mt-2">
+            {openMail && openMail.draft && (
+                <ComposeMail
+                    draftMail={openMail}
+                    handleCloseCompose={handleCloseDetail}
+                />
+            )}
 
-
-    return openMailId != null ? (
-        <MailDetail
-            handleCloseDetail={handleCloseDetail}
-        />
-    ) : (
-        <div className="w-100">
             <div
                 className={`table w-100 ${
                     darkTheme ? "bg-dark text-white" : "bg-white text-dark"
@@ -51,9 +68,10 @@ export default function MailList() {
                     return (
                         <div
                             key={mail.id}
-                            className={`d-flex align-items-center border-bottom py-2 px-3 hover-bg ${
+                            className={`d-flex rounded-1 align-items-center border-top py-2 px-3 hover-bg ${
                                 isSelected ? "bg-primary bg-opacity-10" : ""
                             } ${darkTheme ? "bg-dark text-white" : ""}`}
+                            style={{ cursor: "pointer" }}
                             onContextMenu={(e) => handleRightClick(e, mail.id)}
                             onClick={() => handleOpenMail(mail.id)}
                         >
@@ -97,26 +115,50 @@ export default function MailList() {
                                     {starredIds.includes(mail.id) ? "★" : "☆"}
                                 </span>
                             )}
-                            <div className="d-flex align-items-center flex-grow-1 overflow-hidden text-truncate">
+                            {mail.draft ? (
+                                <span
+                                    className="me-2 text-danger"
+                                    style={{
+                                        fontSize: "0.9rem",
+                                        width: "200px",
+                                    }}
+                                >
+                                    Draft
+                                </span>
+                            ) : (
                                 <div
-                                    className={`me-2 text-truncate ${
-                                        darkTheme ? "text-white" : ""
-                                    }`}
+                                    className={`text-truncate me-2`}
                                     style={{
                                         width: "200px",
-                                        background: "none",
+                                        flexShrink: 0,
+                                        backgroundColor: "transparent",
                                     }}
                                 >
                                     {mail.recipientName}
                                 </div>
+                            )}
+                            <div
+                                className="d-flex align-items-center overflow-hidden"
+                                style={{
+                                    minWidth: 0,
+                                    flexGrow: 1,
+                                    backgroundColor: "transparent",
+                                }}
+                            >
                                 <div
-                                    className={`small text-truncate ${
-                                        darkTheme ? "text-white" : ""
-                                    }`}
-                                    style={{ background: "none" }}
+                                    className={`small text-truncate`}
+                                    style={{
+                                        minWidth: "0",
+                                        color: darkTheme ? "white" : "black",
+                                        backgroundColor: "transparent",
+                                    }}
                                 >
-                                    <span>{mail.subject}</span>{" "}
-                                    <span style={{ opacity: 0.7 }}>– {mail.body.slice(0, 80)}…</span>
+                                    <strong className="me-1">
+                                        {mail.subject}
+                                    </strong>
+                                    <span style={{ opacity: 0.7 }}>
+                                        – {mail.body.slice(0, 80)}…
+                                    </span>
                                 </div>
                             </div>
                             <div className="text-nowrap small ms-auto">

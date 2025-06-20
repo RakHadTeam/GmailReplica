@@ -47,7 +47,9 @@ function App() {
                     }`}
                     style={{ width: "40px", height: "40px" }}
                 >
-                    {darkTheme ? "☀" : "☾"}
+                    <span className="material-symbols-rounded">
+                        {darkTheme ? "light_mode" : "dark_mode"}
+                    </span>
                 </button>
                 {signedin && (
                     <button
