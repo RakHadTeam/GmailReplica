@@ -1,7 +1,6 @@
 import { randomUUID } from "crypto";
 import globals from "../core/globals.js";
 import { sendBlacklistCommand } from "./blacklist.model.js";
-import { getUserIdFromToken } from "../core/jwt.js";
 import { getUserByEmail, getUserById } from "./user.model.js";
 
 export function getLatestMails(userId) {
@@ -34,6 +33,7 @@ export function getAllLinksFromBody(body) {
 
 export async function createMail(userId, { subject, body, recipient, draft }) {
     const sender = getUserById(userId);
+    let spammed = false;
     if (!sender) {
         return { status: 401, error: "Unauthorized" };
     }
@@ -43,10 +43,7 @@ export async function createMail(userId, { subject, body, recipient, draft }) {
         );
         for (const link of links) {
             if ((await isURLBlacklisted(link)) == 200) {
-                return {
-                    status: 400,
-                    error: "Mail contains blacklisted content",
-                };
+                spammed = true;
             }
         }
     }
@@ -75,6 +72,12 @@ export async function createMail(userId, { subject, body, recipient, draft }) {
     // Only push to recipient's mails if not a draft
     if (!draft && recipientUser && recipientUser.id !== sender.id) {
         recipientUser.mails.push(mailIndex);
+        if (spammed) {
+            const spamLabel = recipientUser.labels.find(
+                (label) => label.name === "Spam"
+            );
+            spamLabel.mails.push(newMail.id);
+        }
     }
 
     return { id: newMail.id, status: 201 };
