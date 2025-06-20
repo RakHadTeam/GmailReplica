@@ -9,7 +9,7 @@ import { useTheme } from "../context/ThemeContext";
 import useLabels from "../hooks/useLabels.js";
 import useMails from "../hooks/useMails.js";
 import useUIs from "../hooks/useUIs.js";
-import SearchBar from "../components/SearchBar.jsx";
+import SearchBar from "../components/SearchBar/SearchBar.jsx";
 
 export function Inbox() {
     const { fetchMails, mails } = useMails();

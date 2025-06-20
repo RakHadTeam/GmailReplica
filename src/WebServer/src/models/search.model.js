@@ -1,35 +1,35 @@
+// src/models/search.model.js
 import globals from "../core/globals.js";
 import { getUserById } from "./user.model.js";
-import { getUserIdFromToken } from "../core/jwt.js";
 
 export function searchMails(userId, query) {
-    const user = getUserById(userId);
-    if (!user) {
-        return { status: 401, error: "Unauthorized" };
-    }
+  const user = getUserById(userId);
+  if (!user) {
+    return { status: 401, error: "Unauthorized" };
+  }
 
-    const filteredMails = user.mails
-        .filter(
-            (mailIndex) =>
-                (globals.mails[mailIndex].subject &&
-                    globals.mails[mailIndex].subject
-                        .toLowerCase()
-                        .includes(query)) ||
-                (globals.mails[mailIndex].body &&
-                    globals.mails[mailIndex].body
-                        .toLowerCase()
-                        .includes(query)) ||
-                (globals.mails[mailIndex].recipient &&
-                    globals.mails[mailIndex].recipient
-                        .toLowerCase()
-                        .includes(query))
-        )
-        .map((mailIndex) => globals.mails[mailIndex]);
+  const lowerQ = query.toLowerCase();
 
-    // delete duplicate mails
-    const uniqueMails = Array.from(
-        new Map(filteredMails.map((mail) => [mail.id, mail])).values()
-    );
+  const filteredMails = user.mails
+    .map((mailIndex) => globals.mails[mailIndex])
+    .filter((mail) => {
+      // subject/body/id checks
+      const subj  = mail.subject?.toLowerCase().includes(lowerQ);
+      const body  = mail.body?.toLowerCase().includes(lowerQ);
+      const rId   = mail.recipient?.toLowerCase().includes(lowerQ);
 
-    return { status: 200, mails: uniqueMails };
+      // lookup the recipient user
+      const recUser = getUserById(mail.recipient) || {};
+      const rName  = recUser.fullname?.toLowerCase().includes(lowerQ);
+      const rEmail = recUser.email?.toLowerCase().includes(lowerQ);
+
+      return subj || body || rId || rName || rEmail;
+    });
+
+  // dedupe by mail.id
+  const uniqueMails = Array.from(
+    new Map(filteredMails.map((m) => [m.id, m])).values()
+  );
+
+  return { status: 200, mails: uniqueMails };
 }

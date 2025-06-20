@@ -5,7 +5,7 @@ import useMails from "../hooks/useMails.js";
 import useStarHandlers from "../hooks/useStarHandlers.js";
 import useUIs from "../hooks/useUIs.js";
 import LabelPopup from "./LabelPopup.jsx";
-import SearchBar from "./SearchBar.jsx";
+import SearchBar from "./SearchBar/SearchBar.jsx";
 
 export default function InboxHeader() {
     const {
