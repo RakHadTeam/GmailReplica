@@ -3,16 +3,22 @@ import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext.jsx";
 import { useTheme } from "../context/ThemeContext.jsx";
 import useUIs from "../hooks/useUIs.js";
+import useMails from "../hooks/useMails.js";
+import useLabels from "../hooks/useLabels.js";
 
 export default function SettingsPanel() {
     const {
-        fullName, setFullName,
-        profileImage, setProfileImage,
-        currentUser, setCurrentUser,
-        setSignedin
+        fullName,
+        setFullName,
+        profileImage,
+        setProfileImage,
+        currentUser,
+        setSignedin,
     } = useContext(AuthContext);
     const { toggleSettings } = useUIs();
     const { darkTheme } = useTheme();
+    const { fetchMails } = useMails();
+    const { fetchLabels } = useLabels();
     const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
@@ -34,6 +40,8 @@ export default function SettingsPanel() {
 
             if (res.ok) {
                 alert("Settings updated successfully!");
+                fetchMails();
+                fetchLabels();
                 toggleSettings();
             } else {
                 alert("Failed to update settings.");

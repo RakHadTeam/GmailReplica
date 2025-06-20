@@ -6,21 +6,24 @@ const MailContext = createContext();
 export const MailProvider = ({ children }) => {
     const [mails, setMails] = useState([]);
     const [filteredMails, setFilteredMails] = useState([]);
-    const { starredIds, labels, activeLabel } = useLabels();
+    const { starredIds, labels, activeLabel, binnedIds } = useLabels();
     const [selectedMails, setSelectedMails] = useState([]);
-    const [isDraft, setIsDraft] = useState(false);
 
     useEffect(() => {
         setFilteredMails(
-            mails.filter(mail => {
-                if (isDraft) return mail.draft === true;
-                if (activeLabel === "All") return true;
-                if (activeLabel === "Starred") return starredIds.includes(mail.id);
-                const lbl = labels.find(l => l.id === activeLabel);
+            mails.filter((mail) => {
+                if (activeLabel === "Bin") return binnedIds.includes(mail.id);
+                if (activeLabel === "Drafts")
+                    return mail.draft && !binnedIds.includes(mail.id);
+                if (activeLabel === "All")
+                    return !binnedIds.includes(mail.id) && !mail.draft;
+                if (activeLabel === "Starred")
+                    return starredIds.includes(mail.id);
+                const lbl = labels.find((l) => l.id === activeLabel);
                 return Array.isArray(lbl?.mails) && lbl.mails.includes(mail.id);
             })
         );
-    }, [mails, isDraft, activeLabel, starredIds, labels]);
+    }, [mails, binnedIds, activeLabel, starredIds, labels]);
 
     const fetchMails = async () => {
         try {
@@ -29,8 +32,8 @@ export const MailProvider = ({ children }) => {
             const data = await res.json();
 
             const enriched = await Promise.all(
-                data.map(async mail => {
-                    if (!mail.recipient) {
+                data.map(async (mail) => {
+                    if (mail.draft && !mail.recipient) {
                         return {
                             ...mail,
                             recipientName: "",
@@ -38,13 +41,15 @@ export const MailProvider = ({ children }) => {
                             recipientPicture: null,
                         };
                     }
+
                     const uRes = await fetch(`/api/users/${mail.recipient}`, {
                         credentials: "include",
                     });
                     const user = uRes.ok ? await uRes.json() : {};
                     return {
                         ...mail,
-                        recipientName: user.fullname || user.name || mail.recipient,
+                        recipientName:
+                            user.fullname || mail.recipient,
                         recipientEmail: user.email || "",
                         recipientPicture: user.picture || null,
                     };
@@ -67,8 +72,6 @@ export const MailProvider = ({ children }) => {
                 setFilteredMails,
                 selectedMails,
                 setSelectedMails,
-                isDraft,
-                setIsDraft
             }}
         >
             {children}
@@ -79,4 +82,3 @@ export const MailProvider = ({ children }) => {
 export default function useMails() {
     return useContext(MailContext);
 }
-

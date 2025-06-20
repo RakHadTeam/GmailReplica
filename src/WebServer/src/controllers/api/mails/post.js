@@ -17,6 +17,8 @@ export async function postMail(req, res) {
         ...(!draft && { recipient }),
     };
 
+    console.log("Creating mail with data:", mailData);
+
     const { status, error, id } = await createMail(userId, mailData);
 
     if (error) {
@@ -28,5 +30,6 @@ export async function postMail(req, res) {
         .location(`/api/mails/${id}`)
         .json({
             message: draft ? "Draft saved successfully" : "Mail sent successfully",
+            id,
         });
 }
