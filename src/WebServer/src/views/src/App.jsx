@@ -1,6 +1,5 @@
 import { useContext, useEffect, useState } from "react";
 import { Route, Routes, useLocation, useNavigate } from "react-router-dom";
-import SettingsPanel from "./components/SettingsPanel.jsx";
 import { AuthContext } from "./context/AuthContext.jsx";
 import { useTheme } from "./context/ThemeContext.jsx";
 import { Inbox } from "./pages/Inbox.jsx";

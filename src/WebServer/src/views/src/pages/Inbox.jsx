@@ -1,15 +1,14 @@
 import { useEffect } from "react";
-import ContextMenu from "../components/ContextMenu";
-import InboxHeader from "../components/InboxHeader";
-import LabelManager from "../components/LabelManager";
-import MailList from "../components/MailsList";
-import SettingsPanel from "../components/SettingsPanel";
-import Sidebar from "../components/Sidebar.jsx";
+import ContextMenu from "../components/ContextMenu/ContextMenu";
+import InboxHeader from "../components/InboxHeader/InboxHeader.jsx";
+import LabelManager from "../components/LabelManager/LabelManager.jsx";
+import MailList from "../components/MailsList/MailsList.jsx";
+import Settings from "../components/Settings/Settings.jsx";
+import Sidebar from "../components/Sidebar/Sidebar.jsx";
 import { useTheme } from "../context/ThemeContext";
 import useLabels from "../hooks/useLabels.js";
 import useMails from "../hooks/useMails.js";
 import useUIs from "../hooks/useUIs.js";
-import SearchBar from "../components/SearchBar/SearchBar.jsx";
 
 export function Inbox() {
     const { fetchMails, mails } = useMails();
@@ -31,12 +30,21 @@ export function Inbox() {
             }`}
         >
             <div className="d-flex">
-                <div style={{ width: "240px", flexShrink: 0, minHeight: "100vh" }} className={darkTheme ? `bg-dark` : `bg-light`}>
+                <div
+                    style={{
+                        width: "240px",
+                        flexShrink: 0,
+                        minHeight: "100vh",
+                    }}
+                    className={darkTheme ? `bg-dark` : `bg-light`}
+                >
                     <Sidebar />
                 </div>
-                <div className="flex-grow-1" style={{  overflowY: "auto", overflowX: "hidden" }}>
+                <div
+                    className="flex-grow-1"
+                    style={{ overflowY: "auto", overflowX: "hidden" }}
+                >
                     <div className="py-4 px-3 w-100">
-
                         <InboxHeader />
 
                         <MailList />
@@ -46,7 +54,7 @@ export function Inbox() {
                         {labelManagerOpen && <LabelManager />}
                     </div>
                 </div>
-                {settingsOpen && <SettingsPanel />}
+                {settingsOpen && <Settings />}
             </div>
         </div>
     );
