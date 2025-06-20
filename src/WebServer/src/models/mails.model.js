@@ -8,7 +8,6 @@ export function getLatestMails(userId) {
     if (!user) {
         return { status: 401, error: "Unauthorized" };
     }
-    // get the latest 50 mails
     return {
         status: 200,
         mails: user.mails
@@ -16,6 +15,7 @@ export function getLatestMails(userId) {
             .map((mailIndex) => globals.mails[mailIndex] || null),
     };
 }
+
 function isURLBlacklisted(url) {
     return sendBlacklistCommand(`GET ${url}`);
 }
@@ -34,13 +34,13 @@ export function getAllLinksFromBody(body) {
 export async function createMail(userId, { subject, body, recipient, draft }) {
     const sender = getUserById(userId);
     let spammed = false;
+
     if (!sender) {
         return { status: 401, error: "Unauthorized" };
     }
+
     if (!draft) {
-        const links = getAllLinksFromBody(body).concat(
-            getAllLinksFromBody(subject)
-        );
+        const links = getAllLinksFromBody(body).concat(getAllLinksFromBody(subject));
         for (const link of links) {
             if ((await isURLBlacklisted(link)) == 200) {
                 spammed = true;
@@ -66,19 +66,23 @@ export async function createMail(userId, { subject, body, recipient, draft }) {
     globals.mails.push(newMail);
     const mailIndex = globals.mails.length - 1;
 
-    // Always push to sender's mails
     sender.mails.push(mailIndex);
 
-    // Only push to recipient's mails if not a draft
     if (!draft && recipientUser) {
         if (recipientUser.id !== sender.id) recipientUser.mails.push(mailIndex);
+        
+        const sentLabel = sender.labels.find(label => label.id === "Sent");
+        if (sentLabel && !sentLabel.mails.includes(newMail.id)) {
+            sentLabel.mails.push(newMail.id);
+        }
         if (spammed) {
-            const spamLabel = recipientUser.labels.find(
-                (label) => label.id === "Spam"
-            );
-            spamLabel.mails.push(newMail.id);
+            const spamLabel = recipientUser.labels.find((label) => label.id === "Spam");
+            if (spamLabel && !spamLabel.mails.includes(newMail.id)) {
+                spamLabel.mails.push(newMail.id);
+            }
         }
     }
 
     return { id: newMail.id, status: 201 };
 }
+

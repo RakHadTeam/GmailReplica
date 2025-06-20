@@ -48,6 +48,12 @@ export function postUsers(req, res) {
                 id: "Spam",
                 mails: [],
             }
+            ,
+            {
+                name: "Sent",
+                id: "Sent",
+                mails: [],
+            }
         ],
     };
 

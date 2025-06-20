@@ -8,6 +8,7 @@ export const LabelProvider = ({ children }) => {
     const [activeLabel, setActiveLabel] = useState("All");
     const [binnedIds, setBinnedIds] = useState([]);
     const [spammedIds, setSpammedIds] = useState([]);
+    const [sentIds, setSentIds] = useState([]);
 
     const fetchLabels = async () => {
         try {
@@ -19,6 +20,10 @@ export const LabelProvider = ({ children }) => {
             setStarredIds(
                 Array.isArray(starredLabel?.mails) ? starredLabel.mails : []
             );
+            
+            const sentLabel = data.find(l => l.name === "Sent");
+            setSentIds(Array.isArray(sentLabel?.mails) ? sentLabel.mails : []);
+
             const binLabel = data.find((l) => l.name === "Bin");
             setBinnedIds(
                 Array.isArray(binLabel?.mails) ? binLabel.mails : []
@@ -44,6 +49,8 @@ export const LabelProvider = ({ children }) => {
             setBinnedIds,
             spammedIds,
             setSpammedIds,
+            sentIds,
+            setSentIds,
             activeLabel,
             setActiveLabel,
         }}>

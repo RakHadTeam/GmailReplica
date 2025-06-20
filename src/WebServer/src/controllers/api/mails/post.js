@@ -15,6 +15,7 @@ export async function postMail(req, res) {
         body: body ?? "",
         draft,
         ...(!draft && { recipient }),
+        
     };
 
     console.log("Creating mail with data:", mailData);
