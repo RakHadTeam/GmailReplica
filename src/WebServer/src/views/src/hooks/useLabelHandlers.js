@@ -3,8 +3,8 @@ import useMails from "./useMails.js";
 import useUIs from "./useUIs.js";
 
 export default function useLabelHandlers() {
-    const { labels, setLabels } = useLabels();
-    const { selectedMails } = useMails();
+    const { labels, setLabels, fetchLabels } = useLabels();
+    const { selectedMails, fetchMails } = useMails();
     const { contextMenu } = useUIs();
 
     const handleLabelToggleOnMailId = async (labelId, mailId) => {
@@ -48,6 +48,9 @@ export default function useLabelHandlers() {
         for (let mailId of targets) {
             handleLabelToggleOnMailId(labelId, mailId);
         }
+
+        fetchLabels();
+        fetchMails();
     };
 
     return { handleLabelToggle, handleLabelToggleOnMailId };

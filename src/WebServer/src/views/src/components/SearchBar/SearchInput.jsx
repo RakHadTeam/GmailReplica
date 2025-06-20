@@ -35,7 +35,7 @@ export default function SearchInput({
       />
       {value && (
         <button
-          className="btn btn-outline-secondary btn-sm border-0"
+          className={`btn btn-sm border-0 link-opacity-10-hover ${darkTheme ? 'text-white' : 'text-dark'}`}
           onClick={onClear}
         >
           <span className="material-symbols-rounded">close</span>

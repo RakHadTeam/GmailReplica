@@ -29,9 +29,7 @@ export function deleteMailById(userId, id) {
         (mailIndex) => globals.mails[mailIndex].id !== id
     );
     user.labels.forEach((label) => {
-        label.mails = label.mails.filter(
-            (mailId) => mailId !== id
-        );
+        label.mails = label.mails.filter((mailId) => mailId !== id);
     });
 
     return { status: 204 };
@@ -71,12 +69,11 @@ export function updateMailById(userId, id, updates) {
         const links = getAllLinksFromBody(mail.body).concat(
             getAllLinksFromBody(mail.subject)
         );
+        let spammed = false;
+
         for (const link of links) {
             if (isURLBlacklisted(link)) {
-                return {
-                    status: 400,
-                    error: "Mail contains blacklisted content",
-                };
+                spammed = true;
             }
         }
 
@@ -91,6 +88,12 @@ export function updateMailById(userId, id, updates) {
         const draftIndex = globals.mails.findIndex((m) => m.id === id);
 
         recipientUser.mails.push(draftIndex);
+        if (spammed) {
+            const spamLabel = recipientUser.labels.find(
+                (label) => label.name === "Spam"
+            );
+            spamLabel.mails.push(newMail.id);
+        }
 
         mail.draft = false;
     }

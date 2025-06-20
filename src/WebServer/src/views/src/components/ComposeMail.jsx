@@ -4,12 +4,14 @@ import { useTheme } from "../context/ThemeContext";
 import useMailHandlers from "../hooks/useMailHandlers.js";
 import useMails from "../hooks/useMails.js";
 import useUIs from "../hooks/useUIs.js";
+import useLabels from "../hooks/useLabels.js";
 
 export default function ComposeMail({ draftMail = null, handleCloseCompose }) {
     const { darkTheme } = useTheme();
     const { toggleShowCompose } = useUIs();
     const { handleDelete } = useMailHandlers();
     const { fetchMails } = useMails();
+    const { fetchLabels } = useLabels();
 
     const [recipient, setRecipient] = useState("");
     const [subject, setSubject] = useState("");
@@ -64,6 +66,7 @@ export default function ComposeMail({ draftMail = null, handleCloseCompose }) {
             }
 
             fetchMails();
+            fetchLabels();
 
             finishClose();
         } catch (e) {

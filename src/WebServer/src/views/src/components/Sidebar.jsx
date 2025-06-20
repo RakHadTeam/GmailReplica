@@ -7,8 +7,14 @@ import ComposeMail from "./ComposeMail.jsx";
 export default function Sidebar() {
     const { darkTheme } = useTheme();
     const { mails, setFilteredMails } = useMails();
-    const { labels, activeLabel, starredIds, setActiveLabel, binnedIds } =
-        useLabels();
+    const {
+        labels,
+        activeLabel,
+        starredIds,
+        setActiveLabel,
+        binnedIds,
+        spammedIds,
+    } = useLabels();
     const { toggleShowCompose, showCompose, toggleLabelManager } = useUIs();
     return (
         <div
@@ -40,7 +46,7 @@ export default function Sidebar() {
                         {
                             mails.filter(
                                 (mail) =>
-                                    !mail.draft && !binnedIds.includes(mail.id)
+                                    !mail.draft && !binnedIds.includes(mail.id) && !spammedIds.includes(mail.id)
                             ).length
                         }
                     </span>
@@ -60,11 +66,19 @@ export default function Sidebar() {
                         }
                     </span>
                 </button>
-                <button className={`btn d-flex align-items-center gap-2 text-start ${darkTheme ? "text-light" : "text-dark"}`}>
+                <button
+                    className={`btn d-flex align-items-center gap-2 text-start ${
+                        darkTheme ? "text-light" : "text-dark"
+                    }`}
+                >
                     <span className="material-symbols-rounded">schedule</span>
                     Snoozed
                 </button>
-                <button className={`btn d-flex align-items-center gap-2 text-start ${darkTheme ? "text-light" : "text-dark"}`}>
+                <button
+                    className={`btn d-flex align-items-center gap-2 text-start ${
+                        darkTheme ? "text-light" : "text-dark"
+                    }`}
+                >
                     <span className="material-symbols-rounded">send</span>
                     Sent
                 </button>
@@ -87,9 +101,22 @@ export default function Sidebar() {
                         }
                     </span>
                 </button>
-                <button className={`btn d-flex align-items-center gap-2 text-start ${darkTheme ? "text-light" : "text-dark"}`}>
+                <button
+                    className={`btn d-flex align-items-center gap-2 text-start ${
+                        darkTheme ? "text-light" : "text-dark"
+                    }`}
+                    onClick={() => {
+                        setActiveLabel("Spam");
+                    }}
+                >
                     <span className="material-symbols-rounded">report</span>
                     Spam
+                    <span className="ms-auto">
+                        {
+                            mails.filter((mail) => spammedIds.includes(mail.id))
+                                .length
+                        }
+                    </span>
                 </button>
                 <button
                     className={`btn d-flex align-items-center gap-2 text-start ${
@@ -111,7 +138,13 @@ export default function Sidebar() {
 
             <div className="mt-2 d-flex flex-column gap-2">
                 <div className="d-flex justify-content-between align-items-center mb-2">
-                    <span className={`fs-5 fw-bold ${darkTheme ? "text-light" : "text-dark"}`}>Labels</span>
+                    <span
+                        className={`fs-5 fw-bold ${
+                            darkTheme ? "text-light" : "text-dark"
+                        }`}
+                    >
+                        Labels
+                    </span>
                     <button
                         className="btn btn-sm rounded-circle d-flex align-items-center justify-content-center"
                         style={{ width: "32px", height: "32px" }}
@@ -124,6 +157,7 @@ export default function Sidebar() {
                 </div>
                 {labels.map((label) => {
                     if (label.id === "Starred") return null; // Skip Starred label as it's already shown above
+                    if (label.id === "Spam") return null; // Skip Spam label as it's not needed here
                     if (label.id === "Bin") return null; // Skip Bin label as it's not needed here
                     return (
                         <button

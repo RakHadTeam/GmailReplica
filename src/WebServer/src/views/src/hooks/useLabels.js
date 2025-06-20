@@ -7,6 +7,7 @@ export const LabelProvider = ({ children }) => {
     const [starredIds, setStarredIds] = useState([]);
     const [activeLabel, setActiveLabel] = useState("All");
     const [binnedIds, setBinnedIds] = useState([]);
+    const [spammedIds, setSpammedIds] = useState([]);
 
     const fetchLabels = async () => {
         try {
@@ -21,6 +22,10 @@ export const LabelProvider = ({ children }) => {
             const binLabel = data.find((l) => l.name === "Bin");
             setBinnedIds(
                 Array.isArray(binLabel?.mails) ? binLabel.mails : []
+            );
+            const spamLabel = data.find((l) => l.name === "Spam");
+            setSpammedIds(
+                Array.isArray(spamLabel?.mails) ? spamLabel.mails : []
             );
         } catch (err) {
             console.error(err);
@@ -37,6 +42,8 @@ export const LabelProvider = ({ children }) => {
             fetchLabels,
             binnedIds,
             setBinnedIds,
+            spammedIds,
+            setSpammedIds,
             activeLabel,
             setActiveLabel,
         }}>
