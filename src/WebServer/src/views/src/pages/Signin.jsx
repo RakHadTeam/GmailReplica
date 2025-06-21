@@ -1,13 +1,13 @@
-import { useContext, useState } from "react";
+import { useState } from "react";
 import { Link } from "react-router-dom";
-import { AuthContext } from "../context/AuthContext.jsx";
-import { useTheme } from "../context/ThemeContext.jsx";
+import { useAuth } from "../context/AuthContext.js";
+import { useTheme } from "../context/ThemeContext.js";
 
 export function Signin() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [loginError, setLoginError] = useState(null);
-    const { signedin, setSignedin, loading } = useContext(AuthContext);
+    const { signedin, setSignedin } = useAuth();
     const { darkTheme } = useTheme();
 
     const handleSubmit = (e) => {
@@ -36,11 +36,15 @@ export function Signin() {
 
     return !signedin ? (
         <div
-            className={`min-vh-100 w-100 d-flex justify-content-center align-items-center ${darkTheme ? "bg-black text-white" : "bg-light text-dark"}`}
+            className={`min-vh-100 w-100 d-flex justify-content-center align-items-center ${
+                darkTheme ? "bg-black text-white" : "bg-light text-dark"
+            }`}
             style={{ minHeight: "100vh", width: "100vw" }}
         >
             <div
-                className={`card shadow rounded-4 px-4 py-5 ${darkTheme ? "bg-dark text-white" : "bg-white text-dark"}`}
+                className={`card shadow rounded-4 px-4 py-5 ${
+                    darkTheme ? "bg-dark text-white" : "bg-white text-dark"
+                }`}
                 style={{ width: "100%", maxWidth: "420px", border: "none" }}
             >
                 <h3 className="card-title text-center mb-4 fw-bold">Sign In</h3>
@@ -71,10 +75,16 @@ export function Signin() {
                             required
                         />
                     </div>
-                    {loginError && <div className="alert alert-danger py-2 text-center">{loginError}</div>}
+                    {loginError && (
+                        <div className="alert alert-danger py-2 text-center">
+                            {loginError}
+                        </div>
+                    )}
                     <button
                         type="submit"
-                        className={`btn w-100 fw-bold ${darkTheme ? "btn-primary" : "btn-outline-primary"}`}
+                        className={`btn w-100 fw-bold ${
+                            darkTheme ? "btn-primary" : "btn-outline-primary"
+                        }`}
                     >
                         Sign In
                     </button>
@@ -84,7 +94,9 @@ export function Signin() {
                         Don't have an account?{" "}
                         <Link
                             to="/signup"
-                            className={`text-decoration-none ${darkTheme ? "text-white-50" : "text-primary"}`}
+                            className={`text-decoration-none ${
+                                darkTheme ? "text-white-50" : "text-primary"
+                            }`}
                         >
                             Sign up
                         </Link>
@@ -94,7 +106,9 @@ export function Signin() {
         </div>
     ) : (
         <div
-            className={`min-vh-100 w-100 d-flex justify-content-center align-items-center ${darkTheme ? "bg-black text-white" : "bg-light text-dark"}`}
+            className={`min-vh-100 w-100 d-flex justify-content-center align-items-center ${
+                darkTheme ? "bg-black text-white" : "bg-light text-dark"
+            }`}
             style={{ minHeight: "100vh", width: "100vw" }}
         >
             <div className="text-center">

@@ -31,6 +31,10 @@ app.use(cookieParser());
 app.use("/api", apiRouter);
 
 // Serve the react app
-app.use(express.static("src/views/build"));
+app.use(express.static(path.resolve(__dirname, "../src/views/build")));
+
+app.get(/(.*)/, (req, res) => {
+    res.sendFile(path.resolve(__dirname, "../src/views/build/index.html"));
+});
 
 export default app;

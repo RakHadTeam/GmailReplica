@@ -1,0 +1,141 @@
+import { useCallback } from "react";
+import { useAuth } from "../context/AuthContext.js";
+import { useMailApp } from "../context/MailAppContext";
+
+export function useLabelActions() {
+    const {
+        labelState: { labels, setLabels },
+    } = useMailApp();
+
+    const { setSignedin } = useAuth();
+
+    const getLabel = useCallback(
+        (id) => labels.find((l) => l.id === id),
+        [labels]
+    );
+
+    const updateLabel = async (labelId, mailId, apply) => {
+        const url = `/api/labels/${labelId}${apply ? "" : "/" + mailId}`;
+        const opts = apply
+            ? {
+                  method: "POST",
+                  credentials: "include",
+                  headers: { "Content-Type": "application/json" },
+                  body: JSON.stringify({ mailId }),
+              }
+            : {
+                  method: "DELETE",
+                  credentials: "include",
+              };
+        const response = await fetch(url, opts);
+        if (response.status === 401 || response.status === 403) {
+            setSignedin(false);
+            return;
+        }
+        if (response.status === 400) {
+            throw new Error("Failed to update label");
+        }
+    };
+
+    const toggleLabel = async (labelId, mailId, apply) => {
+        console.log(apply);
+        const label = getLabel(labelId);
+        if (!label) return;
+        const applied = label.mails?.includes(mailId);
+        const shouldApply = apply != null ? apply : !applied;
+
+        await updateLabel(label.id, mailId, shouldApply);
+
+        setLabels((prev) =>
+            prev.map((l) => {
+                if (l.id !== label.id) return l;
+
+                const mails = new Set(l.mails || []);
+
+                if (shouldApply) {
+                    mails.add(mailId);
+                } else {
+                    mails.delete(mailId);
+                }
+
+                return { ...l, mails: [...mails] };
+            })
+        );
+    };
+
+    const toggleLabelBulk = async (labelId, mailIds, apply) => {
+        for (const id of mailIds) {
+            await toggleLabel(labelId, id, apply);
+        }
+    };
+
+    const fetchLabels = async () => {
+        try {
+            const response = await fetch("/api/labels", {
+                credentials: "include",
+            });
+            if (response.status === 401 || response.status === 403) {
+                setSignedin(false);
+                return;
+            }
+            if (response.status === 400)
+                throw new Error("Failed to fetch labels");
+            const data = await response.json();
+            setLabels(data);
+        } catch (err) {
+            console.error(err);
+        }
+    };
+
+    const createLabel = async (labelName) => {
+        try {
+            const response = await fetch("/api/labels", {
+                method: "POST",
+                credentials: "include",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ name: labelName }),
+            });
+            if (response.status === 401 || response.status === 403) {
+                setSignedin(false);
+                return;
+            }
+            if (response.status === 400)
+                throw new Error("Failed to create label");
+            const newLabel = await response.json();
+            setLabels((prev) => [
+                ...prev,
+                { ...newLabel, name: labelName, mails: [] },
+            ]);
+        } catch (err) {
+            console.error(err);
+        }
+    };
+
+    const deleteLabel = async (labelId) => {
+        try {
+            const response = await fetch(`/api/labels/${labelId}`, {
+                method: "DELETE",
+                credentials: "include",
+            });
+            if (response.status === 401 || response.status === 403) {
+                setSignedin(false);
+                return;
+            }
+            if (response.status !== 204)
+                throw new Error("Failed to delete label");
+            setLabels((prev) => prev.filter((l) => l.id !== labelId));
+        } catch (err) {
+            console.error(err);
+        }
+    };
+
+    return {
+        getLabel,
+        updateLabel,
+        toggleLabel,
+        toggleLabelBulk,
+        fetchLabels,
+        createLabel,
+        deleteLabel,
+    };
+}
