@@ -1,21 +1,16 @@
 import { useEffect, useRef, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { useMailApp } from "../../context/MailAppContext.js";
 import { useTheme } from "../../context/ThemeContext";
+import { useLabelActions } from "../../hooks/useLabelActions.js";
 import LabelPopupCreatePrompt from "./LabelPopupCreatePrompt.jsx";
 import LabelPopupFooter from "./LabelPopupFooter.jsx";
 import LabelPopupHeader from "./LabelPopupHeader.jsx";
 import LabelPopupList from "./LabelPopupList.jsx";
 import LabelPopupSearch from "./LabelPopupSearch.jsx";
-import { useLabelActions } from "../../hooks/useLabelActions.js";
 
-export default function LabelPopup({
-    onClose,
-    position,
-    onManageClick,
-}) {
+export default function LabelPopup({ onClose, position, onManageClick }) {
     const {
-        labelState: { labels, fetchLabels },
+        labelState: { labels },
         uiState: { selectedIds: selectedMails },
     } = useMailApp();
 
@@ -26,7 +21,6 @@ export default function LabelPopup({
     const [error, setError] = useState("");
     const [searchTerm, setSearchTerm] = useState("");
     const [showCreatePrompt, setShowCreatePrompt] = useState(false);
-    const navigate = useNavigate();
     const popupRef = useRef(null);
 
     useEffect(() => {
@@ -44,7 +38,7 @@ export default function LabelPopup({
         return () => {
             document.removeEventListener("mousedown", delayedClickHandler);
         };
-    }, []);
+    }, [onClose]);
 
     const handleCreateLabel = async () => {
         const name = newLabel.trim();
