@@ -1,6 +1,7 @@
+import { useMemo, useState } from "react";
+import { useMailApp } from "../../context/MailAppContext.js";
 import { useTheme } from "../../context/ThemeContext";
-import useLabels from "../../hooks/useLabels.js";
-import useStarHandlers from "../../hooks/useStarHandlers.js";
+import { useStarActions } from "../../hooks/useStarActions.js";
 
 export default function MailListRow({
     mail,
@@ -10,8 +11,19 @@ export default function MailListRow({
     onSelect,
 }) {
     const { darkTheme } = useTheme();
-    const { starredIds } = useLabels();
-    const { handleToggleStar } = useStarHandlers();
+    const {
+        labelState: { labels },
+    } = useMailApp();
+    const starLabel = labels.find((label) => label.id === "Starred");
+    const [starred, setStarred] = useState();
+
+    useMemo(() => {
+        if (starLabel) {
+            setStarred(starLabel.mails.includes(mail.id));
+        }
+    }, [starLabel]);
+
+    const { toggleStar } = useStarActions();
 
     return (
         <div
@@ -49,18 +61,17 @@ export default function MailListRow({
                 <span
                     className="me-3"
                     style={{
-                        color: starredIds.includes(mail.id)
-                            ? "#fbbc04"
-                            : "#ccc",
+                        color: starred ? "#fbbc04" : "#ccc",
                         fontSize: 20,
                         cursor: "pointer",
                     }}
                     onClick={(e) => {
                         e.stopPropagation();
-                        handleToggleStar(mail.id);
+                        toggleStar(mail.id);
+                        setStarred(!starred);
                     }}
                 >
-                    {starredIds.includes(mail.id) ? "★" : "☆"}
+                    {starred ? "★" : "☆"}
                 </span>
             )}
 

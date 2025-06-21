@@ -1,12 +1,12 @@
-import { useTheme } from "../../context/ThemeContext.jsx";
+import { useMailApp } from "../../context/MailAppContext.js";
+import { useTheme } from "../../context/ThemeContext.js";
 
-export default function SidebarLabelSection({
-    labels,
-    activeLabel,
-    onSelectLabel,
-    onManageLabels,
-}) {
+export default function SidebarLabelSection({ onSelectLabel, onManageLabels }) {
     const { darkTheme } = useTheme();
+    const {
+        labelState: { labels },
+        uiState: { activeLabel },
+    } = useMailApp();
     const systemLabels = new Set(["Starred", "Spam", "Bin", "Sent"]);
 
     return (

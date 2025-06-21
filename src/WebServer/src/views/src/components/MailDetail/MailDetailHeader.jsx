@@ -1,9 +1,11 @@
+import { useMailApp } from "../../context/MailAppContext.js";
 import { useTheme } from "../../context/ThemeContext";
-import useLabels from "../../hooks/useLabels.js";
 
 export default function MailDetailHeader({ mail }) {
-    const { labels } = useLabels();
     const { darkTheme } = useTheme();
+    const {
+            labelState: { labels },
+        } = useMailApp();
 
     return (
         <div

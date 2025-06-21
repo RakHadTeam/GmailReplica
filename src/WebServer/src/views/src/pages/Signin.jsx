@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { useAuth } from "../context/AuthContext.jsx";
-import { useTheme } from "../context/ThemeContext.jsx";
+import { useAuth } from "../context/AuthContext.js";
+import { useTheme } from "../context/ThemeContext.js";
 
 export function Signin() {
     const [email, setEmail] = useState("");

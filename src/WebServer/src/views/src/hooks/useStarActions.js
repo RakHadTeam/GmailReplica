@@ -4,16 +4,15 @@ import { useLabelActions } from "./useLabelActions";
 
 export function useStarActions() {
     const {
-        uiState: { selectedIds, setSelectedIds },
+        uiState: { selectedIds },
     } = useMailApp();
 
     const { toggleLabel, toggleLabelBulk } = useLabelActions();
 
     const toggleStar = (mailId) => toggleLabel("Starred", mailId);
 
-    const toggleStarBulk = async () => {
-        await toggleLabelBulk("Starred", selectedIds);
-        setSelectedIds([]);
+    const toggleStarBulk = (apply) => {
+        toggleLabelBulk("Starred", selectedIds, apply);
     };
 
     return { toggleStar, toggleStarBulk };

@@ -1,8 +1,31 @@
+import { useMemo, useState } from "react";
+import { useMailApp } from "../../context/MailAppContext.js";
 import { useTheme } from "../../context/ThemeContext";
 
-export default function SidebarNavigation({ mails, labelsState, setActiveLabel }) {
+export default function SidebarNavigation() {
     const { darkTheme } = useTheme();
-    const { activeLabel, starredIds, binnedIds, spammedIds, sentIds } = labelsState;
+    const {
+        labelState: { labels },
+        mailState: { mails },
+        uiState: { activeLabel, setActiveLabel },
+    } = useMailApp();
+
+    const [starredIds, setStarredIds] = useState([]);
+    const [spammedIds, setSpammedIds] = useState([]);
+    const [binnedIds, setBinnedIds] = useState([]);
+    const [sentIds, setSentIds] = useState([]);
+
+    useMemo(() => {
+        const starredLabel = labels.find((label) => label.id === "Starred");
+        const spamLabel = labels.find((label) => label.id === "Spam");
+        const binLabel = labels.find((label) => label.id === "Bin");
+        const sentLabel = labels.find((label) => label.id === "Sent");
+
+        setStarredIds(starredLabel ? starredLabel.mails : []);
+        setSpammedIds(spamLabel ? spamLabel.mails : []);
+        setBinnedIds(binLabel ? binLabel.mails : []);
+        setSentIds(sentLabel ? sentLabel.mails : []);
+    }, [labels]);
 
     return (
         <div className="mt-2 d-flex flex-column gap-2">
@@ -16,7 +39,7 @@ export default function SidebarNavigation({ mails, labelsState, setActiveLabel }
                             !m.draft &&
                             !binnedIds.includes(m.id) &&
                             !spammedIds.includes(m.id) &&
-                            !sentIds.includes(m.id)
+                            !(sentIds.includes(m.id) && m.recipient !== m.sender)
                     ).length,
                 },
                 {
@@ -27,7 +50,12 @@ export default function SidebarNavigation({ mails, labelsState, setActiveLabel }
                         .length,
                 },
                 { id: "Snoozed", icon: "schedule", label: "Snoozed" },
-                { id: "Sent", icon: "send", label: "Sent", count: sentIds.length },
+                {
+                    id: "Sent",
+                    icon: "send",
+                    label: "Sent",
+                    count: sentIds.length,
+                },
                 {
                     id: "Drafts",
                     icon: "draft",

@@ -1,49 +1,68 @@
 import { useEffect, useState } from "react";
-import { useTheme } from "../../context/ThemeContext.jsx";
-import useLabels from "../../hooks/useLabels.js";
-import useMailHandlers from "../../hooks/useMailHandlers.js";
-import useMails from "../../hooks/useMails.js";
-import useStarHandlers from "../../hooks/useStarHandlers.js";
-import useUIs from "../../hooks/useUIs.js";
+import { useMailApp } from "../../context/MailAppContext";
+import { useTheme } from "../../context/ThemeContext";
+import { useStarActions } from "../../hooks/useStarActions";
 import ComposeMail from "../ComposeMail/ComposeMail.jsx";
+import ContextMenu from "../ContextMenu/ContextMenu.jsx";
 import MailDetail from "../MailDetail/MailDetail.jsx";
 import MailsListRow from "./MailsListRow.jsx";
 
-export default function MailList() {
-    const { setShowLabelPopup, setContextMenu, openMailId } = useUIs();
-    const { starredIds, activeLabel } = useLabels();
-    const { handleSelect, handleOpenMail, handleCloseDetail } =
-        useMailHandlers();
-    const { handleToggleStar } = useStarHandlers();
+export default function MailList({ searchQuery, openMail, setOpenMail }) {
     const {
-        mails,
+        uiState: { selectedIds, setSelectedIds },
+        mailState: { mails },
         filteredMails,
-        selectedMails,
-        setSelectedMails,
-        searchQuery,
-        searchResults,
-    } = useMails();
+    } = useMailApp();
+
+    const { toggleStar } = useStarActions();
+
+    const [contextMenu, setContextMenu] = useState(null);
+
+    const handleSelect = (mailId) => {
+        setSelectedIds((prev) =>
+            prev.includes(mailId)
+                ? prev.filter((id) => id !== mailId)
+                : [...prev, mailId]
+        );
+    };
+
+    const handleOpenMail = (id) => {
+        setContextMenu(null);
+        setOpenMail(mails.find((m) => m.id === id) || null);
+    };
+
+    const handleCloseDetail = () => {
+        setContextMenu(null);
+        setOpenMail(null);
+    };
+
+    const toggleContextMenu = () => {
+        setContextMenu(null);
+    };
+
     const { darkTheme } = useTheme();
 
-    const [openMail, setOpenMail] = useState(null);
-    const listToShow = searchQuery.trim() ? searchResults : filteredMails;
+    const searchResults = mails.filter(
+        (m) =>
+            m.subject?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            m.body?.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+    const listToShow =
+        searchQuery.trim() !== "" ? searchResults : filteredMails || [];
 
     useEffect(() => {
-        if (openMailId != null) {
-            setOpenMail(mails.find((m) => m.id === openMailId) || null);
-        } else {
+        if (openMail && !mails.find((m) => m.id === openMail.id)) {
             setOpenMail(null);
         }
-    }, [openMailId, mails]);
+    }, [mails, openMail]);
 
     const handleRightClick = (e, mailId) => {
         e.preventDefault();
-        setContextMenu({ x: e.pageX, y: e.pageY, mailId });
-        if (!selectedMails.includes(mailId)) {
-            setSelectedMails([]);
+        setContextMenu({ x: e.clientX, y: e.clientY, mailId });
+        if (!selectedIds.includes(mailId)) {
+            setSelectedIds([]);
             handleSelect(mailId);
         }
-        setShowLabelPopup(false);
     };
 
     if (openMail && !openMail.draft) {
@@ -59,6 +78,13 @@ export default function MailList() {
                 />
             )}
 
+            {contextMenu && (
+                <ContextMenu
+                    contextMenu={contextMenu}
+                    toggleContextMenu={toggleContextMenu}
+                />
+            )}
+
             <div
                 className={`table w-100 ${
                     darkTheme ? "bg-dark text-white" : "bg-white text-dark"
@@ -68,14 +94,11 @@ export default function MailList() {
                     <MailsListRow
                         key={mail.id}
                         mail={mail}
-                        isSelected={selectedMails.includes(mail.id)}
+                        isSelected={selectedIds.includes(mail.id)}
                         onSelect={handleSelect}
                         onClick={handleOpenMail}
                         onRightClick={handleRightClick}
-                        onToggleStar={handleToggleStar}
-                        starred={starredIds.includes(mail.id)}
-                        activeLabel={activeLabel}
-                        darkTheme={darkTheme}
+                        onToggleStar={toggleStar}
                     />
                 ))}
             </div>

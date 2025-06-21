@@ -1,4 +1,4 @@
-import { useTheme } from "../../context/ThemeContext.jsx";
+import { useTheme } from "../../context/ThemeContext.js";
 import SearchFooter from "./SearchFooter.jsx";
 import SearchResultItem from "./SearchResultItem.jsx";
 

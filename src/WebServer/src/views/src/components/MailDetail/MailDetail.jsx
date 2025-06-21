@@ -1,29 +1,28 @@
 import { useEffect } from "react";
-import { useTheme } from "../../context/ThemeContext.jsx";
-import useMails from "../../hooks/useMails.js";
-import useUIs from "../../hooks/useUIs.js";
+import { useMailApp } from "../../context/MailAppContext.js";
+import { useTheme } from "../../context/ThemeContext.js";
+import MailDetailBodyContent from "./MailDetailBodyContent";
 import MailDetailHeader from "./MailDetailHeader";
 import MailDetailSenderInfo from "./MailDetailSenderInfo";
-import MailDetailBodyContent from "./MailDetailBodyContent";
 
-export default function MailDetail({ handleCloseDetail }) {
+export default function MailDetail({ mail }) {
     const { darkTheme } = useTheme();
-    const { openMailId } = useUIs();
-    const { mails, setSelectedMails } = useMails();
+    const {
+        uiState: { setSelectedIds },
+    } = useMailApp();
 
     useEffect(() => {
-        setSelectedMails(openMailId ? [openMailId] : []);
-    }, [openMailId]);
+        setSelectedIds(mail ? [mail.id] : []);
+    }, [mail]);
 
-    if (!openMailId) return null;
-
-    const mail = mails.find((mail) => mail.id === openMailId);
     if (!mail) return null;
 
     return (
         <div
             className={`card mt-4 border-1 shadow-sm rounded-4 ${
-                darkTheme ? "bg-dark text-white border-secondary" : "bg-white text-dark"
+                darkTheme
+                    ? "bg-dark text-white border-secondary"
+                    : "bg-white text-dark"
             }`}
         >
             <MailDetailHeader mail={mail} />

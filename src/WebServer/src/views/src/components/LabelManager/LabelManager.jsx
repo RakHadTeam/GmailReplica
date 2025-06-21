@@ -1,13 +1,11 @@
 // LabelManager.jsx
 import { useEffect, useRef, useState } from "react";
-import { useTheme } from "../../context/ThemeContext.jsx";
-import useUIs from "../../hooks/useUIs.js";
+import { useTheme } from "../../context/ThemeContext.js";
+import LabelList from "./LabelList";
 import LabelManagerHeader from "./LabelManagerHeader";
 import LabelManagerInput from "./LabelManagerInput";
-import LabelList from "./LabelList";
 
-export default function LabelManager() {
-    const { toggleLabelManager } = useUIs();
+export default function LabelManager({ toggleLabelManager }) {
     const { darkTheme } = useTheme();
     const [searchTerm, setSearchTerm] = useState("");
     const [newLabel, setNewLabel] = useState("");
@@ -44,7 +42,7 @@ export default function LabelManager() {
                 }`}
                 style={{ minWidth: "400px", maxWidth: "500px", width: "100%" }}
             >
-                <LabelManagerHeader onClose={toggleLabelManager} />
+                <LabelManagerHeader toggleLabelManager={toggleLabelManager} />
                 <LabelManagerInput
                     newLabel={newLabel}
                     setNewLabel={setNewLabel}

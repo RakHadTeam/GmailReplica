@@ -1,9 +1,9 @@
-import useLabels from "../../../hooks/useLabels";
-import useMails from "../../../hooks/useMails";
+import { useLabelActions } from "../../../hooks/useLabelActions.js";
+import { useMailActions } from "../../../hooks/useMailActions.js";
 
 export default function RefreshButton() {
-    const { fetchLabels } = useLabels();
-    const { fetchMails } = useMails();
+    const { fetchLabels } = useLabelActions();
+    const { fetchMails } = useMailActions();
 
     return (
         <span

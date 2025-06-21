@@ -11,9 +11,8 @@ export function useSpamActions() {
 
     const toggleSpam = (mailId) => toggleLabel("Spam", mailId);
 
-    const toggleSpamBulk = async () => {
-        await toggleLabelBulk("Spam", selectedIds);
-        setSelectedIds([]);
+    const toggleSpamBulk = () => {
+        toggleLabelBulk("Spam", selectedIds);
     };
 
     return { toggleSpam, toggleSpamBulk };

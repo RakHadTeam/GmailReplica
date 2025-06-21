@@ -1,17 +1,15 @@
-import { useContext, useEffect, useState } from "react";
+import { useEffect } from "react";
 import { Route, Routes, useLocation, useNavigate } from "react-router-dom";
-import { useTheme } from "./context/ThemeContext.jsx";
+import { useAuth } from "./context/AuthContext.js";
+import { useTheme } from "./context/ThemeContext.js";
 import { Inbox } from "./pages/Inbox.jsx";
 import { Signin } from "./pages/Signin.jsx";
 import { Signup } from "./pages/Signup.jsx";
-import useUIs from "./hooks/useUIs.js";
-import { useAuth } from "./context/AuthContext.jsx";
 
 function App() {
     const { signedin } = useAuth();
     const navigate = useNavigate();
     const location = useLocation();
-    const { toggleSettings } = useUIs();
 
     useEffect(() => {
         if (
@@ -50,20 +48,6 @@ function App() {
                         {darkTheme ? "light_mode" : "dark_mode"}
                     </span>
                 </button>
-                {signedin && (
-                    <button
-                        className={`btn btn-sm rounded-circle d-flex align-items-center justify-content-center ${
-                            darkTheme ? "btn-secondary" : "btn-outline-secondary"
-                        }`}
-                        style={{ width: "40px", height: "40px" }}
-                        onClick={() => {
-                            toggleSettings();
-                            console.log("Settings clicked");
-                        }}
-                    >
-                        <span className="material-symbols-rounded">settings</span>
-                    </button>
-                )}
             </div>
             <Routes>
                 <Route path="/" element={<Inbox />} />

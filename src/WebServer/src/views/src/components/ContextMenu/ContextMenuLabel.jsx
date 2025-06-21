@@ -4,6 +4,10 @@ import LabelPopup from "../LabelPopup/LabelPopup";
 export default function ContextMenuLabel() {
     const [showLabelPopupMenu, setShowLabelPopupMenu] = useState(false);
 
+    const toggleLabelPopup = () => {
+        setShowLabelPopupMenu((prev) => !prev);
+    }
+
     return (
         <div
             onMouseEnter={() => setShowLabelPopupMenu(true)}
@@ -20,7 +24,7 @@ export default function ContextMenuLabel() {
                     style={{ top: 0, left: "100%" }}
                 >
                     <LabelPopup
-                        closeLabelPopup={() => setShowLabelPopupMenu(false)}
+                        toggleLabelPopup={toggleLabelPopup}
                         position={{ x: 0, y: 0 }}
                     />
                 </div>

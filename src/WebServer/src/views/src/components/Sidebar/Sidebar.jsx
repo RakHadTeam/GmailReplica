@@ -1,22 +1,27 @@
-import { useTheme } from "../../context/ThemeContext.jsx";
-import useLabels from "../../hooks/useLabels.js";
-import useMails from "../../hooks/useMails.js";
-import useUIs from "../../hooks/useUIs.js";
+import { useState } from "react";
+import { useMailApp } from "../../context/MailAppContext.js";
+import { useTheme } from "../../context/ThemeContext.js";
 import ComposeMail from "../ComposeMail/ComposeMail.jsx";
 import SidebarHeader from "./SidebarHeader.jsx";
 import SidebarLabelSection from "./SidebarLabelSection.jsx";
 import SidebarNavigation from "./SidebarNavigation.jsx";
 
-export default function Sidebar() {
+export default function Sidebar({ toggleLabelManager }) {
     const { darkTheme } = useTheme();
-    const { mails, setSelectedMails } = useMails();
-    const labelState = useLabels();
-    const { showCompose, toggleShowCompose, toggleLabelManager } = useUIs();
+    const {
+        uiState: { setSelectedIds, setActiveLabel },
+    } = useMailApp();
+
+    const [showCompose, setShowCompose] = useState(false);
+
+    const toggleCompose = () => {
+        setShowCompose((prev) => !prev);
+    };
 
     const selectActiveLabel = (labelId) => {
-        labelState.setActiveLabel(labelId);
-        setSelectedMails([]);
-    }
+        setActiveLabel(labelId);
+        setSelectedIds([]);
+    };
 
     return (
         <div
@@ -25,22 +30,16 @@ export default function Sidebar() {
             }`}
             style={{ width: "240px" }}
         >
-            <SidebarHeader onCompose={toggleShowCompose} />
+            <SidebarHeader onCompose={toggleCompose} />
 
-            <SidebarNavigation
-                mails={mails}
-                labelsState={labelState}
-                setActiveLabel={selectActiveLabel}
-            />
+            <SidebarNavigation setActiveLabel={selectActiveLabel} />
 
             <SidebarLabelSection
-                labels={labelState.labels}
-                activeLabel={labelState.activeLabel}
                 onSelectLabel={selectActiveLabel}
                 onManageLabels={toggleLabelManager}
             />
 
-            {showCompose && <ComposeMail />}
+            {showCompose && <ComposeMail handleCloseCompose={toggleCompose} />}
         </div>
     );
 }

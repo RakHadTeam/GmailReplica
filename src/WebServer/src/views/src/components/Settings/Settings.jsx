@@ -1,16 +1,14 @@
-import { useContext } from "react";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "../../context/AuthContext.jsx";
-import { useTheme } from "../../context/ThemeContext.jsx";
-import useLabels from "../../hooks/useLabels";
-import useMails from "../../hooks/useMails";
-import useUIs from "../../hooks/useUIs";
+import { useAuth } from "../../context/AuthContext.js";
+import { useTheme } from "../../context/ThemeContext.js";
+import { useLabelActions } from "../../hooks/useLabelActions.js";
+import { useMailActions } from "../../hooks/useMailActions.js";
 import SettingsBlacklist from "./SettingsBlacklist";
 import SettingsForm from "./SettingsForm";
 import SettingsHeader from "./SettingsHeader";
 import SettingsUserCard from "./SettingsUserCard";
 
-export default function SettingsPanel() {
+export default function Settings({ toggleSettings }) {
     const {
         fullName,
         setFullName,
@@ -19,10 +17,9 @@ export default function SettingsPanel() {
         currentUser,
         setSignedin,
     } = useAuth();
-    const { toggleSettings } = useUIs();
     const { darkTheme } = useTheme();
-    const { fetchMails } = useMails();
-    const { fetchLabels } = useLabels();
+    const { fetchMails } = useMailActions();
+    const { fetchLabels } = useLabelActions();
     const navigate = useNavigate();
 
     const handleSubmit = async (e) => {

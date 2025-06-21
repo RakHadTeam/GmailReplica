@@ -1,9 +1,13 @@
-export default function LabelPopupList({
-    labels,
-    selectedMails,
-    searchTerm,
-    handleLabelToggleOnMailId,
-}) {
+import { useMailApp } from "../../context/MailAppContext.js";
+import { useLabelActions } from "../../hooks/useLabelActions.js";
+
+export default function LabelPopupList({ searchTerm }) {
+    const { toggleLabel, getLabel } = useLabelActions();
+    const {
+        uiState: { selectedIds: selectedMails },
+        labelState: { labels },
+    } = useMailApp();
+
     const filteredLabels = labels.filter(
         ({ name }) =>
             name.toLowerCase().includes(searchTerm.toLowerCase()) &&
@@ -11,7 +15,7 @@ export default function LabelPopupList({
     );
 
     const getLabelState = (labelId) => {
-        const label = labels.find((l) => l.id === labelId);
+        const label = getLabel(labelId);
         if (!label) return "none";
         const withLabel = selectedMails.filter((mail) =>
             label.mails.includes(mail)
@@ -40,13 +44,10 @@ export default function LabelPopupList({
                         style={{ cursor: "pointer" }}
                         onClick={() => {
                             selectedMails.forEach((mail) => {
-                                const hasLabel = labels
-                                    .find((l) => l.id === id)
-                                    ?.mails.includes(mail);
-                                if (state === "some" && hasLabel) {
-                                    handleLabelToggleOnMailId(id, mail);
+                                if (state === "some") {
+                                    toggleLabel(id, mail, false);
                                 } else {
-                                    handleLabelToggleOnMailId(id, mail);
+                                    toggleLabel(id, mail);
                                 }
                             });
                         }}

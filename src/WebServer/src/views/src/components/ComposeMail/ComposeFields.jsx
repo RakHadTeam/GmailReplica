@@ -1,4 +1,4 @@
-import { useTheme } from "../../context/ThemeContext.jsx";
+import { useTheme } from "../../context/ThemeContext.js";
 
 export default function ComposeFields({
     recipientEmail,

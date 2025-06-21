@@ -1,20 +1,25 @@
 import { useEffect, useRef, useState } from "react";
-import useMails from "../../hooks/useMails.js";
-import useUIs from "../../hooks/useUIs.js";
+import { useMailApp } from "../../context/MailAppContext.js";
 import SearchDropdown from "./SearchDropdown.jsx";
 import SearchInput from "./SearchInput.jsx";
 
-export default function SearchBar() {
-    const { search, searchQuery, setSearchQuery, searchResults, mails } =
-        useMails();
-    const { setOpenMailId } = useUIs();
+export default function SearchBar({
+    searchQuery,
+    setSearchQuery,
+    openMail,
+    setOpenMail,
+}) {
+    const {
+        mailState: { mails },
+    } = useMailApp();
     const [showMenu, setShowMenu] = useState(false);
     const boxRef = useRef();
 
-    useEffect(() => {
-        const id = setTimeout(() => search(searchQuery), 200);
-        return () => clearTimeout(id);
-    }, [searchQuery]);
+    const searchResults = mails.filter(
+        (m) =>
+            m.subject?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            m.body?.toLowerCase().includes(searchQuery.toLowerCase())
+    );
 
     useEffect(() => {
         const handler = (e) => {
@@ -26,7 +31,6 @@ export default function SearchBar() {
 
     const clear = () => {
         setSearchQuery("");
-        search("");
         setShowMenu(false);
     };
 
@@ -58,7 +62,7 @@ export default function SearchBar() {
                 <SearchDropdown
                     items={displayItems}
                     onSelect={(id) => {
-                        setOpenMailId(id);
+                        setOpenMail(mails.find((m) => m.id === id) || null);
                         clear();
                     }}
                     query={searchQuery}

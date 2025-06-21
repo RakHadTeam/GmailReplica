@@ -8,7 +8,7 @@ export function useLabelActions() {
     } = useMailApp();
 
     const getLabel = useCallback(
-        (name) => labels.find((l) => l.name === name),
+        (id) => labels.find((l) => l.id === id),
         [labels]
     );
 
@@ -25,32 +25,41 @@ export function useLabelActions() {
                   method: "DELETE",
                   credentials: "include",
               };
-        await fetch(url, opts).catch(console.error);
+        await fetch(url, opts);
     };
 
-    const toggleLabel = async (labelName, mailId) => {
-        const label = getLabel(labelName);
+    const toggleLabel = async (labelId, mailId, apply) => {
+        console.log(apply);
+        const label = getLabel(labelId);
         if (!label) return;
         const applied = label.mails?.includes(mailId);
-        await updateLabel(label.id, mailId, !applied);
+        const shouldApply = apply != null ? apply : !applied;
+
+        await updateLabel(label.id, mailId, shouldApply);
 
         setLabels((prev) =>
-            prev.map((l) =>
-                l.id === label.id
-                    ? {
-                          ...l,
-                          mails: applied
-                              ? l.mails.filter((id) => id !== mailId)
-                              : [...(l.mails || []), mailId],
-                      }
-                    : l
-            )
+            prev.map((l) => {
+                if (l.id !== label.id) return l;
+
+                const mails = new Set(l.mails || []);
+
+                if (shouldApply) {
+                    mails.add(mailId);
+                } else {
+                    mails.delete(mailId);
+                }
+
+                return { ...l, mails: [...mails] };
+            })
         );
     };
 
-    const toggleLabelBulk = async (labelName, mailIds) => {
+    const toggleLabelBulk = async (labelId, mailIds, apply) => {
         for (const id of mailIds) {
-            await toggleLabel(labelName, id);
+            console.log(
+                `Toggling label ${labelId} for mail ${id} with apply=${apply}`
+            );
+            await toggleLabel(labelId, id, apply);
         }
     };
 
@@ -65,11 +74,28 @@ export function useLabelActions() {
         }
     };
 
+    const createLabel = async (labelName) => {
+        try {
+            const res = await fetch("/api/labels", {
+                method: "POST",
+                credentials: "include",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ name: labelName }),
+            });
+            if (!res.ok) throw new Error("Failed to create label");
+            const newLabel = await res.json();
+            setLabels((prev) => [...prev, newLabel]);
+        } catch (err) {
+            console.error(err);
+        }
+    };
+
     return {
         getLabel,
         updateLabel,
         toggleLabel,
         toggleLabelBulk,
         fetchLabels,
+        createLabel,
     };
 }

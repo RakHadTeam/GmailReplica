@@ -6,6 +6,7 @@ export function useMailActions() {
     const {
         mailState: { setMails },
         uiState: { selectedIds, setSelectedIds },
+        labelState: { setLabels },
     } = useMailApp();
 
     const { getLabel, updateLabel, fetchLabels } = useLabelActions();
@@ -53,36 +54,57 @@ export function useMailActions() {
         }
     };
 
-    const deleteMail = async (id) => {
+    const deleteMail = (id) => {
         const bin = getLabel("Bin");
         if (!bin) return;
         const isBinned = bin.mails.includes(id);
 
         if (isBinned) {
-            await fetch(`/api/mails/${id}`, {
+            fetch(`/api/mails/${id}`, {
                 method: "DELETE",
                 credentials: "include",
             });
             setMails((prev) => prev.filter((m) => m.id !== id));
         } else {
-            await updateLabel(bin.id, id, true);
+            updateLabel(bin.id, id, true);
         }
     };
 
-    const deleteBulk = async () => {
+    const deleteBulk = () => {
         for (const id of selectedIds) {
-            await deleteMail(id);
+            deleteMail(id);
         }
+
+        const bin = getLabel("Bin");
+        if (!bin) return;
+        setLabels((prev) =>
+            prev.map((l) => {
+                if (l.id !== bin.id) return l;
+                const mails = new Set(l.mails || []);
+                selectedIds.forEach((id) => mails.add(id));
+                return { ...l, mails: [...mails] };
+            })
+        );
+
         setSelectedIds([]);
     };
 
-    const unbinBulk = async () => {
+    const unbinBulk = () => {
         const bin = getLabel("Bin");
         if (!bin) return;
 
         for (const id of selectedIds) {
-            await updateLabel(bin.id, id, false);
+            updateLabel(bin.id, id, false);
         }
+
+        setLabels((prev) =>
+            prev.map((l) => {
+                if (l.id !== bin.id) return l;
+                const mails = new Set(l.mails || []);
+                selectedIds.forEach((id) => mails.delete(id));
+                return { ...l, mails: [...mails] };
+            })
+        );
 
         setSelectedIds([]);
     };

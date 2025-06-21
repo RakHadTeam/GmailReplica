@@ -1,6 +1,5 @@
 import {useTheme} from "../../context/ThemeContext";
-import useMails from "../../hooks/useMails";
-import useUIs from "../../hooks/useUIs";
+import { useMailApp } from "../../context/MailAppContext";
 import ArchiveButton from "./Buttons/ArchiveButton";
 import BackButton from "./Buttons/BackButton";
 import DeleteButton from "./Buttons/DeleteButton";
@@ -10,10 +9,11 @@ import SelectAllButton from "./Buttons/SelectAllButton.jsx";
 import SpamButton from "./Buttons/SpamButton";
 import StarToggleButton from "./Buttons/StarToggleButton";
 
-export default function InboxHeaderControls() {
-    const { selectedMails, filteredMails } = useMails();
+export default function InboxHeaderControls({ openMail, closeMail, toggleLabelPopup }) {
     const { darkTheme } = useTheme();
-    const { openMailId } = useUIs();
+    const {
+        uiState: { selectedIds },
+    } = useMailApp();
 
     return (
         <div
@@ -26,8 +26,8 @@ export default function InboxHeaderControls() {
                 className="d-flex align-items-center"
                 style={{ marginLeft: "0.8rem" }}
             >
-                {openMailId ? (
-                    <BackButton />
+                {openMail ? (
+                    <BackButton onClose={closeMail} />
                 ) : (
                     <>
                         <SelectAllButton />
@@ -35,12 +35,12 @@ export default function InboxHeaderControls() {
                     </>
                 )}
 
-                {(selectedMails.length > 0 || openMailId) && (
+                {(selectedIds.length > 0 || openMail) && (
                     <>
                         <SpamButton />
                         <ArchiveButton />
                         <StarToggleButton />
-                        <LabelButton />
+                        <LabelButton toggleLabelPopup={toggleLabelPopup} />
                         <DeleteButton />
                     </>
                 )}

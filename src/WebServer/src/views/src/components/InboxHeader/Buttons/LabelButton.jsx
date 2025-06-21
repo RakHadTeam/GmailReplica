@@ -1,13 +1,9 @@
-import useUIs from "../../../hooks/useUIs";
-
-export default function LabelButton() {
-    const { setShowLabelPopup } = useUIs();
-
+export default function LabelButton({ toggleLabelPopup }) {
     return (
         <span
             className="material-symbols-rounded icon-button me-3"
             style={{ cursor: "pointer" }}
-            onClick={() => setShowLabelPopup(true)}
+            onClick={toggleLabelPopup}
         >
             label
         </span>

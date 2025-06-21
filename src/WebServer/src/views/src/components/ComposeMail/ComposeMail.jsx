@@ -1,20 +1,13 @@
 import { useEffect, useState } from "react";
 import { useTheme } from "../../context/ThemeContext";
-import useLabels from "../../hooks/useLabels.js";
-import useMailHandlers from "../../hooks/useMailHandlers.js";
-import useMails from "../../hooks/useMails.js";
-import useUIs from "../../hooks/useUIs.js";
+import { useMailActions } from "../../hooks/useMailActions.js";
 import ComposeFields from "./ComposeFields";
 import ComposeFooter from "./ComposeFooter";
 import ComposeHeader from "./ComposeHeader";
 
 export default function ComposeMail({ draftMail = null, handleCloseCompose }) {
+    const { deleteMail, sendOrSaveMail } = useMailActions();
     const { darkTheme } = useTheme();
-    const { toggleShowCompose } = useUIs();
-    const { handleDelete } = useMailHandlers();
-    const { fetchMails } = useMails();
-    const { fetchLabels } = useLabels();
-
     const [recipientEmail, setRecipientEmail] = useState("");
     const [subject, setSubject] = useState("");
     const [body, setBody] = useState("");
@@ -34,56 +27,25 @@ export default function ComposeMail({ draftMail = null, handleCloseCompose }) {
         if (dirty) {
             handleSubmit(true);
         } else {
-            finalizeClose();
-        }
-    };
-
-    const finalizeClose = () => {
-        if (draftMail && handleCloseCompose) {
             handleCloseCompose();
-        } else {
-            toggleShowCompose();
         }
     };
 
     const handleSubmit = async (isDraft = false) => {
-        if (!isDraft && !recipientEmail) {
-            setError("Recipient is required.");
-            return;
-        }
+        setLoading(true);
+        setError(null);
 
-        const payload = {
+        await sendOrSaveMail({
+            draftMail,
             recipient: recipientEmail,
             subject,
             body,
-            draft: isDraft,
-        };
+            isDraft,
+            onSuccess: handleCloseCompose,
+            onError: setError,
+        });
 
-        setLoading(true);
-        setError(null);
-        try {
-            const url = draftMail ? `/api/mails/${draftMail.id}` : "/api/mails";
-            const method = draftMail ? "PATCH" : "POST";
-
-            const res = await fetch(url, {
-                method,
-                headers: { "Content-Type": "application/json" },
-                credentials: "include",
-                body: JSON.stringify(payload),
-            });
-            if (!res.ok) {
-                const err = await res.json().catch(() => ({}));
-                throw new Error(err.error || "Save failed");
-            }
-
-            fetchMails();
-            fetchLabels();
-            finalizeClose();
-        } catch (e) {
-            setError(e.message);
-        } finally {
-            setLoading(false);
-        }
+        setLoading(false);
     };
 
     return (
@@ -122,8 +84,8 @@ export default function ComposeMail({ draftMail = null, handleCloseCompose }) {
                     onSend={() => handleSubmit(false)}
                     draftMail={draftMail}
                     handleDeleteClick={() => {
-                        handleDelete(draftMail.id);
-                        finalizeClose();
+                        deleteMail(draftMail.id);
+                        handleCloseCompose();
                     }}
                     loading={loading}
                 />

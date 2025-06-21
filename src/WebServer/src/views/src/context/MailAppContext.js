@@ -8,6 +8,10 @@ export function MailAppProvider({ children }) {
     const [selectedIds, setSelectedIds] = useState([]);
     const [activeLabel, setActiveLabel] = useState("All");
 
+    useMemo(() => {
+        setSelectedIds([]);
+    }, [activeLabel]);
+
     const filteredMails = useMemo(() => {
         const getLabelMap = (...names) =>
             names.reduce((map, name) => {
@@ -26,6 +30,7 @@ export function MailAppProvider({ children }) {
                 mail.recipient !== mail.sender
             )
                 return true;
+            if (mail.draft) return true;
             return false;
         };
 

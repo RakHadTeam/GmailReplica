@@ -1,42 +1,62 @@
-import { useState } from "react";
-import useMailHandlers from "../../hooks/useMailHandlers.js";
-import useStarHandlers from "../../hooks/useStarHandlers.js";
-import useUIs from "../../hooks/useUIs.js";
-import LabelPopup from "../LabelPopup/LabelPopup.jsx";
-import useLabels from "../../hooks/useLabels.js";
-import useSpamHandlers from "../../hooks/useSpamHandlers.js";
-import useMails from "../../hooks/useMails.js";
+import { useEffect, useRef, useState } from "react";
+import { useMailApp } from "../../context/MailAppContext";
+import { useMailActions } from "../../hooks/useMailActions";
+import { useSpamActions } from "../../hooks/useSpamActions";
+import { useStarActions } from "../../hooks/useStarActions";
 import ContextMenuItem from "./ContextMenuItem";
 import ContextMenuLabel from "./ContextMenuLabel";
 
-export default function ContextMenu() {
-    const { contextMenu, menuRef } = useUIs();
-    const { handleDeleteBulk, handleUnbinBulk } = useMailHandlers();
-    const { handleToggleStarBulk } = useStarHandlers();
-    const { activeLabel, spammedIds, starredIds } = useLabels();
-    const { selectedMails } = useMails();
-    const [showLabelPopupMenu, setShowLabelPopupMenu] = useState(false);
-    const { handleToggleSpamBulk } = useSpamHandlers();
+export default function ContextMenu({ contextMenu, toggleContextMenu }) {
+    const {
+        uiState: { selectedIds, activeLabel },
+        labelState: { labels },
+    } = useMailApp();
 
-    const someSelectedMailsAreSpammed = selectedMails.some((id) =>
-        spammedIds.includes(id)
-    );
-    const someSelectedMailsAreStarred = selectedMails.some((id) =>
-        starredIds.includes(id)
-    );
-    const show = Boolean(contextMenu);
-    const closeLabelPopupMenu = () => setShowLabelPopupMenu(false);
+    const { deleteBulk, unbinBulk } = useMailActions();
+    const { toggleStarBulk } = useStarActions();
+    const { toggleSpamBulk } = useSpamActions();
+    const contextRef = useRef(null);
 
-    if (!show) return null;
+    const starredLabel = labels.find((l) => l.name === "Starred");
+    const spamLabel = labels.find((l) => l.name === "Spam");
+
+    const someSelectedMailsAreStarred = selectedIds.some((id) =>
+        starredLabel?.mails?.includes(id)
+    );
+    const someSelectedMailsAreSpammed = selectedIds.some((id) =>
+        spamLabel?.mails?.includes(id)
+    );
+
+    const handleClick = (e, operation, apply) => {
+        e.preventDefault();
+        operation(apply);
+        toggleContextMenu();
+    };
+
+    useEffect(() => {
+        function handleClickOutside(event) {
+            if (
+                contextRef.current &&
+                !contextRef.current.contains(event.target)
+            ) {
+                toggleContextMenu();
+            }
+        }
+
+        document.addEventListener("mousedown", handleClickOutside);
+        return () => {
+            document.removeEventListener("mousedown", handleClickOutside);
+        };
+    }, [toggleContextMenu]);
 
     return (
         <div
-            ref={menuRef}
+            ref={contextRef}
             className="shadow bg-white border rounded"
             style={{
                 position: "absolute",
-                top: contextMenu.y,
-                left: contextMenu.x,
+                top: contextMenu.y - 130,
+                left: contextMenu.x - 250,
                 zIndex: 1000,
                 width: 200,
             }}
@@ -44,42 +64,38 @@ export default function ContextMenu() {
             {activeLabel !== "Bin" ? (
                 <ContextMenuItem
                     icon="delete_forever"
-                    onClick={handleDeleteBulk}
+                    onClick={(e) => handleClick(e, deleteBulk)}
                     label="Move to Bin"
                 />
             ) : (
                 <>
                     <ContextMenuItem
                         icon="delete_forever"
-                        onClick={handleDeleteBulk}
+                        onClick={(e) => handleClick(e, deleteBulk)}
                         label="Delete Forever"
                     />
                     <ContextMenuItem
                         icon="restore_from_trash"
-                        onClick={handleUnbinBulk}
+                        onClick={(e) => handleClick(e, unbinBulk)}
                         label="Unbin"
                     />
                 </>
             )}
             <ContextMenuItem
                 icon="star"
-                onClick={handleToggleStarBulk}
+                onClick={(e) => handleClick(e, toggleStarBulk, !someSelectedMailsAreStarred)}
                 label={someSelectedMailsAreStarred ? "Unstar" : "Star"}
             />
             <ContextMenuItem
                 icon="report"
-                onClick={handleToggleSpamBulk}
+                onClick={(e) => handleClick(e, toggleSpamBulk, !someSelectedMailsAreSpammed)}
                 label={
                     someSelectedMailsAreSpammed
                         ? "Mark as not Spam"
                         : "Mark as Spam"
                 }
             />
-            <ContextMenuLabel
-                showLabelPopupMenu={showLabelPopupMenu}
-                setShowLabelPopupMenu={setShowLabelPopupMenu}
-                closeLabelPopupMenu={closeLabelPopupMenu}
-            />
+            <ContextMenuLabel />
         </div>
     );
 }

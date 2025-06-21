@@ -1,15 +1,10 @@
-import useUIs from "../../hooks/useUIs";
 import LabelPopup from "../LabelPopup/LabelPopup";
 
-export default function LabelPopupWrapper() {
-    const { showLabelPopup, setShowLabelPopup } = useUIs();
-
-    if (!showLabelPopup) return null;
-
+export default function LabelPopupWrapper({ toggleLabelPopup }) {
     return (
         <div className="position-absolute">
             <LabelPopup
-                closeLabelPopup={() => setShowLabelPopup(false)}
+                toggleLabelPopup={toggleLabelPopup}
                 position={{ x: 200, y: -25 }}
             />
         </div>

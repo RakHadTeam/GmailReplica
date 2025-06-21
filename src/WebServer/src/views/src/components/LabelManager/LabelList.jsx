@@ -1,23 +1,12 @@
-import useLabels from "../../hooks/useLabels.js";
+import { useMailApp } from "../../context/MailAppContext.js";
+import { useLabelActions } from "../../hooks/useLabelActions.js";
 
 export default function LabelList({ searchTerm, setError }) {
-    const { labels, setLabels } = useLabels();
+    const {
+        labelState: { labels },
+    } = useMailApp();
 
-    const handleDeleteLabel = async (id) => {
-        try {
-            const res = await fetch(`/api/labels/${id}`, {
-                method: "DELETE",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-            });
-            if (!res.ok) throw new Error("Failed to delete label");
-            setLabels(labels.filter((label) => label.id !== id));
-        } catch (err) {
-            console.error(err);
-            setError("Error deleting label.");
-        }
-    };
+    const { deleteLabel } = useLabelActions();
 
     return (
         <ul className="list-group">
@@ -39,7 +28,7 @@ export default function LabelList({ searchTerm, setError }) {
                         {name}
                         <button
                             className="btn btn-sm btn-outline-danger"
-                            onClick={() => handleDeleteLabel(id)}
+                            onClick={() => deleteLabel(id)}
                         >
                             <span className="material-symbols-rounded">
                                 delete

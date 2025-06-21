@@ -1,4 +1,4 @@
-import useLabels from "../../hooks/useLabels.js";
+import { useLabelActions } from "../../hooks/useLabelActions.js";
 
 export default function LabelManagerInput({
     newLabel,
@@ -7,32 +7,15 @@ export default function LabelManagerInput({
     setSearchTerm,
     setError,
 }) {
-    const { fetchLabels } = useLabels();
+    const { createLabel } = useLabelActions();
 
     const handleCreateLabel = async () => {
-        setError(""); // Clear previous errors
-        const name = newLabel.trim();
-        if (!name) {
-            setError("Label name cannot be empty.");
-            return;
-        }
-
+        if (!newLabel) return;
         try {
-            const res = await fetch("/api/labels", {
-                method: "POST",
-                credentials: "include",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ name }),
-            });
-
-            if (!res.ok) throw new Error(`Create failed: ${res.status}`);
-
-            await fetchLabels();
+            await createLabel(newLabel);
             setNewLabel("");
-            setSearchTerm("");
         } catch (err) {
-            console.error(err);
-            setError("Could not create label");
+            setError(err.message);
         }
     };
 

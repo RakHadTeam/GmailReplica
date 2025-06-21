@@ -1,24 +1,28 @@
-import useMails from "../../../hooks/useMails";
-import useMailHandlers from "../../../hooks/useMailHandlers";
+import { useMailApp } from "../../../context/MailAppContext.js";
+import { useUIActions } from "../../../hooks/useUIActions.js";
 
 export default function SelectAllButton() {
-    const { selectedMails, filteredMails, setSelectedMails } = useMails();
-    const { handleSelectAll } = useMailHandlers();
+    const {
+        uiState: { selectedIds },
+        filteredMails,
+    } = useMailApp();
+    const { selectAll, deselectAll } = useUIActions();
 
     const handleClick = () => {
-        if (selectedMails.length === filteredMails.length) {
-            handleSelectAll();
-        } else if (selectedMails.length > 0) {
-            setSelectedMails([]);
+        if (
+            selectedIds.length === filteredMails.length ||
+            selectedIds.length > 0
+        ) {
+            deselectAll();
         } else {
-            handleSelectAll();
+            selectAll();
         }
     };
 
     const icon =
-        selectedMails.length === 0
+        selectedIds.length === 0
             ? "check_box_outline_blank"
-            : selectedMails.length === filteredMails.length
+            : selectedIds.length === filteredMails.length
             ? "check_box"
             : "indeterminate_check_box";
 

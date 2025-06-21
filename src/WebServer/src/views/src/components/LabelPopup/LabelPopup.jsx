@@ -1,21 +1,23 @@
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useMailApp } from "../../context/MailAppContext.js";
 import { useTheme } from "../../context/ThemeContext";
-import useLabelHandlers from "../../hooks/useLabelHandlers.js";
-import useLabels from "../../hooks/useLabels.js";
-import useMails from "../../hooks/useMails.js";
-import useUIs from "../../hooks/useUIs.js";
 import LabelPopupCreatePrompt from "./LabelPopupCreatePrompt.jsx";
 import LabelPopupFooter from "./LabelPopupFooter.jsx";
 import LabelPopupHeader from "./LabelPopupHeader.jsx";
 import LabelPopupList from "./LabelPopupList.jsx";
 import LabelPopupSearch from "./LabelPopupSearch.jsx";
 
-export default function LabelPopup({ closeLabelPopup, position }) {
-    const { labels, fetchLabels } = useLabels();
-    const { handleLabelToggleOnMailId } = useLabelHandlers();
-    const { toggleLabelManager } = useUIs();
-    const { selectedMails } = useMails();
+export default function LabelPopup({
+    toggleLabelPopup,
+    position,
+    onManageClick,
+}) {
+    const {
+        labelState: { labels, fetchLabels },
+        uiState: { selectedIds: selectedMails },
+    } = useMailApp();
+
     const { darkTheme } = useTheme();
 
     const [newLabel, setNewLabel] = useState("");
@@ -28,7 +30,7 @@ export default function LabelPopup({ closeLabelPopup, position }) {
     useEffect(() => {
         const handleClickOutside = (event) => {
             if (popupRef.current && !popupRef.current.contains(event.target)) {
-                closeLabelPopup();
+                toggleLabelPopup();
             }
         };
 
@@ -85,7 +87,7 @@ export default function LabelPopup({ closeLabelPopup, position }) {
                 }`}
                 style={{ width: "320px" }}
             >
-                <LabelPopupHeader onClose={closeLabelPopup} />
+                <LabelPopupHeader toggleLabelPopup={toggleLabelPopup} />
                 {error && (
                     <div className="alert alert-danger py-1 mb-3 mx-3">
                         {error}
@@ -99,11 +101,10 @@ export default function LabelPopup({ closeLabelPopup, position }) {
                     searchTerm={searchTerm}
                     selectedMails={selectedMails}
                     labels={labels}
-                    handleLabelToggleOnMailId={handleLabelToggleOnMailId}
                 />
                 <LabelPopupFooter
                     onCreateClick={() => setShowCreatePrompt(true)}
-                    onManageClick={toggleLabelManager}
+                    onManageClick={onManageClick}
                 />
             </div>
             {showCreatePrompt && (
