@@ -151,3 +151,9 @@ Example:
 - The service communicates with a blacklist TCP server on port `4545`.
 
 ---
+
+## Frontend Reference
+
+For the frontend Gmail-Inspired RakMail app, refer to [`Frontend README`](src/views/README.md).
+
+---
