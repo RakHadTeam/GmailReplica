@@ -116,6 +116,6 @@ All fetches use `credentials: 'include'` to pass auth cookies to the server.
 
 ## Backend Reference
 
-For the API and mail server logic, refer to [`/Server/README.md`](../Server/README.md).
+For the API and mail server logic, refer to [`Backend.md`](../../Backend.md).
 
 ---
