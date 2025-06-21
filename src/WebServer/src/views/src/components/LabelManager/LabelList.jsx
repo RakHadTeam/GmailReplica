@@ -24,7 +24,7 @@ export default function LabelList({ searchTerm, setError }) {
             {labels
                 .filter(
                     (label) =>
-                        !["starred", "bin", "spam"].includes(
+                        !["starred", "bin", "spam", "sent"].includes(
                             label.name.toLowerCase()
                         )
                 )

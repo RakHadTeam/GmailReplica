@@ -1,6 +1,6 @@
 import { useContext } from "react";
 import { useNavigate } from "react-router-dom";
-import { AuthContext } from "../../context/AuthContext.jsx";
+import { useAuth } from "../../context/AuthContext.jsx";
 import { useTheme } from "../../context/ThemeContext.jsx";
 import useLabels from "../../hooks/useLabels";
 import useMails from "../../hooks/useMails";
@@ -18,7 +18,7 @@ export default function SettingsPanel() {
         setProfileImage,
         currentUser,
         setSignedin,
-    } = useContext(AuthContext);
+    } = useAuth();
     const { toggleSettings } = useUIs();
     const { darkTheme } = useTheme();
     const { fetchMails } = useMails();

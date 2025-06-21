@@ -3,8 +3,8 @@ import { useTheme } from "../../context/ThemeContext.jsx";
 import useMails from "../../hooks/useMails.js";
 import useUIs from "../../hooks/useUIs.js";
 import MailDetailHeader from "./MailDetailHeader";
-import MailSenderInfo from "./MailSenderInfo";
-import MailBodyContent from "./MailBodyContent";
+import MailDetailSenderInfo from "./MailDetailSenderInfo";
+import MailDetailBodyContent from "./MailDetailBodyContent";
 
 export default function MailDetail({ handleCloseDetail }) {
     const { darkTheme } = useTheme();
@@ -28,8 +28,8 @@ export default function MailDetail({ handleCloseDetail }) {
         >
             <MailDetailHeader mail={mail} />
             <div className="card-body">
-                <MailSenderInfo mail={mail} />
-                <MailBodyContent mail={mail} />
+                <MailDetailSenderInfo mail={mail} />
+                <MailDetailBodyContent mail={mail} />
             </div>
         </div>
     );

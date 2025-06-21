@@ -1,4 +1,8 @@
+import { useTheme } from "../../context/ThemeContext.jsx";
+
 export default function MailSenderInfo({ mail }) {
+    const { darkTheme } = useTheme();
+
     return (
         <div className="d-flex">
             {mail.recipientPicture && (
@@ -14,7 +18,13 @@ export default function MailSenderInfo({ mail }) {
                     }}
                 />
             )}
-            <div className="flex-grow-1">
+            <div
+                className={`flex-grow-1 ${
+                    darkTheme
+                        ? "bg-dark text-white border-secondary"
+                        : "bg-white text-dark border-bottom"
+                }`}
+            >
                 <div className="fw-bold">
                     {mail.recipientName ?? "(no sender)"}
                 </div>

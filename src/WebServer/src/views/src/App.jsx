@@ -1,14 +1,14 @@
 import { useContext, useEffect, useState } from "react";
 import { Route, Routes, useLocation, useNavigate } from "react-router-dom";
-import { AuthContext } from "./context/AuthContext.jsx";
 import { useTheme } from "./context/ThemeContext.jsx";
 import { Inbox } from "./pages/Inbox.jsx";
 import { Signin } from "./pages/Signin.jsx";
 import { Signup } from "./pages/Signup.jsx";
 import useUIs from "./hooks/useUIs.js";
+import { useAuth } from "./context/AuthContext.jsx";
 
 function App() {
-    const { signedin } = useContext(AuthContext);
+    const { signedin } = useAuth();
     const navigate = useNavigate();
     const location = useLocation();
     const { toggleSettings } = useUIs();

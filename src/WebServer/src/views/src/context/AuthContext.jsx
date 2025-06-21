@@ -1,8 +1,8 @@
-import { createContext, useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 
-export const AuthContext = createContext();
+const AuthContext = createContext();
 
-export const AuthProvider = ({ children }) => {
+export function AuthProvider({ children }) {
     const [signedin, setSignedin] = useState(false);
     const [fullName, setFullName] = useState("");
     const [profileImage, setProfileImage] = useState(null);
@@ -54,3 +54,11 @@ export const AuthProvider = ({ children }) => {
         </AuthContext.Provider>
     );
 };
+
+export function useAuth() {
+    const context = useContext(AuthContext);
+    if (!context) {
+        throw new Error("useAuth must be used within an AuthProvider");
+    }
+    return context;
+}

@@ -7,13 +7,20 @@ export default function MailDetailHeader({ mail }) {
 
     return (
         <div
-            className="card-header d-flex justify-content-between align-items-center"
-            style={{ marginLeft: "4.5rem" }}
+            className={`card-header d-flex justify-content-between align-items-center ${
+                darkTheme
+                    ? "bg-dark text-white border-secondary"
+                    : "bg-white text-dark border-bottom"
+            }`}
+            style={{
+                marginLeft: "4.5rem",
+            }}
         >
             <div className="d-flex flex-wrap align-items-center gap-2">
                 <h2 className="mb-0">{mail.subject ?? "(no subject)"}</h2>
                 {labels?.map((label) => {
-                    if (["Bin", "Starred"].includes(label.id)) return null;
+                    if (["Bin", "Starred", "Sent"].includes(label.id))
+                        return null;
                     if (label.mails.includes(mail.id)) {
                         return (
                             <span

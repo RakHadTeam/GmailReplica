@@ -4,6 +4,7 @@ import ReactDOM from "react-dom/client";
 import { BrowserRouter } from "react-router-dom";
 import App from "./App.jsx";
 import { AuthProvider } from "./context/AuthContext.jsx";
+import { MailAppProvider } from "./context/MailAppContext.jsx";
 import { ThemeProvider } from "./context/ThemeContext.jsx";
 import { LabelProvider } from "./hooks/useLabels.js";
 import { MailProvider } from "./hooks/useMails.js";
@@ -19,7 +20,9 @@ root.render(
                     <UIProvider>
                         <LabelProvider>
                             <MailProvider>
-                                <App />
+                                <MailAppProvider>
+                                    <App />
+                                </MailAppProvider>
                             </MailProvider>
                         </LabelProvider>
                     </UIProvider>
