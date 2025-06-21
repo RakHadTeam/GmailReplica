@@ -59,6 +59,7 @@ export default function Settings({ onClose }) {
             });
 
             if (res.ok) {
+                onClose();
                 setSignedin(false);
                 navigate("/signin");
             } else {

@@ -32,6 +32,9 @@ export function useLabelActions() {
             setSignedin(false);
             return;
         }
+        if (response.status === 400) {
+            throw new Error("Failed to update label");
+        }
     };
 
     const toggleLabel = async (labelId, mailId, apply) => {
@@ -75,7 +78,8 @@ export function useLabelActions() {
                 setSignedin(false);
                 return;
             }
-            if (!response.ok) throw new Error("Failed to fetch labels");
+            if (response.status === 400)
+                throw new Error("Failed to fetch labels");
             const data = await response.json();
             setLabels(data);
         } catch (err) {
@@ -95,7 +99,8 @@ export function useLabelActions() {
                 setSignedin(false);
                 return;
             }
-            if (!response.ok) throw new Error("Failed to create label");
+            if (response.status === 400)
+                throw new Error("Failed to create label");
             const newLabel = await response.json();
             setLabels((prev) => [
                 ...prev,
@@ -116,7 +121,8 @@ export function useLabelActions() {
                 setSignedin(false);
                 return;
             }
-            if (!response.ok) throw new Error("Failed to delete label");
+            if (response.status !== 204)
+                throw new Error("Failed to delete label");
             setLabels((prev) => prev.filter((l) => l.id !== labelId));
         } catch (err) {
             console.error(err);

@@ -22,7 +22,7 @@ export function useMailActions() {
                 setSignedin(false);
                 return;
             }
-            if (!response.ok)
+            if (response.status === 400)
                 throw new Error(`Fetch mails failed: ${response.status}`);
             const rawMails = await response.json();
 
@@ -78,6 +78,8 @@ export function useMailActions() {
                 setSignedin(false);
                 return;
             }
+            if (response.status === 400)
+                throw new Error(`Delete mail failed: ${response.status}`);
             setMails((prev) => prev.filter((m) => m.id !== id));
         } else {
             updateLabel(bin.id, id, true);
@@ -153,7 +155,7 @@ export function useMailActions() {
                 return;
             }
 
-            if (!response.ok) {
+            if (response.status === 400) {
                 const err = await response.json().catch(() => ({}));
                 throw new Error(err.error || "Save failed");
             }

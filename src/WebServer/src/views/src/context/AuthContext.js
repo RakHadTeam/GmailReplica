@@ -35,7 +35,7 @@ export function AuthProvider({ children }) {
             }
         };
         checkLoggedin();
-    }, []);
+    }, [signedin]);
 
     return (
         <AuthContext.Provider

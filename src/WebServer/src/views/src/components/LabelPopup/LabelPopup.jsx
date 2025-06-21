@@ -7,6 +7,7 @@ import LabelPopupFooter from "./LabelPopupFooter.jsx";
 import LabelPopupHeader from "./LabelPopupHeader.jsx";
 import LabelPopupList from "./LabelPopupList.jsx";
 import LabelPopupSearch from "./LabelPopupSearch.jsx";
+import { useLabelActions } from "../../hooks/useLabelActions.js";
 
 export default function LabelPopup({
     onClose,
@@ -19,6 +20,7 @@ export default function LabelPopup({
     } = useMailApp();
 
     const { darkTheme } = useTheme();
+    const { createLabel } = useLabelActions();
 
     const [newLabel, setNewLabel] = useState("");
     const [error, setError] = useState("");
@@ -44,26 +46,13 @@ export default function LabelPopup({
         };
     }, []);
 
-    const createLabel = async () => {
+    const handleCreateLabel = async () => {
         const name = newLabel.trim();
         if (!name) return;
 
         try {
-            const res = await fetch("/api/labels", {
-                method: "POST",
-                credentials: "include",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ name }),
-            });
-            if (res.status === 401) {
-                navigate("/signin");
-                return;
-            }
-            if (!res.ok) throw new Error(`Create failed: ${res.status}`);
-
-            await fetchLabels();
+            await createLabel(name);
             setNewLabel("");
-            setSearchTerm("");
             setShowCreatePrompt(false);
         } catch (err) {
             setError("Could not create label");
@@ -111,7 +100,7 @@ export default function LabelPopup({
                     newLabel={newLabel}
                     setNewLabel={setNewLabel}
                     onCancel={() => setShowCreatePrompt(false)}
-                    onCreate={createLabel}
+                    onCreate={handleCreateLabel}
                     error={error}
                 />
             )}
