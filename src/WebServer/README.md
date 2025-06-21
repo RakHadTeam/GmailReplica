@@ -17,7 +17,7 @@ The backend provides a REST API for:
 
 The API runs on **Express.js** and stores all data in-memory per session.
 
-Detailed API documentation: [Backend README](./src/WebServer/Backend.md)
+Detailed API documentation: [Backend README](./Backend.md)
 
 ---
 
