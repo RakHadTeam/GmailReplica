@@ -49,7 +49,6 @@ export default function SidebarNavigation() {
                     count: starredIds.filter((id) => !binnedIds.includes(id))
                         .length,
                 },
-                { id: "Snoozed", icon: "schedule", label: "Snoozed" },
                 {
                     id: "Sent",
                     icon: "send",

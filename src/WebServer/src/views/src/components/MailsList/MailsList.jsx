@@ -2,9 +2,7 @@ import { useEffect, useState } from "react";
 import { useMailApp } from "../../context/MailAppContext";
 import { useTheme } from "../../context/ThemeContext";
 import { useStarActions } from "../../hooks/useStarActions";
-import ComposeMail from "../ComposeMail/ComposeMail.jsx";
 import ContextMenu from "../ContextMenu/ContextMenu.jsx";
-import MailDetail from "../MailDetail/MailDetail.jsx";
 import MailsListRow from "./MailsListRow.jsx";
 
 export default function MailList({ searchQuery, openMail, setOpenMail }) {
@@ -29,11 +27,6 @@ export default function MailList({ searchQuery, openMail, setOpenMail }) {
     const handleOpenMail = (id) => {
         setContextMenu(null);
         setOpenMail(mails.find((m) => m.id === id) || null);
-    };
-
-    const handleCloseDetail = () => {
-        setContextMenu(null);
-        setOpenMail(null);
     };
 
     const toggleContextMenu = () => {
@@ -65,23 +58,12 @@ export default function MailList({ searchQuery, openMail, setOpenMail }) {
         }
     };
 
-    if (openMail && !openMail.draft) {
-        return <MailDetail handleCloseDetail={handleCloseDetail} />;
-    }
-
     return (
         <div className="w-100 position-relative mt-2">
-            {openMail && openMail.draft && (
-                <ComposeMail
-                    draftMail={openMail}
-                    handleCloseCompose={handleCloseDetail}
-                />
-            )}
-
             {contextMenu && (
                 <ContextMenu
                     contextMenu={contextMenu}
-                    toggleContextMenu={toggleContextMenu}
+                    onClose={toggleContextMenu}
                 />
             )}
 

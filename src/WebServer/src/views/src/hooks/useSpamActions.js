@@ -1,10 +1,9 @@
-// src/hooks/useSpamActions.js
 import { useMailApp } from "../context/MailAppContext";
 import { useLabelActions } from "./useLabelActions";
 
 export function useSpamActions() {
     const {
-        uiState: { selectedIds, setSelectedIds },
+        uiState: { selectedIds },
     } = useMailApp();
 
     const { toggleLabel, toggleLabelBulk } = useLabelActions();

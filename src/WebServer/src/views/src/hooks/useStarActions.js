@@ -1,4 +1,3 @@
-// src/hooks/useStarActions.js
 import { useMailApp } from "../context/MailAppContext";
 import { useLabelActions } from "./useLabelActions";
 

@@ -39,7 +39,7 @@ export default function Sidebar({ toggleLabelManager }) {
                 onManageLabels={toggleLabelManager}
             />
 
-            {showCompose && <ComposeMail handleCloseCompose={toggleCompose} />}
+            {showCompose && <ComposeMail onClose={toggleCompose} />}
         </div>
     );
 }

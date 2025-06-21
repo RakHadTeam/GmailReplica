@@ -6,7 +6,6 @@ import SearchInput from "./SearchInput.jsx";
 export default function SearchBar({
     searchQuery,
     setSearchQuery,
-    openMail,
     setOpenMail,
 }) {
     const {

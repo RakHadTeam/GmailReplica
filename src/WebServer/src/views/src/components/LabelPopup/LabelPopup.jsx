@@ -9,7 +9,7 @@ import LabelPopupList from "./LabelPopupList.jsx";
 import LabelPopupSearch from "./LabelPopupSearch.jsx";
 
 export default function LabelPopup({
-    toggleLabelPopup,
+    onClose,
     position,
     onManageClick,
 }) {
@@ -30,7 +30,7 @@ export default function LabelPopup({
     useEffect(() => {
         const handleClickOutside = (event) => {
             if (popupRef.current && !popupRef.current.contains(event.target)) {
-                toggleLabelPopup();
+                onClose();
             }
         };
 
@@ -66,7 +66,6 @@ export default function LabelPopup({
             setSearchTerm("");
             setShowCreatePrompt(false);
         } catch (err) {
-            console.error(err);
             setError("Could not create label");
         }
     };
@@ -87,7 +86,7 @@ export default function LabelPopup({
                 }`}
                 style={{ width: "320px" }}
             >
-                <LabelPopupHeader toggleLabelPopup={toggleLabelPopup} />
+                <LabelPopupHeader onClose={onClose} />
                 {error && (
                     <div className="alert alert-danger py-1 mb-3 mx-3">
                         {error}

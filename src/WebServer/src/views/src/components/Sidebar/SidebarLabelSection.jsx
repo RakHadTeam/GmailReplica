@@ -24,7 +24,13 @@ export default function SidebarLabelSection({ onSelectLabel, onManageLabels }) {
                     style={{ width: "32px", height: "32px" }}
                     onClick={onManageLabels}
                 >
-                    <span className="material-symbols-rounded">settings</span>
+                    <span
+                        className={`material-symbols-rounded ${
+                            darkTheme ? "text-light" : "text-dark"
+                        }`}
+                    >
+                        settings
+                    </span>
                 </button>
             </div>
 

@@ -24,7 +24,7 @@ export default function ContextMenuLabel() {
                     style={{ top: 0, left: "100%" }}
                 >
                     <LabelPopup
-                        toggleLabelPopup={toggleLabelPopup}
+                        onClose={toggleLabelPopup}
                         position={{ x: 0, y: 0 }}
                     />
                 </div>

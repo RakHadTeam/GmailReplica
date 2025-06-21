@@ -1,5 +1,6 @@
 import { useMailApp } from "../../context/MailAppContext.js";
 import { useLabelActions } from "../../hooks/useLabelActions.js";
+import { useTheme } from "../../context/ThemeContext.js";
 
 export default function LabelPopupList({ searchTerm }) {
     const { toggleLabel, getLabel } = useLabelActions();
@@ -7,6 +8,7 @@ export default function LabelPopupList({ searchTerm }) {
         uiState: { selectedIds: selectedMails },
         labelState: { labels },
     } = useMailApp();
+    const { darkTheme } = useTheme();
 
     const filteredLabels = labels.filter(
         ({ name }) =>
@@ -28,7 +30,7 @@ export default function LabelPopupList({ searchTerm }) {
 
     return (
         <div
-            className="list-group list-group-flush mb-2 mx-3"
+            className={`list-group list-group-flush mb-2 mx-3 ${darkTheme ? "bg-dark text-light" : "bg-white text-dark"}`}
             style={{ maxHeight: "250px", overflowY: "auto" }}
         >
             {filteredLabels.map(({ id, name }) => {
@@ -40,7 +42,7 @@ export default function LabelPopupList({ searchTerm }) {
                 return (
                     <label
                         key={id}
-                        className="list-group-item d-flex align-items-center"
+                        className={`list-group-item d-flex align-items-center ${darkTheme ? "bg-dark text-light" : "bg-white text-dark"}`}
                         style={{ cursor: "pointer" }}
                         onClick={() => {
                             selectedMails.forEach((mail) => {
@@ -53,7 +55,10 @@ export default function LabelPopupList({ searchTerm }) {
                         }}
                     >
                         <div className="d-flex align-items-center gap-2">
-                            <span className="material-symbols-rounded">
+                            <span
+                                className="material-symbols-rounded"
+                                style={{ color: darkTheme ? "white" : "black" }}
+                            >
                                 {icon}
                             </span>
                             {name}

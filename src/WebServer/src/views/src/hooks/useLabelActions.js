@@ -1,11 +1,13 @@
-// src/hooks/useLabelActions.js
 import { useCallback } from "react";
+import { useAuth } from "../context/AuthContext.js";
 import { useMailApp } from "../context/MailAppContext";
 
 export function useLabelActions() {
     const {
         labelState: { labels, setLabels },
     } = useMailApp();
+
+    const { setSignedin } = useAuth();
 
     const getLabel = useCallback(
         (id) => labels.find((l) => l.id === id),
@@ -25,7 +27,12 @@ export function useLabelActions() {
                   method: "DELETE",
                   credentials: "include",
               };
-        await fetch(url, opts);
+        const response = await fetch(url, opts);
+        if (response.status === 401) {
+            setSignedin(false);
+            alert("Session expired. Please sign in again.");
+            return;
+        }
     };
 
     const toggleLabel = async (labelId, mailId, apply) => {
@@ -56,18 +63,22 @@ export function useLabelActions() {
 
     const toggleLabelBulk = async (labelId, mailIds, apply) => {
         for (const id of mailIds) {
-            console.log(
-                `Toggling label ${labelId} for mail ${id} with apply=${apply}`
-            );
             await toggleLabel(labelId, id, apply);
         }
     };
 
     const fetchLabels = async () => {
         try {
-            const res = await fetch("/api/labels", { credentials: "include" });
-            if (!res.ok) throw new Error("Failed to fetch labels");
-            const data = await res.json();
+            const response = await fetch("/api/labels", {
+                credentials: "include",
+            });
+            if (response.status === 401) {
+                setSignedin(false);
+                alert("Session expired. Please sign in again.");
+                return;
+            }
+            if (!response.ok) throw new Error("Failed to fetch labels");
+            const data = await response.json();
             setLabels(data);
         } catch (err) {
             console.error(err);
@@ -76,15 +87,41 @@ export function useLabelActions() {
 
     const createLabel = async (labelName) => {
         try {
-            const res = await fetch("/api/labels", {
+            const response = await fetch("/api/labels", {
                 method: "POST",
                 credentials: "include",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ name: labelName }),
             });
-            if (!res.ok) throw new Error("Failed to create label");
-            const newLabel = await res.json();
-            setLabels((prev) => [...prev, newLabel]);
+            if (response.status === 401) {
+                setSignedin(false);
+                alert("Session expired. Please sign in again.");
+                return;
+            }
+            if (!response.ok) throw new Error("Failed to create label");
+            const newLabel = await response.json();
+            setLabels((prev) => [
+                ...prev,
+                { ...newLabel, name: labelName, mails: [] },
+            ]);
+        } catch (err) {
+            console.error(err);
+        }
+    };
+
+    const deleteLabel = async (labelId) => {
+        try {
+            const response = await fetch(`/api/labels/${labelId}`, {
+                method: "DELETE",
+                credentials: "include",
+            });
+            if (response.status === 401) {
+                setSignedin(false);
+                alert("Session expired. Please sign in again.");
+                return;
+            }
+            if (!response.ok) throw new Error("Failed to delete label");
+            setLabels((prev) => prev.filter((l) => l.id !== labelId));
         } catch (err) {
             console.error(err);
         }
@@ -97,5 +134,6 @@ export function useLabelActions() {
         toggleLabelBulk,
         fetchLabels,
         createLabel,
+        deleteLabel,
     };
 }

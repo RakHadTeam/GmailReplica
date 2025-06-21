@@ -7,7 +7,6 @@ export default function ComposeFields({
     setSubject,
     body,
     setBody,
-    draftMail,
 }) {
     const { darkTheme } = useTheme();
 
@@ -22,7 +21,7 @@ export default function ComposeFields({
                             ? "bg-dark text-white border-secondary placeholder-white"
                             : ""
                     }`}
-                    value={draftMail?.recipientEmail ?? recipientEmail}
+                    value={recipientEmail}
                     onChange={(e) => setRecipientEmail(e.target.value)}
                 />
             </div>

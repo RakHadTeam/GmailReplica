@@ -40,7 +40,7 @@ export default function InboxHeaderControls({ openMail, closeMail, toggleLabelPo
                         <SpamButton />
                         <ArchiveButton />
                         <StarToggleButton />
-                        <LabelButton toggleLabelPopup={toggleLabelPopup} />
+                        <LabelButton onClick={toggleLabelPopup} />
                         <DeleteButton />
                     </>
                 )}

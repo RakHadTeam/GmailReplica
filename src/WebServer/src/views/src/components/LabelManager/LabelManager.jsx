@@ -5,7 +5,7 @@ import LabelList from "./LabelList";
 import LabelManagerHeader from "./LabelManagerHeader";
 import LabelManagerInput from "./LabelManagerInput";
 
-export default function LabelManager({ toggleLabelManager }) {
+export default function LabelManager({ onClose }) {
     const { darkTheme } = useTheme();
     const [searchTerm, setSearchTerm] = useState("");
     const [newLabel, setNewLabel] = useState("");
@@ -16,13 +16,13 @@ export default function LabelManager({ toggleLabelManager }) {
     useEffect(() => {
         function handleClickOutside(event) {
             if (popupRef.current && !popupRef.current.contains(event.target)) {
-                toggleLabelManager();
+                onClose();
             }
         }
         document.addEventListener("mousedown", handleClickOutside);
         return () =>
             document.removeEventListener("mousedown", handleClickOutside);
-    }, [toggleLabelManager]);
+    }, [onClose]);
 
     return (
         <div
@@ -42,7 +42,7 @@ export default function LabelManager({ toggleLabelManager }) {
                 }`}
                 style={{ minWidth: "400px", maxWidth: "500px", width: "100%" }}
             >
-                <LabelManagerHeader toggleLabelManager={toggleLabelManager} />
+                <LabelManagerHeader onClose={onClose} />
                 <LabelManagerInput
                     newLabel={newLabel}
                     setNewLabel={setNewLabel}

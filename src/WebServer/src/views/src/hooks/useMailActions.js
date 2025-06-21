@@ -1,4 +1,4 @@
-// src/hooks/useMailActions.js
+import { useAuth } from "../context/AuthContext.js";
 import { useMailApp } from "../context/MailAppContext";
 import { useLabelActions } from "./useLabelActions";
 
@@ -9,6 +9,8 @@ export function useMailActions() {
         labelState: { setLabels },
     } = useMailApp();
 
+    const { setSignedin } = useAuth();
+
     const { getLabel, updateLabel, fetchLabels } = useLabelActions();
 
     const fetchMails = async () => {
@@ -16,6 +18,12 @@ export function useMailActions() {
             const response = await fetch("/api/mails", {
                 credentials: "include",
             });
+            if (response.status === 401) {
+                setSignedin(false);
+                alert("Session expired. Please sign in again.");
+                return;
+            }
+
             if (!response.ok)
                 throw new Error(`Fetch mails failed: ${response.status}`);
             const rawMails = await response.json();
@@ -36,6 +44,11 @@ export function useMailActions() {
                             credentials: "include",
                         }
                     );
+                    if (userResponse.status === 401) {
+                        setSignedin(false);
+                        alert("Session expired. Please sign in again.");
+                        return;
+                    }
                     const recipientUser = userResponse.ok
                         ? await userResponse.json()
                         : {};
@@ -54,16 +67,21 @@ export function useMailActions() {
         }
     };
 
-    const deleteMail = (id) => {
+    const deleteMail = async (id) => {
         const bin = getLabel("Bin");
         if (!bin) return;
         const isBinned = bin.mails.includes(id);
 
         if (isBinned) {
-            fetch(`/api/mails/${id}`, {
+            const response = await fetch(`/api/mails/${id}`, {
                 method: "DELETE",
                 credentials: "include",
             });
+            if (response.status === 401) {
+                setSignedin(false);
+                alert("Session expired. Please sign in again.");
+                return;
+            }
             setMails((prev) => prev.filter((m) => m.id !== id));
         } else {
             updateLabel(bin.id, id, true);
@@ -128,24 +146,28 @@ export function useMailActions() {
         const method = draftMail ? "PATCH" : "POST";
 
         try {
-            const res = await fetch(url, {
+            const response = await fetch(url, {
                 method,
                 headers: { "Content-Type": "application/json" },
                 credentials: "include",
                 body: JSON.stringify(payload),
             });
+            if (response.status === 401) {
+                setSignedin(false);
+                return;
+            }
 
-            if (!res.ok) {
-                const err = await res.json().catch(() => ({}));
+            if (!response.ok) {
+                const err = await response.json().catch(() => ({}));
                 throw new Error(err.error || "Save failed");
             }
 
-            await fetchMails();
-            await fetchLabels();
             onSuccess?.();
         } catch (err) {
-            onError?.(err.message);
+            onError?.(err.message ?? "An error occurred");
         }
+        await fetchMails();
+        await fetchLabels();
     }
 
     return {

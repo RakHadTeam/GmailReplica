@@ -5,7 +5,10 @@ import ComposeFields from "./ComposeFields";
 import ComposeFooter from "./ComposeFooter";
 import ComposeHeader from "./ComposeHeader";
 
-export default function ComposeMail({ draftMail = null, handleCloseCompose }) {
+export default function ComposeMail({ draftMail = null, onClose }) {
+    if (typeof onClose !== "function") {
+        throw new Error("ComposeMail: 'onClose' prop is required and must be a function.");
+    }
     const { deleteMail, sendOrSaveMail } = useMailActions();
     const { darkTheme } = useTheme();
     const [recipientEmail, setRecipientEmail] = useState("");
@@ -27,7 +30,7 @@ export default function ComposeMail({ draftMail = null, handleCloseCompose }) {
         if (dirty) {
             handleSubmit(true);
         } else {
-            handleCloseCompose();
+            onClose();
         }
     };
 
@@ -40,8 +43,8 @@ export default function ComposeMail({ draftMail = null, handleCloseCompose }) {
             recipient: recipientEmail,
             subject,
             body,
-            isDraft,
-            onSuccess: handleCloseCompose,
+            isDraft, 
+            onSuccess: onClose,
             onError: setError,
         });
 
@@ -68,7 +71,7 @@ export default function ComposeMail({ draftMail = null, handleCloseCompose }) {
             >
                 <ComposeHeader
                     draftMail={draftMail}
-                    handleCloseClick={handleCloseClick}
+                    onClose={handleCloseClick}
                 />
                 {error && <div className="alert alert-danger m-3">{error}</div>}
                 <ComposeFields
@@ -83,9 +86,9 @@ export default function ComposeMail({ draftMail = null, handleCloseCompose }) {
                 <ComposeFooter
                     onSend={() => handleSubmit(false)}
                     draftMail={draftMail}
-                    handleDeleteClick={() => {
+                    onDelete={() => {
                         deleteMail(draftMail.id);
-                        handleCloseCompose();
+                        onClose();
                     }}
                     loading={loading}
                 />

@@ -3,7 +3,7 @@ import { useTheme } from "../../context/ThemeContext";
 export default function ComposeFooter({
     onSend,
     draftMail,
-    handleDeleteClick,
+    onDelete,
     loading,
 }) {
     const { darkTheme } = useTheme();
@@ -41,7 +41,7 @@ export default function ComposeFooter({
                         borderRadius: "20px",
                         fontSize: "14px",
                     }}
-                    onClick={handleDeleteClick}
+                    onClick={onDelete}
                     disabled={loading}
                 >
                     <span className="material-symbols-rounded" style={{ fontSize: 18 }}>

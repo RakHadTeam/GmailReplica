@@ -8,7 +8,7 @@ import SettingsForm from "./SettingsForm";
 import SettingsHeader from "./SettingsHeader";
 import SettingsUserCard from "./SettingsUserCard";
 
-export default function Settings({ toggleSettings }) {
+export default function Settings({ onClose }) {
     const {
         fullName,
         setFullName,
@@ -41,7 +41,7 @@ export default function Settings({ toggleSettings }) {
                 alert("Settings updated successfully!");
                 fetchMails();
                 fetchLabels();
-                toggleSettings();
+                onClose();
             } else {
                 alert("Failed to update settings.");
             }
@@ -78,7 +78,7 @@ export default function Settings({ toggleSettings }) {
                 }`}
                 style={{ maxWidth: "400px" }}
             >
-                <SettingsHeader onClose={toggleSettings} />
+                <SettingsHeader onClose={onClose} />
                 {currentUser && <SettingsUserCard user={currentUser} />}
 
                 <SettingsForm

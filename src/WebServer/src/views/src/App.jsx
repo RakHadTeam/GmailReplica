@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import { Route, Routes, useLocation, useNavigate } from "react-router-dom";
+import TopBarButtons from "./components/TopBarButtons/TopBarButtons";
 import { useAuth } from "./context/AuthContext.js";
 import { useTheme } from "./context/ThemeContext.js";
 import { Inbox } from "./pages/Inbox.jsx";
@@ -24,31 +25,9 @@ function App() {
         }
     }, [signedin, navigate, location.pathname]);
 
-    const { darkTheme, toggleDarkTheme } = useTheme();
-
     return (
         <>
-            <div
-                className="d-flex gap-2 align-items-center"
-                style={{
-                    position: "absolute",
-                    top: 10,
-                    right: 10,
-                    zIndex: 9999,
-                }}
-            >
-                <button
-                    onClick={toggleDarkTheme}
-                    className={`btn btn-sm rounded-circle d-flex align-items-center justify-content-center ${
-                        darkTheme ? "btn-primary" : "btn-outline-primary"
-                    }`}
-                    style={{ width: "40px", height: "40px" }}
-                >
-                    <span className="material-symbols-rounded">
-                        {darkTheme ? "light_mode" : "dark_mode"}
-                    </span>
-                </button>
-            </div>
+            <TopBarButtons />
             <Routes>
                 <Route path="/" element={<Inbox />} />
                 <Route path="/signin" element={<Signin />} />

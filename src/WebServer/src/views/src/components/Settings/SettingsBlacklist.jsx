@@ -1,4 +1,8 @@
+import { useTheme } from "../../context/ThemeContext";
+
 export default function SettingsBlacklist() {
+    const { darkTheme } = useTheme();
+
     const handleAdd = async (e) => {
         if (e.key !== "Enter") return;
         e.preventDefault();
@@ -60,6 +64,11 @@ export default function SettingsBlacklist() {
                     id="addUrl"
                     placeholder="https://example.com"
                     onKeyDown={handleAdd}
+                    style={{
+                        backgroundColor: darkTheme ? "#1e1e1e" : "white",
+                        color: darkTheme ? "white" : "black",
+                        borderColor: darkTheme ? "#555" : "#ced4da"
+                    }}
                 />
             </div>
 
@@ -73,6 +82,11 @@ export default function SettingsBlacklist() {
                     id="removeUrl"
                     placeholder="https://example.com"
                     onKeyDown={handleRemove}
+                    style={{
+                        backgroundColor: darkTheme ? "#1e1e1e" : "white",
+                        color: darkTheme ? "white" : "black",
+                        borderColor: darkTheme ? "#555" : "#ced4da"
+                    }}
                 />
             </div>
         </>

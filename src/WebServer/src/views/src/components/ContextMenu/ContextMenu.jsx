@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import { useMailApp } from "../../context/MailAppContext";
 import { useMailActions } from "../../hooks/useMailActions";
 import { useSpamActions } from "../../hooks/useSpamActions";
@@ -6,7 +6,7 @@ import { useStarActions } from "../../hooks/useStarActions";
 import ContextMenuItem from "./ContextMenuItem";
 import ContextMenuLabel from "./ContextMenuLabel";
 
-export default function ContextMenu({ contextMenu, toggleContextMenu }) {
+export default function ContextMenu({ contextMenu, onClose }) {
     const {
         uiState: { selectedIds, activeLabel },
         labelState: { labels },
@@ -30,7 +30,7 @@ export default function ContextMenu({ contextMenu, toggleContextMenu }) {
     const handleClick = (e, operation, apply) => {
         e.preventDefault();
         operation(apply);
-        toggleContextMenu();
+        onClose();
     };
 
     useEffect(() => {
@@ -39,7 +39,7 @@ export default function ContextMenu({ contextMenu, toggleContextMenu }) {
                 contextRef.current &&
                 !contextRef.current.contains(event.target)
             ) {
-                toggleContextMenu();
+                onClose();
             }
         }
 
@@ -47,7 +47,7 @@ export default function ContextMenu({ contextMenu, toggleContextMenu }) {
         return () => {
             document.removeEventListener("mousedown", handleClickOutside);
         };
-    }, [toggleContextMenu]);
+    }, [onClose]);
 
     return (
         <div
@@ -83,12 +83,16 @@ export default function ContextMenu({ contextMenu, toggleContextMenu }) {
             )}
             <ContextMenuItem
                 icon="star"
-                onClick={(e) => handleClick(e, toggleStarBulk, !someSelectedMailsAreStarred)}
+                onClick={(e) =>
+                    handleClick(e, toggleStarBulk, !someSelectedMailsAreStarred)
+                }
                 label={someSelectedMailsAreStarred ? "Unstar" : "Star"}
             />
             <ContextMenuItem
                 icon="report"
-                onClick={(e) => handleClick(e, toggleSpamBulk, !someSelectedMailsAreSpammed)}
+                onClick={(e) =>
+                    handleClick(e, toggleSpamBulk, !someSelectedMailsAreSpammed)
+                }
                 label={
                     someSelectedMailsAreSpammed
                         ? "Mark as not Spam"
