@@ -28,9 +28,8 @@ export function useLabelActions() {
                   credentials: "include",
               };
         const response = await fetch(url, opts);
-        if (response.status === 401) {
+        if (response.status === 401 || response.status === 403) {
             setSignedin(false);
-            alert("Session expired. Please sign in again.");
             return;
         }
     };
@@ -72,9 +71,8 @@ export function useLabelActions() {
             const response = await fetch("/api/labels", {
                 credentials: "include",
             });
-            if (response.status === 401) {
+            if (response.status === 401 || response.status === 403) {
                 setSignedin(false);
-                alert("Session expired. Please sign in again.");
                 return;
             }
             if (!response.ok) throw new Error("Failed to fetch labels");
@@ -93,9 +91,8 @@ export function useLabelActions() {
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ name: labelName }),
             });
-            if (response.status === 401) {
+            if (response.status === 401 || response.status === 403) {
                 setSignedin(false);
-                alert("Session expired. Please sign in again.");
                 return;
             }
             if (!response.ok) throw new Error("Failed to create label");
@@ -115,9 +112,8 @@ export function useLabelActions() {
                 method: "DELETE",
                 credentials: "include",
             });
-            if (response.status === 401) {
+            if (response.status === 401 || response.status === 403) {
                 setSignedin(false);
-                alert("Session expired. Please sign in again.");
                 return;
             }
             if (!response.ok) throw new Error("Failed to delete label");

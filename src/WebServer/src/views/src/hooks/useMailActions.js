@@ -18,12 +18,10 @@ export function useMailActions() {
             const response = await fetch("/api/mails", {
                 credentials: "include",
             });
-            if (response.status === 401) {
+            if (response.status === 401 || response.status === 403) {
                 setSignedin(false);
-                alert("Session expired. Please sign in again.");
                 return;
             }
-
             if (!response.ok)
                 throw new Error(`Fetch mails failed: ${response.status}`);
             const rawMails = await response.json();
@@ -44,9 +42,8 @@ export function useMailActions() {
                             credentials: "include",
                         }
                     );
-                    if (userResponse.status === 401) {
+                    if (response.status === 401 || response.status === 403) {
                         setSignedin(false);
-                        alert("Session expired. Please sign in again.");
                         return;
                     }
                     const recipientUser = userResponse.ok
@@ -77,9 +74,8 @@ export function useMailActions() {
                 method: "DELETE",
                 credentials: "include",
             });
-            if (response.status === 401) {
+            if (response.status === 401 || response.status === 403) {
                 setSignedin(false);
-                alert("Session expired. Please sign in again.");
                 return;
             }
             setMails((prev) => prev.filter((m) => m.id !== id));
@@ -152,7 +148,7 @@ export function useMailActions() {
                 credentials: "include",
                 body: JSON.stringify(payload),
             });
-            if (response.status === 401) {
+            if (response.status === 401 || response.status === 403) {
                 setSignedin(false);
                 return;
             }

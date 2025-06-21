@@ -50,6 +50,31 @@ docker compose up --build webserver server
 
 The blacklist server uses configuration `1000 1 2` and responds to malicious content.
 
+> ⚠️ Note: A `.env` file must be present in the root of the project for the server to run properly.  
+> This file contains essential environment variables such as `PORT` and database/token configurations.  
+> If missing, the server will fall back and may show warnings or fail to start correctly.
+
+---
+
+### .env File Template
+
+Create a `.env` file in the root directory with the following contents:
+
+```
+# Server configuration
+PORT=8000
+
+# JWT configuration
+JWT_SECRET=your_jwt_secret_key
+
+# Other configurations (optional)
+TOKEN_EXPIRY=3600 # (put in seconds, e.g., 1 hour)
+
+```
+
+Replace `your_jwt_secret_key` with a secure random string.  
+Environment variables prefixed with `REACT_APP_` are used in the React frontend.
+
 ---
 
 ## Highlights

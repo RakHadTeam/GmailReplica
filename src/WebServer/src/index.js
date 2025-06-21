@@ -1,5 +1,5 @@
-import dotenv from 'dotenv';
-dotenv.config({ path: './.env' });
+import customenv from 'custom-env';
+customenv.env(process.env.NODE_ENV || "default");
 import app from './app.js';
 
 app.listen(process.env.PORT, () => {

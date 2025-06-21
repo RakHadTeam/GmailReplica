@@ -12,6 +12,28 @@ docker compose up --build webserver server
 This will start the web server on port `3000` by default.
 And will start the blacklist server on port `4545`, and with configuration `1000 1 2` (Refer to [Server README](../Server/README.md)).
 
+⚠️ **Note**: A `.env` file must be present in the root of the project for the server to run properly.
+This file contains essential environment variables such as `PORT` and JWT configurations.
+If it's missing, the server may fall back to defaults or fail to start properly.
+
+### .env File Template
+
+Create a `.env` file in the root directory with the following contents:
+
+```
+# Server configuration
+PORT=8000
+
+# JWT configuration
+JWT_SECRET=your_jwt_secret_key
+
+# Other configurations (optional)
+TOKEN_EXPIRY=3600 # (put in seconds, e.g., 1 hour)
+```
+
+Replace `your_jwt_secret_key` with a secure random string.  
+Environment variables prefixed with `REACT_APP_` are used in the React frontend.
+
 Example:
 ![image](https://github.com/user-attachments/assets/fb2f7780-7c6a-4816-aea2-a4e7a12e6b47)
 
