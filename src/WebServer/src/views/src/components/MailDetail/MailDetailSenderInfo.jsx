@@ -1,7 +1,9 @@
 import { useTheme } from "../../context/ThemeContext.js";
+import { useAuth } from "../../context/AuthContext.js";
 
 export default function MailSenderInfo({ mail }) {
     const { darkTheme } = useTheme();
+    const { currentUser } = useAuth();
 
     return (
         <div className={`d-flex`}>
@@ -28,7 +30,12 @@ export default function MailSenderInfo({ mail }) {
                     {mail.senderName ?? "(no sender)"}
                 </div>
                 <div className="small mb-3">
-                    {mail.senderEmail ?? "(no email)"}
+                    {"<"}{mail.senderEmail ?? "(no email)"}{">"}
+                </div>
+                <div className="small">
+                    <span className="fw-semibold me-1">To:</span>
+                    {mail.recipient === currentUser.id ? "me" : mail.recipientName ?? "(no recipient)"}{" "}
+                    &lt;{mail.recipientEmail ?? "(no email)"}&gt;
                 </div>
             </div>
         </div>

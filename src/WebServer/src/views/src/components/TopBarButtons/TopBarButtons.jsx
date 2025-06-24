@@ -21,7 +21,6 @@ export default function TopBarButtons() {
                 position: "absolute",
                 top: 10,
                 right: 10,
-                zIndex: 9999,
             }}
         >
             {signedin && currentUser && (
