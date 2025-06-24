@@ -15,7 +15,11 @@ export function postLabels(req, res) {
         mails:[],
     };
 
-    const { status, label } = createLabel(userId, newLabel)
+    const { status, label, error } = createLabel(userId, newLabel)
+
+    if (error) {
+        return res.status(status ?? 400).json({ error });
+    }
 
     res.status(status).location(`/api/labels/${label.id}`).json({ id: label.id })
 }
