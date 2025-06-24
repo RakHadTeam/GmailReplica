@@ -13,6 +13,7 @@ export default function MailListRow({
     const { darkTheme } = useTheme();
     const {
         labelState: { labels },
+        uiState: { activeLabel },
     } = useMailApp();
     const starLabel = labels.find((label) => label.id === "Starred");
     const [starred, setStarred] = useState();
@@ -47,7 +48,7 @@ export default function MailListRow({
                 {isSelected ? "check_box" : "check_box_outline_blank"}
             </span>
 
-            {mail.label === "Bin" ? (
+            {activeLabel === "Bin" ? (
                 <span
                     className="material-symbols-rounded me-3"
                     style={{

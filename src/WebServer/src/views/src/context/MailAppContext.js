@@ -35,8 +35,14 @@ export function MailAppProvider({ children }) {
         };
 
         return mails.filter((mail) => {
-            if (["Bin", "Spam", "Starred", "Sent"].includes(activeLabel)) {
+            if (["Bin", "Sent"].includes(activeLabel)) {
                 return labelMailMap[activeLabel]?.includes(mail.id);
+            }
+            if (activeLabel === "Spam") {
+                return mail.spam && !labelMailMap.Bin?.includes(mail.id);
+            }
+            if (activeLabel === "Starred") {
+                return mail.starred && !labelMailMap.Bin?.includes(mail.id);
             }
             if (activeLabel === "Drafts") {
                 return mail.draft && !labelMailMap.Bin?.includes(mail.id);

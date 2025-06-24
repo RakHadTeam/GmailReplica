@@ -4,8 +4,6 @@ const AuthContext = createContext();
 
 export function AuthProvider({ children }) {
     const [signedin, setSignedin] = useState(false);
-    const [fullName, setFullName] = useState("");
-    const [profileImage, setProfileImage] = useState(null);
     const [currentUser, setCurrentUser] = useState(null);
 
     useEffect(() => {
@@ -28,7 +26,6 @@ export function AuthProvider({ children }) {
                         throw new Error("Failed to fetch user data");
                     const userData = await userRes.json();
                     setCurrentUser(userData);
-                    setFullName(userData.fullname);
                 }
             } catch (error) {
                 console.error("Error checking login status:", error);
@@ -42,10 +39,6 @@ export function AuthProvider({ children }) {
             value={{
                 signedin,
                 setSignedin,
-                fullName,
-                setFullName,
-                profileImage,
-                setProfileImage,
                 currentUser,
                 setCurrentUser,
             }}
