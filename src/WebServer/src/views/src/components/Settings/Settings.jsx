@@ -67,7 +67,7 @@ export default function Settings({ onClose }) {
             if (res.ok) {
                 onClose();
                 setSignedin(false);
-                navigate("/signin");
+                navigate("/home");
             } else {
                 alert("Logout failed.");
             }

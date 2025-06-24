@@ -88,7 +88,15 @@ export default function MailListRow({
                     className="text-truncate me-2"
                     style={{ width: 200, flexShrink: 0 }}
                 >
-                    {mail.recipientName}
+                    {activeLabel === "Sent" ? (
+                        <>
+                            To: {mail.recipientName ||
+                                mail.recipient ||
+                                "(no recipient)"}
+                        </>
+                    ) : (
+                        <>{mail.senderName || mail.sender || "(no sender)"}</>
+                    )}
                 </div>
             )}
 

@@ -26,7 +26,7 @@ export function patchUserByIdHandler(req, res) {
             }
         }
 
-        updatedFields.picture = req.file.filename;
+        updatedFields.picture = `/uploads/${req.file.filename}`;
     }
 
     updateUserById(id, updatedFields); // implement this in your model

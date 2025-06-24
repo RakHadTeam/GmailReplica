@@ -1,4 +1,5 @@
 import { createContext, useContext, useEffect, useState } from "react";
+import defaultPicture from "../resources/default-profile-picture.svg";
 
 const AuthContext = createContext();
 
@@ -25,6 +26,9 @@ export function AuthProvider({ children }) {
                     if (!userRes.ok)
                         throw new Error("Failed to fetch user data");
                     const userData = await userRes.json();
+
+                    userData.picture = userData.picture ?? defaultPicture;
+
                     setCurrentUser(userData);
                 }
             } catch (error) {
@@ -46,7 +50,7 @@ export function AuthProvider({ children }) {
             {children}
         </AuthContext.Provider>
     );
-};
+}
 
 export function useAuth() {
     const context = useContext(AuthContext);

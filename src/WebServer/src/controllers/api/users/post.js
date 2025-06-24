@@ -29,7 +29,7 @@ export function postUsers(req, res) {
         password,
         fullname,
         darkTheme: darkTheme ?? false,
-        picture: req.file ? req.file.filename : null,
+        picture: req.file ? `/uploads/${req.file.filename}` : null,
         createdAt: new Date().toISOString(),
         mails: [],
         labels: [
@@ -62,6 +62,8 @@ export function postUsers(req, res) {
     if (status === 201) {
         return res.status(201).json({ message: "User created successfully" });
     } else {
-        return res.status(status).json({ error: error || "User creation failed" });
+        return res
+            .status(status)
+            .json({ error: error || "User creation failed" });
     }
 }

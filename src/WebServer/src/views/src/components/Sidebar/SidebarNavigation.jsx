@@ -39,7 +39,10 @@ export default function SidebarNavigation() {
                             !m.draft &&
                             !binnedIds.includes(m.id) &&
                             !spammedIds.includes(m.id) &&
-                            !(sentIds.includes(m.id) && m.recipient !== m.sender)
+                            !(
+                                sentIds.includes(m.id) &&
+                                m.recipient !== m.sender
+                            )
                     ).length,
                 },
                 {
@@ -53,7 +56,8 @@ export default function SidebarNavigation() {
                     id: "Sent",
                     icon: "send",
                     label: "Sent",
-                    count: sentIds.length,
+                    count: sentIds.filter((id) => !binnedIds.includes(id))
+                        .length,
                 },
                 {
                     id: "Drafts",

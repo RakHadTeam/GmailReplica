@@ -1,12 +1,12 @@
 import { useEffect } from "react";
 import { Route, Routes, useLocation, useNavigate } from "react-router-dom";
+import NotSignedInAlert from "./components/NotSignedInAlert/NotSignedInAlert.jsx";
 import TopBarButtons from "./components/TopBarButtons/TopBarButtons";
 import { useAuth } from "./context/AuthContext.js";
-import { useTheme } from "./context/ThemeContext.js";
+import Home from "./pages/Home.jsx";
 import { Inbox } from "./pages/Inbox.jsx";
 import { Signin } from "./pages/Signin.jsx";
 import { Signup } from "./pages/Signup.jsx";
-import NotSignedInAlert from "./components/NotSignedInAlert/NotSignedInAlert.jsx";
 
 function App() {
     const { signedin } = useAuth();
@@ -21,12 +21,15 @@ function App() {
 
     return (
         <>
-            {!signedin && <NotSignedInAlert />}
+            {!signedin && location.pathname === "/inbox" && (
+                <NotSignedInAlert />
+            )}
             <TopBarButtons />
             <Routes>
                 <Route path="/signin" element={<Signin />} />
                 <Route path="/inbox" element={<Inbox />} />
                 <Route path="/signup" element={<Signup />} />
+                <Route path="/home" element={<Home />} />
             </Routes>
         </>
     );

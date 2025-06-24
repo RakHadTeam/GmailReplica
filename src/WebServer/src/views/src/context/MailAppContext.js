@@ -35,8 +35,14 @@ export function MailAppProvider({ children }) {
         };
 
         return mails.filter((mail) => {
-            if (["Bin", "Sent"].includes(activeLabel)) {
-                return labelMailMap[activeLabel]?.includes(mail.id);
+            if (activeLabel === "Bin") {
+                return labelMailMap.Bin?.includes(mail.id);
+            }
+            if (activeLabel === "Sent") {
+                return (
+                    labelMailMap.Sent?.includes(mail.id) &&
+                    !labelMailMap.Bin?.includes(mail.id)
+                );
             }
             if (activeLabel === "Spam") {
                 return mail.spam && !labelMailMap.Bin?.includes(mail.id);

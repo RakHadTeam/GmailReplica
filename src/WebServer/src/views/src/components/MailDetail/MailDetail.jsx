@@ -19,9 +19,9 @@ export default function MailDetail({ mail }) {
 
     return (
         <div
-            className={`card mt-4 border-1 shadow-sm rounded-4 ${
+            className={`card mt-4 shadow-sm rounded-4 ${
                 darkTheme
-                    ? "bg-dark text-white border-secondary"
+                    ? "bg-dark text-white "
                     : "bg-white text-dark"
             }`}
         >

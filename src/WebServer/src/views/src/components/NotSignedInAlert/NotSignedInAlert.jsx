@@ -7,20 +7,19 @@ export default function NotSignedInAlert() {
 
     useEffect(() => {
         const timeout = setTimeout(() => {
-            if (location.pathname !== "/signin" && location.pathname !== "/signup") {
-                navigate("/signin");
+            if (
+                location.pathname !== "/signin" &&
+                location.pathname !== "/signup" &&
+                location.pathname !== "/home"
+            ) {
+                navigate("/home");
             }
         }, 3000);
 
-        
         return () => clearTimeout(timeout);
     }, [navigate, location.pathname]);
 
-
-    if (
-        location.pathname === "/signin" ||
-        location.pathname === "/signup"
-    ) {
+    if (location.pathname === "/signin" || location.pathname === "/signup") {
         return null;
     }
 
@@ -40,12 +39,15 @@ export default function NotSignedInAlert() {
                     type="button"
                     className="btn-close position-absolute top-0 end-0 m-2"
                     aria-label="Close"
-                    onClick={() => navigate("/signin")}
+                    onClick={() => navigate("/home")}
                 ></button>
                 <h4>You are not signed in or Token expired</h4>
-                <p>You will be redirected to the sign-in page shortly.</p>
-                <button className="btn btn-primary mt-3" onClick={() => navigate("/signin")}>
-                    Go to Sign In Now
+                <p>You will be redirected to the home page shortly.</p>
+                <button
+                    className="btn btn-primary mt-3"
+                    onClick={() => navigate("/home")}
+                >
+                    Go to Home Now
                 </button>
             </div>
         </div>

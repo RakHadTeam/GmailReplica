@@ -1,6 +1,7 @@
 import { useAuth } from "../context/AuthContext.js";
 import { useMailApp } from "../context/MailAppContext";
 import { useLabelActions } from "./useLabelActions";
+import defaultPicture from "../resources/default-profile-picture.svg";
 
 export function useMailActions() {
     const {
@@ -28,32 +29,55 @@ export function useMailActions() {
 
             const enriched = await Promise.all(
                 rawMails.map(async (mail) => {
-                    if (mail.draft && !mail.recipient) {
-                        return {
-                            ...mail,
-                            recipientName: "",
-                            recipientEmail: "",
-                            recipientPicture: null,
-                        };
-                    }
-                    const userResponse = await fetch(
-                        `/api/users/${mail.recipient}`,
-                        {
-                            credentials: "include",
+                    let recipientUser = {};
+                    let senderUser = {};
+
+                    if (!mail.draft && mail.recipient) {
+                        const recipientRes = await fetch(
+                            `/api/users/${mail.recipient}`,
+                            {
+                                credentials: "include",
+                            }
+                        );
+                        if (
+                            recipientRes.status === 401 ||
+                            recipientRes.status === 403
+                        ) {
+                            setSignedin(false);
+                            return;
                         }
-                    );
-                    if (response.status === 401 || response.status === 403) {
-                        setSignedin(false);
-                        return;
+                        recipientUser = recipientRes.ok
+                            ? await recipientRes.json()
+                            : {};
                     }
-                    const recipientUser = userResponse.ok
-                        ? await userResponse.json()
-                        : {};
+
+                    if (!mail.draft && mail.sender) {
+                        const senderRes = await fetch(
+                            `/api/users/${mail.sender}`,
+                            {
+                                credentials: "include",
+                            }
+                        );
+                        if (
+                            senderRes.status === 401 ||
+                            senderRes.status === 403
+                        ) {
+                            setSignedin(false);
+                            return;
+                        }
+                        senderUser = senderRes.ok ? await senderRes.json() : {};
+                    }
+
                     return {
                         ...mail,
-                        recipientName: recipientUser.fullname || mail.recipient,
+                        recipientName:
+                            recipientUser.fullname || mail.recipient || "",
                         recipientEmail: recipientUser.email || "",
-                        recipientPicture: recipientUser.picture || null,
+                        recipientPicture:
+                            recipientUser.picture || defaultPicture,
+                        senderName: senderUser.fullname || mail.sender || "",
+                        senderEmail: senderUser.email || "",
+                        senderPicture: senderUser.picture || defaultPicture,
                     };
                 })
             );

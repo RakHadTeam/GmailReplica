@@ -33,13 +33,14 @@ export default function TopBarButtons() {
                     <span className="fw-semibold">{currentUser.fullname}</span>
                     {currentUser.picture && (
                         <img
-                            src={`./uploads/${currentUser.picture}`}
+                            src={currentUser.picture}
                             alt="Profile"
                             style={{
                                 width: "40px",
                                 height: "40px",
                                 borderRadius: "50%",
                                 objectFit: "cover",
+                                backgroundColor: "white",
                             }}
                         />
                     )}

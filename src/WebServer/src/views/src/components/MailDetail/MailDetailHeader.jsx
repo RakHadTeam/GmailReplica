@@ -9,11 +9,7 @@ export default function MailDetailHeader({ mail }) {
 
     return (
         <div
-            className={`card-header d-flex justify-content-between align-items-center ${
-                darkTheme
-                    ? "bg-dark text-white border-secondary"
-                    : "bg-white text-dark border-bottom"
-            }`}
+            className={`card-header d-flex justify-content-between align-items-center`}
             style={{
                 marginLeft: "4.5rem",
             }}
