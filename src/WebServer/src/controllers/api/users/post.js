@@ -1,6 +1,6 @@
 import multer from "multer";
 import path from "path";
-import { createUser } from "../../../models/user.model.js";
+import { createUser } from "../../../services/user.service.js";
 
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
@@ -14,7 +14,7 @@ const storage = multer.diskStorage({
 
 export const upload = multer({ storage });
 
-export function postUsers(req, res) {
+export async function postUsers(req, res) {
     const { email, password, fullname } = req.body;
 
     // Validate input
