@@ -1,4 +1,4 @@
-import { getUserById } from "../../../models/user.model.js";
+import { getUserById } from "../../../services/user.service.js";
 
 export function getUserByIdHandler(req, res) {
     const { id } = req.params;
