@@ -1,8 +1,4 @@
-import { useTheme } from "../../context/ThemeContext.js";
-
 export default function MailBodyContent({ mail }) {
-    const { darkTheme } = useTheme();
-
     return (
         <div
             className={`pt-3`}

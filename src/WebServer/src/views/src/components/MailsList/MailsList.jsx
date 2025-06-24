@@ -47,7 +47,7 @@ export default function MailList({ searchQuery, openMail, setOpenMail }) {
         if (openMail && !mails.find((m) => m.id === openMail.id)) {
             setOpenMail(null);
         }
-    }, [mails, openMail]);
+    }, [mails, openMail, setOpenMail]);
 
     const handleRightClick = (e, mailId) => {
         e.preventDefault();

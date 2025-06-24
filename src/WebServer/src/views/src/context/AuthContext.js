@@ -1,11 +1,10 @@
 import { createContext, useContext, useEffect, useState } from "react";
+import defaultPicture from "../resources/default-profile-picture.svg";
 
 const AuthContext = createContext();
 
 export function AuthProvider({ children }) {
     const [signedin, setSignedin] = useState(false);
-    const [fullName, setFullName] = useState("");
-    const [profileImage, setProfileImage] = useState(null);
     const [currentUser, setCurrentUser] = useState(null);
 
     useEffect(() => {
@@ -27,8 +26,10 @@ export function AuthProvider({ children }) {
                     if (!userRes.ok)
                         throw new Error("Failed to fetch user data");
                     const userData = await userRes.json();
+
+                    userData.picture = userData.picture ?? defaultPicture;
+
                     setCurrentUser(userData);
-                    setFullName(userData.fullname);
                 }
             } catch (error) {
                 console.error("Error checking login status:", error);
@@ -42,10 +43,6 @@ export function AuthProvider({ children }) {
             value={{
                 signedin,
                 setSignedin,
-                fullName,
-                setFullName,
-                profileImage,
-                setProfileImage,
                 currentUser,
                 setCurrentUser,
             }}
@@ -53,7 +50,7 @@ export function AuthProvider({ children }) {
             {children}
         </AuthContext.Provider>
     );
-};
+}
 
 export function useAuth() {
     const context = useContext(AuthContext);

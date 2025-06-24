@@ -15,7 +15,7 @@ const storage = multer.diskStorage({
 export const upload = multer({ storage });
 
 export function postUsers(req, res) {
-    const { email, password, fullname, darkTheme } = req.body;
+    const { email, password, fullname } = req.body;
 
     // Validate input
     if (!email || !password || !fullname) {
@@ -23,13 +23,11 @@ export function postUsers(req, res) {
             .status(400)
             .json({ error: "Email, password and full name are required" });
     }
-    console.log("Creating user: ", email, fullname, password);
     let newUser = {
         email,
         password,
         fullname,
-        darkTheme: darkTheme ?? false,
-        picture: req.file ? req.file.filename : null,
+        picture: req.file ? `/uploads/${req.file.filename}` : null,
         createdAt: new Date().toISOString(),
         mails: [],
         labels: [
@@ -47,19 +45,21 @@ export function postUsers(req, res) {
                 name: "Spam",
                 id: "Spam",
                 mails: [],
-            }
-            ,
+            },
             {
                 name: "Sent",
                 id: "Sent",
                 mails: [],
-            }
+            },
         ],
     };
 
-    console.log("New user object: ", newUser);
-
-    const { status } = createUser(newUser);
-
-    res.status(status).send();
+    const { status, error } = createUser(newUser);
+    if (status === 201) {
+        return res.status(201).json({ message: "User created successfully" });
+    } else {
+        return res
+            .status(status)
+            .json({ error: error || "User creation failed" });
+    }
 }

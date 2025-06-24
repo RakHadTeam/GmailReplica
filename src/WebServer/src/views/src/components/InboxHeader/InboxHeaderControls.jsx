@@ -1,6 +1,5 @@
-import {useTheme} from "../../context/ThemeContext";
 import { useMailApp } from "../../context/MailAppContext";
-import ArchiveButton from "./Buttons/ArchiveButton";
+import { useTheme } from "../../context/ThemeContext";
 import BackButton from "./Buttons/BackButton";
 import DeleteButton from "./Buttons/DeleteButton";
 import LabelButton from "./Buttons/LabelButton";
@@ -8,11 +7,16 @@ import RefreshButton from "./Buttons/RefreshButton";
 import SelectAllButton from "./Buttons/SelectAllButton.jsx";
 import SpamButton from "./Buttons/SpamButton";
 import StarToggleButton from "./Buttons/StarToggleButton";
+import UnBinButton from "./Buttons/UnBinButton.jsx";
 
-export default function InboxHeaderControls({ openMail, closeMail, toggleLabelPopup }) {
+export default function InboxHeaderControls({
+    openMail,
+    closeMail,
+    toggleLabelPopup,
+}) {
     const { darkTheme } = useTheme();
     const {
-        uiState: { selectedIds },
+        uiState: { selectedIds, activeLabel },
     } = useMailApp();
 
     return (
@@ -38,10 +42,10 @@ export default function InboxHeaderControls({ openMail, closeMail, toggleLabelPo
                 {(selectedIds.length > 0 || openMail) && (
                     <>
                         <SpamButton />
-                        <ArchiveButton />
                         <StarToggleButton />
                         <LabelButton onClick={toggleLabelPopup} />
                         <DeleteButton />
+                        {activeLabel === "Bin" && <UnBinButton />}
                     </>
                 )}
             </div>

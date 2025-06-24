@@ -1,4 +1,5 @@
 import { useMemo, useState } from "react";
+import { useAuth } from "../../context/AuthContext.js";
 import { useMailApp } from "../../context/MailAppContext.js";
 import { useTheme } from "../../context/ThemeContext";
 import { useStarActions } from "../../hooks/useStarActions.js";
@@ -13,15 +14,17 @@ export default function MailListRow({
     const { darkTheme } = useTheme();
     const {
         labelState: { labels },
+        uiState: { activeLabel },
     } = useMailApp();
     const starLabel = labels.find((label) => label.id === "Starred");
     const [starred, setStarred] = useState();
+    const { currentUser } = useAuth();
 
     useMemo(() => {
         if (starLabel) {
             setStarred(starLabel.mails.includes(mail.id));
         }
-    }, [starLabel]);
+    }, [starLabel, mail.id]);
 
     const { toggleStar } = useStarActions();
 
@@ -47,7 +50,7 @@ export default function MailListRow({
                 {isSelected ? "check_box" : "check_box_outline_blank"}
             </span>
 
-            {mail.label === "Bin" ? (
+            {activeLabel === "Bin" ? (
                 <span
                     className="material-symbols-rounded me-3"
                     style={{
@@ -87,7 +90,24 @@ export default function MailListRow({
                     className="text-truncate me-2"
                     style={{ width: 200, flexShrink: 0 }}
                 >
-                    {mail.recipientName}
+                    {activeLabel === "Sent" ? (
+                        <>
+                            To:{" "}
+                            {mail.recipient === currentUser.id
+                                ? "me"
+                                : mail.recipientName ||
+                                  mail.recipient ||
+                                  "(no recipient)"}
+                        </>
+                    ) : (
+                        <>
+                            {mail.sender === currentUser.id
+                                ? "me"
+                                : mail.senderName ||
+                                  mail.sender ||
+                                  "(no sender)"}
+                        </>
+                    )}
                 </div>
             )}
 

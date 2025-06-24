@@ -41,6 +41,15 @@ export function Signin() {
             }`}
             style={{ minHeight: "100vh", width: "100vw" }}
         >
+            <Link
+                to="/home"
+                className={`position-absolute top-0 start-0 m-3 btn d-flex align-items-center ${
+                    darkTheme ? "btn-primary" : "btn-outline-primary"
+                }`}
+            >
+                <span className="material-symbols-rounded">arrow_back</span>
+                Home
+            </Link>
             <div
                 className={`card shadow rounded-4 px-4 py-5 ${
                     darkTheme ? "bg-dark text-white" : "bg-white text-dark"

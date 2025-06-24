@@ -1,12 +1,19 @@
 import { useState } from "react";
+import LabelManager from "../LabelManager/LabelManager.jsx";
 import LabelPopup from "../LabelPopup/LabelPopup";
 
 export default function ContextMenuLabel() {
     const [showLabelPopupMenu, setShowLabelPopupMenu] = useState(false);
+    const [showLabelManager, setShowLabelManager] = useState(false);
 
     const toggleLabelPopup = () => {
         setShowLabelPopupMenu((prev) => !prev);
-    }
+    };
+
+    const toggleLabelManager = () => {
+        setShowLabelManager((prev) => !prev);
+        setShowLabelPopupMenu(false);
+    };
 
     return (
         <div
@@ -25,10 +32,12 @@ export default function ContextMenuLabel() {
                 >
                     <LabelPopup
                         onClose={toggleLabelPopup}
+                        onManageClick={toggleLabelManager}
                         position={{ x: 0, y: 0 }}
                     />
                 </div>
             )}
+            {showLabelManager && <LabelManager onClose={toggleLabelManager} />}
         </div>
     );
 }

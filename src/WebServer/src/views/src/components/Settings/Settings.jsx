@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext.js";
 import { useTheme } from "../../context/ThemeContext.js";
@@ -9,18 +10,16 @@ import SettingsHeader from "./SettingsHeader";
 import SettingsUserCard from "./SettingsUserCard";
 
 export default function Settings({ onClose }) {
-    const {
-        fullName,
-        setFullName,
-        profileImage,
-        setProfileImage,
-        currentUser,
-        setSignedin,
-    } = useAuth();
+    const { currentUser, setSignedin, setCurrentUser } = useAuth();
     const { darkTheme } = useTheme();
     const { fetchMails } = useMailActions();
     const { fetchLabels } = useLabelActions();
     const navigate = useNavigate();
+
+    const [fullName, setFullName] = useState(
+        currentUser ? currentUser.fullname : ""
+    );
+    const [profileImage, setProfileImage] = useState(null);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -41,6 +40,13 @@ export default function Settings({ onClose }) {
                 alert("Settings updated successfully!");
                 fetchMails();
                 fetchLabels();
+                const userRes = await fetch(`/api/users/${currentUser.id}`, {
+                    method: "GET",
+                    credentials: "include",
+                });
+                if (!userRes.ok) throw new Error("Failed to fetch user data");
+                const userData = await userRes.json();
+                setCurrentUser(userData);
                 onClose();
             } else {
                 alert("Failed to update settings.");
@@ -61,7 +67,7 @@ export default function Settings({ onClose }) {
             if (res.ok) {
                 onClose();
                 setSignedin(false);
-                navigate("/signin");
+                navigate("/home");
             } else {
                 alert("Logout failed.");
             }
@@ -94,7 +100,9 @@ export default function Settings({ onClose }) {
                 <div className="d-grid">
                     <button
                         type="button"
-                        className="btn btn-outline-danger w-100 d-flex align-items-center justify-content-center"
+                        className={`btn  w-100 d-flex align-items-center justify-content-center ${
+                            darkTheme ? "btn-danger" : "btn-outline-danger"
+                        }`}
                         onClick={handleLogout}
                     >
                         <span

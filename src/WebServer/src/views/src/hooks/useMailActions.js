@@ -1,5 +1,6 @@
 import { useAuth } from "../context/AuthContext.js";
 import { useMailApp } from "../context/MailAppContext";
+import defaultPicture from "../resources/default-profile-picture.svg";
 import { useLabelActions } from "./useLabelActions";
 
 export function useMailActions() {
@@ -28,32 +29,55 @@ export function useMailActions() {
 
             const enriched = await Promise.all(
                 rawMails.map(async (mail) => {
-                    if (mail.draft && !mail.recipient) {
-                        return {
-                            ...mail,
-                            recipientName: "",
-                            recipientEmail: "",
-                            recipientPicture: null,
-                        };
-                    }
-                    const userResponse = await fetch(
-                        `/api/users/${mail.recipient}`,
-                        {
-                            credentials: "include",
+                    let recipientUser = {};
+                    let senderUser = {};
+
+                    if (!mail.draft && mail.recipient) {
+                        const recipientRes = await fetch(
+                            `/api/users/${mail.recipient}`,
+                            {
+                                credentials: "include",
+                            }
+                        );
+                        if (
+                            recipientRes.status === 401 ||
+                            recipientRes.status === 403
+                        ) {
+                            setSignedin(false);
+                            return;
                         }
-                    );
-                    if (response.status === 401 || response.status === 403) {
-                        setSignedin(false);
-                        return;
+                        recipientUser = recipientRes.ok
+                            ? await recipientRes.json()
+                            : {};
                     }
-                    const recipientUser = userResponse.ok
-                        ? await userResponse.json()
-                        : {};
+
+                    if (!mail.draft && mail.sender) {
+                        const senderRes = await fetch(
+                            `/api/users/${mail.sender}`,
+                            {
+                                credentials: "include",
+                            }
+                        );
+                        if (
+                            senderRes.status === 401 ||
+                            senderRes.status === 403
+                        ) {
+                            setSignedin(false);
+                            return;
+                        }
+                        senderUser = senderRes.ok ? await senderRes.json() : {};
+                    }
+
                     return {
                         ...mail,
-                        recipientName: recipientUser.fullname || mail.recipient,
+                        recipientName:
+                            recipientUser.fullname || mail.recipient || "",
                         recipientEmail: recipientUser.email || "",
-                        recipientPicture: recipientUser.picture || null,
+                        recipientPicture:
+                            recipientUser.picture || defaultPicture,
+                        senderName: senderUser.fullname || mail.sender || "",
+                        senderEmail: senderUser.email || "",
+                        senderPicture: senderUser.picture || defaultPicture,
                     };
                 })
             );
@@ -138,6 +162,14 @@ export function useMailActions() {
             onError?.("Recipient is required.");
             return;
         }
+        if (!isDraft && !subject) {
+            onError?.("Subject is required.");
+            return;
+        }
+        if (!isDraft && !body) {
+            onError?.("Body is required.");
+            return;
+        }
 
         const payload = { recipient, subject, body, draft: isDraft };
         const url = draftMail ? `/api/mails/${draftMail.id}` : "/api/mails";
@@ -155,9 +187,13 @@ export function useMailActions() {
                 return;
             }
 
+            const err = await response.json().catch(() => ({}));
             if (response.status === 400) {
-                const err = await response.json().catch(() => ({}));
                 throw new Error(err.error || "Save failed");
+            }
+
+            if (response.status !== 201 && response.status !== 204) {
+                throw new Error(err.error || "An error occurred");
             }
 
             onSuccess?.();

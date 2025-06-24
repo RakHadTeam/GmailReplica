@@ -4,16 +4,12 @@ import { useTheme } from "../../context/ThemeContext";
 export default function MailDetailHeader({ mail }) {
     const { darkTheme } = useTheme();
     const {
-            labelState: { labels },
-        } = useMailApp();
+        labelState: { labels },
+    } = useMailApp();
 
     return (
         <div
-            className={`card-header d-flex justify-content-between align-items-center ${
-                darkTheme
-                    ? "bg-dark text-white border-secondary"
-                    : "bg-white text-dark border-bottom"
-            }`}
+            className={`card-header d-flex justify-content-between align-items-center`}
             style={{
                 marginLeft: "4.5rem",
             }}
@@ -41,6 +37,7 @@ export default function MailDetailHeader({ mail }) {
                             </span>
                         );
                     }
+                    return null;
                 })}
             </div>
         </div>

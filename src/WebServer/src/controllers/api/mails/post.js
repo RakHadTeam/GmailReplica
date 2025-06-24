@@ -18,8 +18,6 @@ export async function postMail(req, res) {
         
     };
 
-    console.log("Creating mail with data:", mailData);
-
     const { status, error, id } = await createMail(userId, mailData);
 
     if (error) {

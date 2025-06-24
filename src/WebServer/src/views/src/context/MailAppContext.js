@@ -9,7 +9,9 @@ export function MailAppProvider({ children }) {
     const [activeLabel, setActiveLabel] = useState("All");
 
     useMemo(() => {
-        setSelectedIds([]);
+        if (activeLabel) {
+            setSelectedIds([]);
+        }
     }, [activeLabel]);
 
     const filteredMails = useMemo(() => {
@@ -35,8 +37,26 @@ export function MailAppProvider({ children }) {
         };
 
         return mails.filter((mail) => {
-            if (["Bin", "Spam", "Starred", "Sent"].includes(activeLabel)) {
-                return labelMailMap[activeLabel]?.includes(mail.id);
+            if (activeLabel === "Bin") {
+                return labelMailMap.Bin?.includes(mail.id);
+            }
+            if (activeLabel === "Sent") {
+                return (
+                    labelMailMap.Sent?.includes(mail.id) &&
+                    !labelMailMap.Bin?.includes(mail.id)
+                );
+            }
+            if (activeLabel === "Spam") {
+                return (
+                    labelMailMap.Spam.includes(mail.id) &&
+                    !labelMailMap.Bin?.includes(mail.id)
+                );
+            }
+            if (activeLabel === "Starred") {
+                return (
+                    labelMailMap.Starred.includes(mail.id) &&
+                    !labelMailMap.Bin?.includes(mail.id)
+                );
             }
             if (activeLabel === "Drafts") {
                 return mail.draft && !labelMailMap.Bin?.includes(mail.id);

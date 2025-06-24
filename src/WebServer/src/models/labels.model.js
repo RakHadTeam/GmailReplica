@@ -14,6 +14,10 @@ export function createLabel(userId, data) {
     if (!user) {
         return { status: 401, error: "Unauthorized" };
     }
+    const existingLabel = user.labels.find(label => label.name === data.name);
+    if (existingLabel) {
+        return { status: 400, error: "Label already exists" };
+    }
     const id = crypto.randomUUID();
     const newLabel = { id, ...data };
     user.labels.push(newLabel);

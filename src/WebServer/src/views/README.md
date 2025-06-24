@@ -11,7 +11,7 @@ This is the frontend React application for **RakMail**, a feature-rich mail clie
 Make sure Docker is installed. Then run:
 
 ```bash
-docker compose up --build webserver server
+docker compose up --build webserver blacklist_server
 ```
 
 This command does two things:

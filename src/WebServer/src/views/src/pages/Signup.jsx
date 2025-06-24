@@ -9,6 +9,7 @@ export function Signup() {
     const [picture, setPicture] = useState(null);
     const [password, setPassword] = useState("");
     const [passwordError, setPasswordError] = useState("");
+    const [formError, setFormError] = useState("");
 
     const { darkTheme } = useTheme();
 
@@ -17,14 +18,14 @@ export function Signup() {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        // if (!/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/.test(password)) {
-        //     setPasswordError(
-        //         "Password must be at least 8 characters long and include both letters and numbers."
-        //     );
-        //     return;
-        // } else {
-        //     setPasswordError("");
-        // }
+        if (!/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/.test(password)) {
+            setPasswordError(
+                "Password must be at least 8 characters long and include both letters and numbers."
+            );
+            return;
+        } else {
+            setPasswordError("");
+        }
 
         const fullname = `${firstname} ${surname}`.trim();
 
@@ -37,21 +38,25 @@ export function Signup() {
             formData.append("picture", picture);
         }
 
-        fetch("/api/users", {
+        const response = await fetch("/api/users", {
             method: "POST",
             body: formData,
             credentials: "include",
-        })
-            .then((response) => {
-                if (response.ok) {
-                    navigation("/signin");
-                } else {
-                    console.error("Signup failed");
-                }
-            })
-            .catch((error) => {
-                console.error("Error during signup:", error);
-            });
+        });
+        if (response.ok) {
+            navigation("/signin");
+        } else {
+            const errorData = await response.json();
+            if (errorData.error) {
+                setPasswordError("");
+                setFormError(
+                    errorData.error || "An error occurred. Please try again."
+                );
+            } else {
+                setPasswordError("");
+                setFormError("An error occurred. Please try again.");
+            }
+        }
     };
 
     return (
@@ -60,6 +65,15 @@ export function Signup() {
                 darkTheme ? "bg-black text-white" : "bg-light text-dark"
             }`}
         >
+            <Link
+                to="/home"
+                className={`position-absolute top-0 start-0 m-3 btn d-flex align-items-center ${
+                    darkTheme ? "btn-primary" : "btn-outline-primary"
+                }`}
+            >
+                <span className="material-symbols-rounded">arrow_back</span>
+                Home
+            </Link>
             <div className="container d-flex justify-content-center align-items-center">
                 <div
                     className={`card p-4 rounded-4 shadow ${
@@ -73,6 +87,11 @@ export function Signup() {
                         Create a RakMail Account
                     </h2>
                     <form onSubmit={handleSubmit}>
+                        {formError && (
+                            <div className="alert alert-danger py-2 text-center">
+                                {formError}
+                            </div>
+                        )}
                         <div className="form-group mb-3">
                             <label htmlFor="firstname" className="form-label">
                                 First Name

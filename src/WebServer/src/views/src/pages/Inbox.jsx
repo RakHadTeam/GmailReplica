@@ -14,7 +14,7 @@ export function Inbox() {
     const { fetchMails } = useMailActions();
     const { fetchLabels } = useLabelActions();
     const {
-        uiState: { setSelectedIds },
+        uiState: { selectedIds, setSelectedIds },
     } = useMailApp();
     const { darkTheme } = useTheme();
 
@@ -24,7 +24,10 @@ export function Inbox() {
 
     useMemo(() => {
         setSelectedIds(openMail ? [openMail.id] : []);
-    }, [openMail]);
+    }, [openMail, setSelectedIds]);
+    useMemo(() => {
+        if (selectedIds.length === 0) setOpenMail(null);
+    }, [selectedIds]);
 
     const toggleLabelManager = () => {
         setLabelManagerOpen((prev) => !prev);
@@ -98,9 +101,7 @@ export function Inbox() {
                         )}
 
                         {labelManagerOpen && (
-                            <LabelManager
-                                onClose={toggleLabelManager}
-                            />
+                            <LabelManager onClose={toggleLabelManager} />
                         )}
                     </div>
                 </div>

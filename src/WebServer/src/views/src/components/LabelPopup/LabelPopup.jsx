@@ -49,7 +49,7 @@ export default function LabelPopup({ onClose, position, onManageClick }) {
             setNewLabel("");
             setShowCreatePrompt(false);
         } catch (err) {
-            setError("Could not create label");
+            setError(err.message || "Failed to create label");
         }
     };
 

@@ -47,3 +47,7 @@ export function addURLToBlacklist(url) {
 export function deleteURLFromBlacklist(id) {
     return sendBlacklistCommand(`DELETE ${id}`);
 }
+
+export function isURLBlacklisted(url) {
+    return sendBlacklistCommand(`GET ${url}`);
+}
