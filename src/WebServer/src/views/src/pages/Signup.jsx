@@ -65,6 +65,15 @@ export function Signup() {
                 darkTheme ? "bg-black text-white" : "bg-light text-dark"
             }`}
         >
+            <Link
+                to="/home"
+                className={`position-absolute top-0 start-0 m-3 btn d-flex align-items-center ${
+                    darkTheme ? "btn-primary" : "btn-outline-primary"
+                }`}
+            >
+                <span className="material-symbols-rounded">arrow_back</span>
+                Home
+            </Link>
             <div className="container d-flex justify-content-center align-items-center">
                 <div
                     className={`card p-4 rounded-4 shadow ${

@@ -11,7 +11,12 @@ export default function Home() {
             }`}
         >
             <header className="d-flex justify-content-start align-items-center p-3">
-                <Link to="/signin" className="btn btn-outline-primary d-flex align-items-center gap-1">
+                <Link
+                    to="/signin"
+                    className={`btn d-flex align-items-center gap-1 ${
+                        darkTheme ? "btn-primary" : "btn-outline-primary"
+                    }`}
+                >
                     <span className="material-symbols-rounded">login</span>
                     Sign In
                 </Link>

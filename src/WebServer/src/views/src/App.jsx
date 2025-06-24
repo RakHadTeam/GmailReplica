@@ -21,9 +21,10 @@ function App() {
 
     return (
         <>
-            {!signedin && location.pathname === "/inbox" && (
-                <NotSignedInAlert />
-            )}
+            {!signedin &&
+                location.pathname !== "/signup" &&
+                location.pathname !== "/signin" &&
+                location.pathname !== "/home" && <NotSignedInAlert />}
             <TopBarButtons />
             <Routes>
                 <Route path="/signin" element={<Signin />} />

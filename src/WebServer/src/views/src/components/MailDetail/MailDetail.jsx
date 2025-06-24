@@ -13,7 +13,7 @@ export default function MailDetail({ mail }) {
 
     useEffect(() => {
         setSelectedIds(mail ? [mail.id] : []);
-    }, [mail]);
+    }, [mail, setSelectedIds]);
 
     if (!mail) return null;
 
