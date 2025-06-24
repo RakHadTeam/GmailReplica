@@ -87,27 +87,25 @@ export function useLabelActions() {
     };
 
     const createLabel = async (labelName) => {
-        try {
-            const response = await fetch("/api/labels", {
-                method: "POST",
-                credentials: "include",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ name: labelName }),
-            });
-            if (response.status === 401 || response.status === 403) {
-                setSignedin(false);
-                return;
-            }
-            if (response.status === 400)
-                throw new Error("Failed to create label");
-            const newLabel = await response.json();
-            setLabels((prev) => [
-                ...prev,
-                { ...newLabel, name: labelName, mails: [] },
-            ]);
-        } catch (err) {
-            console.error(err);
+        const response = await fetch("/api/labels", {
+            method: "POST",
+            credentials: "include",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ name: labelName }),
+        });
+        if (response.status === 401 || response.status === 403) {
+            setSignedin(false);
+            return;
         }
+        if (response.status !== 201) {
+            const data = await response.json();
+            throw new Error(data.error || "Failed to create label");
+        }
+        const newLabel = await response.json();
+        setLabels((prev) => [
+            ...prev,
+            { ...newLabel, name: labelName, mails: [] },
+        ]);
     };
 
     const deleteLabel = async (labelId) => {
