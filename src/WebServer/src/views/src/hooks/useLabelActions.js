@@ -38,7 +38,6 @@ export function useLabelActions() {
     };
 
     const toggleLabel = async (labelId, mailId, apply) => {
-        console.log(apply);
         const label = getLabel(labelId);
         if (!label) return;
         const applied = label.mails?.includes(mailId);

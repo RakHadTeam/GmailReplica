@@ -23,7 +23,6 @@ export function postUsers(req, res) {
             .status(400)
             .json({ error: "Email, password and full name are required" });
     }
-    console.log("Creating user: ", email, fullname, password);
     let newUser = {
         email,
         password,
@@ -55,8 +54,6 @@ export function postUsers(req, res) {
             },
         ],
     };
-
-    console.log("New user object: ", newUser);
 
     const { status, error } = createUser(newUser);
     if (status === 201) {
