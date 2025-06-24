@@ -16,7 +16,7 @@ export default function ComposeHeader({ draftMail, onClose }) {
                     }`}
                     onClick={onClose}
                 >
-                    {draftMail ? "Save Draft" : "Discard"}
+                    {draftMail ? "Save Draft" : "Save as Draft"}
                 </button>
             </div>
         </div>
