@@ -30,7 +30,8 @@ export async function getUserByEmail(email) {
  * @returns {Promise<{status: number, id?: string, message?: string, error?: string}>}
  */
 export async function createUser(data) {
-    if (await getUserByEmail(data.email)) {
+    const existingUser = await getUserByEmail(data.email);
+    if (existingUser.status === 200) {
         return { status: 400, error: "Email already exists" };
     }
 
@@ -48,7 +49,12 @@ export async function createUser(data) {
 export async function updateUserById(id, fieldsToUpdate) {
     const user = await getUserById(id);
     if (!user) return false;
-    Object.assign(user, fieldsToUpdate);
+    if (fieldsToUpdate.fullname) {
+        user.fullname = fieldsToUpdate.fullname;
+    }
+    if (fieldsToUpdate.picture) {
+        user.picture = fieldsToUpdate.picture;
+    }
     await user.save();
     return true;
 }

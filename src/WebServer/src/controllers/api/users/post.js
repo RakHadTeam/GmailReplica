@@ -29,29 +29,6 @@ export async function postUsers(req, res) {
         fullname,
         picture: req.file ? `/uploads/${req.file.filename}` : null,
         createdAt: new Date().toISOString(),
-        mails: [],
-        labels: [
-            {
-                name: "Starred",
-                id: "Starred",
-                mails: [],
-            },
-            {
-                name: "Bin",
-                id: "Bin",
-                mails: [],
-            },
-            {
-                name: "Spam",
-                id: "Spam",
-                mails: [],
-            },
-            {
-                name: "Sent",
-                id: "Sent",
-                mails: [],
-            },
-        ],
     };
 
     console.log("Creating user:", newUser);
