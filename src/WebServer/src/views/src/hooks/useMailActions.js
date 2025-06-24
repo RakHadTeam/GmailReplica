@@ -1,7 +1,7 @@
 import { useAuth } from "../context/AuthContext.js";
 import { useMailApp } from "../context/MailAppContext";
-import { useLabelActions } from "./useLabelActions";
 import defaultPicture from "../resources/default-profile-picture.svg";
+import { useLabelActions } from "./useLabelActions";
 
 export function useMailActions() {
     const {
@@ -162,6 +162,14 @@ export function useMailActions() {
             onError?.("Recipient is required.");
             return;
         }
+        if (!isDraft && !subject) {
+            onError?.("Subject is required.");
+            return;
+        }
+        if (!isDraft && !body) {
+            onError?.("Body is required.");
+            return;
+        }
 
         const payload = { recipient, subject, body, draft: isDraft };
         const url = draftMail ? `/api/mails/${draftMail.id}` : "/api/mails";
@@ -179,9 +187,13 @@ export function useMailActions() {
                 return;
             }
 
+            const err = await response.json().catch(() => ({}));
             if (response.status === 400) {
-                const err = await response.json().catch(() => ({}));
                 throw new Error(err.error || "Save failed");
+            }
+
+            if (response.status !== 201 && response.status !== 204) {
+                throw new Error(err.error || "An error occurred");
             }
 
             onSuccess?.();

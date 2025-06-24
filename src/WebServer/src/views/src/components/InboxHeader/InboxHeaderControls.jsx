@@ -1,6 +1,5 @@
 import { useMailApp } from "../../context/MailAppContext";
 import { useTheme } from "../../context/ThemeContext";
-import { useLabelActions } from "../../hooks/useLabelActions.js";
 import BackButton from "./Buttons/BackButton";
 import DeleteButton from "./Buttons/DeleteButton";
 import LabelButton from "./Buttons/LabelButton";
@@ -19,9 +18,6 @@ export default function InboxHeaderControls({
     const {
         uiState: { selectedIds, activeLabel },
     } = useMailApp();
-    const { getLabel } = useLabelActions();
-
-    const binLabel = getLabel("Bin");
 
     return (
         <div

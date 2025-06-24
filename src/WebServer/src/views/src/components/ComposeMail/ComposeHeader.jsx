@@ -8,15 +8,17 @@ export default function ComposeHeader({ draftMail, onClose }) {
             <div className="fw-semibold">
                 {draftMail ? "Edit Draft" : "New Message"}
             </div>
-            <button className="btn btn-sm btn-icon" onClick={onClose}>
-                <span
-                    className={`material-symbols-rounded ${
-                        darkTheme ? "text-white" : ""
+            
+            <div className="d-flex">
+                <button
+                    className={`btn btn-sm ${
+                        darkTheme ? "btn-light" : "btn-outline-secondary"
                     }`}
+                    onClick={onClose}
                 >
-                    close
-                </span>
-            </button>
+                    {draftMail ? "Save Draft" : "Discard"}
+                </button>
+            </div>
         </div>
     );
 }

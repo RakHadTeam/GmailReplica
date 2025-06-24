@@ -6,7 +6,7 @@ This REST API is part of the APProject WebServer and provides endpoints for user
 To run the web server, you can use our docker-compose setup. Make sure you have Docker installed and then run the following command:
 
 ```bash
-docker compose up --build webserver server
+docker compose up --build webserver blacklist_server
 ```
 
 This will start the web server on port `3000` by default.
@@ -16,7 +16,7 @@ And will start the blacklist server on port `4545`, and with configuration `1000
 This file contains essential environment variables such as `PORT` and JWT configurations.
 If it's missing, the server may fall back to defaults or fail to start properly.
 
-### .env File Template
+### .env File Template (Included in the project)
 
 Create a `.env` file in the root directory with the following contents:
 

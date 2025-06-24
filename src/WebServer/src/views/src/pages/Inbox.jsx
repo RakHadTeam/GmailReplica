@@ -24,7 +24,7 @@ export function Inbox() {
 
     useMemo(() => {
         setSelectedIds(openMail ? [openMail.id] : []);
-    }, [openMail]);
+    }, [openMail, setSelectedIds]);
     useMemo(() => {
         if (selectedIds.length === 0) setOpenMail(null);
     }, [selectedIds]);

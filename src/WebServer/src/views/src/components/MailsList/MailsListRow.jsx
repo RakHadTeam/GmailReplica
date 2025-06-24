@@ -1,4 +1,5 @@
 import { useMemo, useState } from "react";
+import { useAuth } from "../../context/AuthContext.js";
 import { useMailApp } from "../../context/MailAppContext.js";
 import { useTheme } from "../../context/ThemeContext";
 import { useStarActions } from "../../hooks/useStarActions.js";
@@ -17,12 +18,13 @@ export default function MailListRow({
     } = useMailApp();
     const starLabel = labels.find((label) => label.id === "Starred");
     const [starred, setStarred] = useState();
+    const { currentUser } = useAuth();
 
     useMemo(() => {
         if (starLabel) {
             setStarred(starLabel.mails.includes(mail.id));
         }
-    }, [starLabel]);
+    }, [starLabel, mail.id]);
 
     const { toggleStar } = useStarActions();
 
@@ -90,12 +92,21 @@ export default function MailListRow({
                 >
                     {activeLabel === "Sent" ? (
                         <>
-                            To: {mail.recipientName ||
-                                mail.recipient ||
-                                "(no recipient)"}
+                            To:{" "}
+                            {mail.recipient === currentUser.id
+                                ? "me"
+                                : mail.recipientName ||
+                                  mail.recipient ||
+                                  "(no recipient)"}
                         </>
                     ) : (
-                        <>{mail.senderName || mail.sender || "(no sender)"}</>
+                        <>
+                            {mail.sender === currentUser.id
+                                ? "me"
+                                : mail.senderName ||
+                                  mail.sender ||
+                                  "(no sender)"}
+                        </>
                     )}
                 </div>
             )}

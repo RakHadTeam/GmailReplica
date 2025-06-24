@@ -1,5 +1,6 @@
 import globals from "../core/globals.js";
 import { getAllLinksFromBody } from "./mails.model.js";
+import { isURLBlacklisted } from "./blacklist.model.js";
 import { getUserByEmail, getUserById } from "./user.model.js";
 
 export function getMailById(userId, id) {
@@ -82,7 +83,9 @@ export function updateMailById(userId, id, updates) {
         }
 
         const draftIndex = globals.mails.findIndex((m) => m.id === id);
-        recipientUser.mails.push(draftIndex);
+        if (recipientUser.id !== userId) {
+            recipientUser.mails.push(draftIndex);
+        }
 
         if (spammed) {
             const spamLabel = recipientUser.labels.find(label => label.name === "Spam");
@@ -92,7 +95,6 @@ export function updateMailById(userId, id, updates) {
         }
 
         mail.draft = false;
-        mail.label = "Sent";
 
         const sender = getUserById(userId);
         if (sender) {

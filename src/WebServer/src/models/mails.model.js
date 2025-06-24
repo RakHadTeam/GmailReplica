@@ -1,6 +1,6 @@
 import { randomUUID } from "crypto";
 import globals from "../core/globals.js";
-import { sendBlacklistCommand } from "./blacklist.model.js";
+import { isURLBlacklisted } from "./blacklist.model.js";
 import { getUserByEmail, getUserById } from "./user.model.js";
 
 export function getLatestMails(userId) {
@@ -14,10 +14,6 @@ export function getLatestMails(userId) {
             .slice(-50)
             .map((mailIndex) => globals.mails[mailIndex] || null),
     };
-}
-
-function isURLBlacklisted(url) {
-    return sendBlacklistCommand(`GET ${url}`);
 }
 
 export function getAllLinksFromBody(body) {

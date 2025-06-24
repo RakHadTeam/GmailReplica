@@ -31,6 +31,7 @@ function App() {
                 <Route path="/inbox" element={<Inbox />} />
                 <Route path="/signup" element={<Signup />} />
                 <Route path="/home" element={<Home />} />
+                <Route path="/" element={<Home />} />
             </Routes>
         </>
     );

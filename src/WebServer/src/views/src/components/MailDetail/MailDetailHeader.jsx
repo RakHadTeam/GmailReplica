@@ -4,8 +4,8 @@ import { useTheme } from "../../context/ThemeContext";
 export default function MailDetailHeader({ mail }) {
     const { darkTheme } = useTheme();
     const {
-            labelState: { labels },
-        } = useMailApp();
+        labelState: { labels },
+    } = useMailApp();
 
     return (
         <div
@@ -37,6 +37,7 @@ export default function MailDetailHeader({ mail }) {
                             </span>
                         );
                     }
+                    return null;
                 })}
             </div>
         </div>

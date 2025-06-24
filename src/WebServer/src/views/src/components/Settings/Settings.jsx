@@ -100,7 +100,9 @@ export default function Settings({ onClose }) {
                 <div className="d-grid">
                     <button
                         type="button"
-                        className="btn btn-outline-danger w-100 d-flex align-items-center justify-content-center"
+                        className={`btn  w-100 d-flex align-items-center justify-content-center ${
+                            darkTheme ? "btn-danger" : "btn-outline-danger"
+                        }`}
                         onClick={handleLogout}
                     >
                         <span

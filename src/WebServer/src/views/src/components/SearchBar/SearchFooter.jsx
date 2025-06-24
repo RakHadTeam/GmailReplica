@@ -1,7 +1,4 @@
-import { useTheme } from "../../context/ThemeContext";
-
 export default function SearchFooter({ query, onClick }) {
-    const { darkTheme } = useTheme();
     return (
         <div
             className="d-flex align-items-center px-3 py-2 hover-bg"
