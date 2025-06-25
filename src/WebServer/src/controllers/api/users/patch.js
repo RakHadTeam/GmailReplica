@@ -1,8 +1,8 @@
-import { getUserById, updateUserById } from "../../../models/user.model.js";
 import fs from "fs";
 import path from "path";
+import { updateUserById } from "../../../services/user.service.js";
 
-export function patchUserByIdHandler(req, res) {
+export async function patchUserByIdHandler(req, res) {
     const { id } = req.params;
 
     const user = getUserById(id);
@@ -29,7 +29,7 @@ export function patchUserByIdHandler(req, res) {
         updatedFields.picture = `/uploads/${req.file.filename}`;
     }
 
-    updateUserById(id, updatedFields); // implement this in your model
+    await updateUserById(id, updatedFields);
 
     res.status(200).json({ message: "User updated successfully" });
 }
