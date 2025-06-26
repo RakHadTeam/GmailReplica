@@ -54,6 +54,8 @@ export function postUsers(req, res) {
         ],
     };
 
+    console.log("Creating user:", newUser);
+
     const { status, error } = createUser(newUser);
     if (status === 201) {
         return res.status(201).json({ message: "User created successfully" });
