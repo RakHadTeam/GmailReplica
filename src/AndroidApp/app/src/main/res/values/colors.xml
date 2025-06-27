@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Bootstrap-inspired primary colors -->
+    <color name="primary">#0d6efd</color>           <!-- Blue -->
+    <color name="primary_dark">#0a58ca</color>
+    <color name="secondary">#6c757d</color>         <!-- Gray -->
+    <color name="success">#198754</color>           <!-- Green -->
+    <color name="danger">#dc3545</color>            <!-- Red -->
+    <color name="warning">#ffc107</color>           <!-- Yellow -->
+    <color name="info">#0dcaf0</color>              <!-- Cyan -->
+    <color name="light">#f8f9fa</color>             <!-- Light Gray -->
+    <color name="dark">#212529</color>              <!-- Dark Gray -->
+
+    <!-- Material-compatible names mapped to Bootstrap equivalents -->
+    <color name="purple_200">#0dcaf0</color>
+    <color name="purple_500">#0d6efd</color>
+    <color name="purple_700">#0a58ca</color>
+    <color name="teal_200">#198754</color>
+    <color name="teal_700">#146c43</color>
+    <color name="black">#000000</color>
+    <color name="white">#FFFFFF</color>
+</resources>
