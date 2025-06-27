@@ -12,6 +12,7 @@ import androidx.appcompat.widget.Toolbar;
 import com.rakmail.androidapp.App;
 import com.rakmail.androidapp.R;
 import com.rakmail.androidapp.core.preferences.AuthPreferences;
+import com.rakmail.androidapp.features.launcher.ui.LauncherActivity;
 import com.rakmail.androidapp.features.user.ui.signin.SigninActivity;
 
 public class MainActivity extends AppCompatActivity {
@@ -43,7 +44,7 @@ public class MainActivity extends AppCompatActivity {
 
             authPrefs.clearSession();
 
-            Intent intent = new Intent(this, SigninActivity.class);
+            Intent intent = new Intent(this, LauncherActivity.class);
             startActivity(intent);
             finish();
             return true;
