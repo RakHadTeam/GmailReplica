@@ -14,7 +14,6 @@ import retrofit2.http.Part;
 
 public interface UserApi {
 
-    /* ---------- SIGN-UP (קיים מהעבר) ---------- */
     @Multipart
     @POST("/api/users")
     Call<User> signup(
@@ -24,7 +23,6 @@ public interface UserApi {
         @Part MultipartBody.Part picture
     );
 
-    /* ---------- SIGN-IN (חדש) ---------- */
     @POST("/api/tokens")
     Call<TokenResponse> signIn(@Body SignInRequest body);
 }

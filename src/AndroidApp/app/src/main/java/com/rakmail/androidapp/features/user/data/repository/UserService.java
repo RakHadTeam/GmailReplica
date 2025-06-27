@@ -9,7 +9,6 @@ import retrofit2.http.POST;
 
 public interface UserService {
 
-    /* ---------- Sign-In ---------- */
     @POST("/api/tokens")
     Call<TokenResponse> signIn(@Body SignInRequest req);
 }

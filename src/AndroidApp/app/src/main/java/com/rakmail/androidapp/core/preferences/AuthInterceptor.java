@@ -5,7 +5,6 @@ import okhttp3.Interceptor;
 import okhttp3.Request;
 import okhttp3.Response;
 
-/** מוסיף Header  Authorization: Bearer <jwt>  אם אין כבר Cookie. */
 public class AuthInterceptor implements Interceptor {
 
     private final AuthPreferences prefs;
@@ -15,7 +14,6 @@ public class AuthInterceptor implements Interceptor {
     public Response intercept(Chain chain) throws IOException {
         Request original = chain.request();
 
-        // אם יש כבר Cookie נניח שהשרת מעדיף אותו.
         if (original.header("Cookie") == null) {
             String jwt = prefs.getJwt();
             if (jwt != null) {

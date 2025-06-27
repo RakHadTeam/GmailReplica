@@ -3,14 +3,13 @@ package com.rakmail.androidapp.core.preferences;
 import android.content.Context;
 import android.content.SharedPreferences;
 
-/** אחראי על JWT + מצב התחברות (Singleton). */
+
 public class AuthPreferences {
 
     private static final String PREFS_NAME     = "app_prefs";
     private static final String KEY_IS_SIGNED  = "is_signed_in";
     private static final String KEY_ACCESS_JWT = "access_token";
 
-    /** INSTANCE מוחזקת ע"י האפליקציה */
     private static AuthPreferences instance;
 
     public static void init(Context ctx) {
@@ -20,7 +19,6 @@ public class AuthPreferences {
         return instance;
     }
 
-    /* --------- non-static  --------- */
     private final SharedPreferences prefs;
     private AuthPreferences(Context ctx) {
         prefs = ctx.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);

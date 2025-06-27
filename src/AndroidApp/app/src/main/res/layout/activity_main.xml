@@ -32,6 +32,5 @@
             android:layout_marginTop="?attr/actionBarSize" />
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
-    <!-- Add NavigationView or other drawer content here if needed -->
 
 </androidx.drawerlayout.widget.DrawerLayout>

@@ -26,12 +26,7 @@ public class UserRepository {
         api = ApiClient.get().create(UserApi.class);
     }
 
-    /* ===========  SIGN-UP  =========== */
-    public void signup(String fullname,
-                       String email,
-                       String password,
-                       File profileImageFile,
-                       SignupCallback cb) {
+    public void signup(String fullname, String email, String password, File profileImageFile, SignupCallback cb) {
 
         MultipartBody.Part imagePart = null;
         if (profileImageFile != null) {
@@ -46,8 +41,8 @@ public class UserRepository {
             );
         }
 
-        RequestBody fn  = RequestBody.create(MediaType.parse("text/plain"), fullname);
-        RequestBody em  = RequestBody.create(MediaType.parse("text/plain"), email);
+        RequestBody fn = RequestBody.create(MediaType.parse("text/plain"), fullname);
+        RequestBody em = RequestBody.create(MediaType.parse("text/plain"), email);
         RequestBody pwd = RequestBody.create(MediaType.parse("text/plain"), password);
 
         api.signup(fn, em, pwd, imagePart).enqueue(new Callback<>() {
@@ -65,7 +60,6 @@ public class UserRepository {
         });
     }
 
-    /* ===========  SIGN-IN  =========== */
     public void signIn(String email, String password, SignInCallback cb) {
         SignInRequest body = new SignInRequest(email, password);
 
@@ -84,13 +78,12 @@ public class UserRepository {
         });
     }
 
-    /* ===========  CALLBACKS  =========== */
     public interface SignupCallback {
         void onSuccess(User user);
         void onFailure(String msg);
     }
     public interface SignInCallback {
-        void onSuccess(String token /* may be null */);
+        void onSuccess(String token );
         void onFailure(String msg);
     }
 }

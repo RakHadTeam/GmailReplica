@@ -14,7 +14,6 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.AndroidApp">
 
-        <!-- Launcher -->
         <activity
             android:name=".features.launcher.ui.LauncherActivity"
             android:exported="true">
@@ -24,18 +23,15 @@
             </intent-filter>
         </activity>
 
-        <!-- Inbox -->
         <activity
             android:name=".features.inbox.ui.MainActivity"
             android:exported="false"
             android:theme="@style/Theme.AndroidApp.NoActionBar" />
 
-        <!-- Sign-UP (קיים) -->
         <activity
             android:name=".features.user.ui.signup.SignupActivity"
             android:exported="false" />
 
-        <!-- Sign-IN (חדש) -->
         <activity
             android:name=".features.user.ui.signin.SignInActivity"
             android:exported="false" />

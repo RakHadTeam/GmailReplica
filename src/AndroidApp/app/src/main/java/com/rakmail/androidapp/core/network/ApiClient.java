@@ -13,10 +13,9 @@ import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-/** Retrofit singleton */
 public class ApiClient {
 
-    private static final String BASE_URL = "http://10.0.2.2:8080/";   // ←- עדכן לפי השרת
+    private static final String BASE_URL = "http://10.0.2.2:8080/";
     private static ApiClient instance;
     private final Retrofit retrofit;
 
