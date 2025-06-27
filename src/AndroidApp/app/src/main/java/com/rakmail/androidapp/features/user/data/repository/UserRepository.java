@@ -22,7 +22,7 @@ public class UserRepository {
     private final UserApi api;
 
     public UserRepository() {
-        /** ←————  כאן השינוי  ————→ */
+
         api = ApiClient.get().create(UserApi.class);
     }
 
