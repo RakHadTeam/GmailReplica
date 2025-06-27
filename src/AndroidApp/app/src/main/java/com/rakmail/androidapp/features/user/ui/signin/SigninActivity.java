@@ -13,11 +13,11 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.rakmail.androidapp.R;
 import com.rakmail.androidapp.features.inbox.ui.MainActivity;
-import com.rakmail.androidapp.features.user.viewmodel.SignInViewModel;
+import com.rakmail.androidapp.features.user.viewmodel.signin.SigninViewModel;
 
-public class SignInActivity extends AppCompatActivity {
+public class SigninActivity extends AppCompatActivity {
 
-    private SignInViewModel vm;
+    private SigninViewModel vm;
 
     @Override
     protected void onCreate(Bundle s) {
@@ -29,7 +29,7 @@ public class SignInActivity extends AppCompatActivity {
         TextView errText = findViewById(R.id.errorText);
         Button   btn     = findViewById(R.id.signInButton);
 
-        vm = new ViewModelProvider(this).get(SignInViewModel.class);
+        vm = new ViewModelProvider(this).get(SigninViewModel.class);
 
         btn.setOnClickListener(v -> {
             errText.setVisibility(View.GONE);

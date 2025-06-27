@@ -1,10 +1,10 @@
 package com.rakmail.androidapp.features.user.model;
 
-public class SignInRequest {
+public class SigninRequest {
     public final String email;
     public final String password;
 
-    public SignInRequest(String email, String password) {
+    public SigninRequest(String email, String password) {
         this.email = email;
         this.password = password;
     }

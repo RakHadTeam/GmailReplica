@@ -1,6 +1,6 @@
 package com.rakmail.androidapp.core.api;
 
-import com.rakmail.androidapp.features.user.model.SignInRequest;
+import com.rakmail.androidapp.features.user.model.SigninRequest;
 import com.rakmail.androidapp.features.user.model.TokenResponse;
 import com.rakmail.androidapp.features.user.model.User;
 
@@ -24,5 +24,5 @@ public interface UserApi {
     );
 
     @POST("/api/tokens")
-    Call<TokenResponse> signIn(@Body SignInRequest body);
+    Call<TokenResponse> signIn(@Body SigninRequest body);
 }

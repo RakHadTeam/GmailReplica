@@ -33,7 +33,7 @@
             android:exported="false" />
 
         <activity
-            android:name=".features.user.ui.signin.SignInActivity"
+            android:name=".features.user.ui.signin.SigninActivity"
             android:exported="false" />
     </application>
 </manifest>

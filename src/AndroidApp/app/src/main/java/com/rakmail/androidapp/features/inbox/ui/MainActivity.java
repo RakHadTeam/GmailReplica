@@ -12,7 +12,7 @@ import androidx.appcompat.widget.Toolbar;
 import com.rakmail.androidapp.App;
 import com.rakmail.androidapp.R;
 import com.rakmail.androidapp.core.preferences.AuthPreferences;
-import com.rakmail.androidapp.features.user.ui.signup.SignupActivity;
+import com.rakmail.androidapp.features.user.ui.signin.SigninActivity;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -41,11 +41,9 @@ public class MainActivity extends AppCompatActivity {
         if (item.getItemId() == R.id.action_logout) {
             Toast.makeText(this, "Logging out...", Toast.LENGTH_SHORT).show();
 
-            // Clear session using global AuthPreferences
             authPrefs.clearSession();
 
-            // Navigate to SignupActivity
-            Intent intent = new Intent(this, SignupActivity.class);
+            Intent intent = new Intent(this, SigninActivity.class);
             startActivity(intent);
             finish();
             return true;

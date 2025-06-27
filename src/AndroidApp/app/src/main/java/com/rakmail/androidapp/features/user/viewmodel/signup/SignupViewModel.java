@@ -1,4 +1,4 @@
-package com.rakmail.androidapp.features.user.viewmodel;
+package com.rakmail.androidapp.features.user.viewmodel.signup;
 
 import android.app.Application;
 import android.content.SharedPreferences;

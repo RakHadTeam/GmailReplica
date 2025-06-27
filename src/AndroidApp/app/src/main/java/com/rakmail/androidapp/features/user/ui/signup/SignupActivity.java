@@ -15,7 +15,7 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.rakmail.androidapp.R;
 import com.rakmail.androidapp.features.inbox.ui.MainActivity;
-import com.rakmail.androidapp.features.user.viewmodel.SignupViewModel;
+import com.rakmail.androidapp.features.user.viewmodel.signup.SignupViewModel;
 
 import java.io.File;
 import java.io.FileOutputStream;

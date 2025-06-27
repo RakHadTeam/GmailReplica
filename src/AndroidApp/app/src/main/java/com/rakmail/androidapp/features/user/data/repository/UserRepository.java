@@ -2,9 +2,9 @@ package com.rakmail.androidapp.features.user.data.repository;
 
 import androidx.annotation.NonNull;
 
-import com.rakmail.androidapp.core.network.ApiClient;
+import com.rakmail.androidapp.core.api.ApiClient;
 import com.rakmail.androidapp.core.api.UserApi;
-import com.rakmail.androidapp.features.user.model.SignInRequest;
+import com.rakmail.androidapp.features.user.model.SigninRequest;
 import com.rakmail.androidapp.features.user.model.TokenResponse;
 import com.rakmail.androidapp.features.user.model.User;
 
@@ -61,7 +61,7 @@ public class UserRepository {
     }
 
     public void signIn(String email, String password, SignInCallback cb) {
-        SignInRequest body = new SignInRequest(email, password);
+        SigninRequest body = new SigninRequest(email, password);
 
         api.signIn(body).enqueue(new Callback<>() {
             @Override public void onResponse(@NonNull Call<TokenResponse> c,

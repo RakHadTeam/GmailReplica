@@ -1,4 +1,4 @@
-package com.rakmail.androidapp.core.network;
+package com.rakmail.androidapp.core.api;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -15,7 +15,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class ApiClient {
 
-    private static final String BASE_URL = "http://10.0.2.2:8080/";
+    private static final String BASE_URL = "http://10.0.2.2:8000/";
     private static ApiClient instance;
     private final Retrofit retrofit;
 

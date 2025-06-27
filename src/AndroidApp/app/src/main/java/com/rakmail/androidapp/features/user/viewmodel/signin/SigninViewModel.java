@@ -1,4 +1,4 @@
-package com.rakmail.androidapp.features.user.viewmodel;
+package com.rakmail.androidapp.features.user.viewmodel.signin;
 
 import android.app.Application;
 
@@ -9,7 +9,7 @@ import androidx.lifecycle.MutableLiveData;
 import com.rakmail.androidapp.core.preferences.AuthPreferences;
 import com.rakmail.androidapp.features.user.data.repository.UserRepository;
 
-public class SignInViewModel extends AndroidViewModel {
+public class SigninViewModel extends AndroidViewModel {
 
     public final MutableLiveData<Boolean> success = new MutableLiveData<>();
     public final MutableLiveData<String>  error   = new MutableLiveData<>();
@@ -17,7 +17,7 @@ public class SignInViewModel extends AndroidViewModel {
     private final UserRepository  repo  = new UserRepository();
     private final AuthPreferences prefs;
 
-    public SignInViewModel(@NonNull Application app) {
+    public SigninViewModel(@NonNull Application app) {
         super(app);
         prefs = AuthPreferences.getInstance();
     }
