@@ -1,52 +1,9 @@
-import Mail from "../models/mail.js";
-import { getAllLinksFromBody, isURLBlacklisted } from "./blacklist.service.js";
-import { getUserByEmail, getUserById } from "./user.service.js";
-
-/**
- * Get a mail by its ID for a specific user.
- * @param {string} userId
- * @param {string} id
- * @returns {Promise<Mail>} - The requested mail object.
- * @throws {Error} If the user or mail is not found or unauthorized.
- */
-export async function getMailById(userId, id) {
-    const user = await getUserById(userId);
-    if (!user) throw new Error("User not found");
-
-    const mail = await Mail.findById(id);
-    if (!mail) throw new Error("Mail not found");
-
-    if (!user.mails.includes(mail.id))
-        throw new Error("Unauthorized access to this mail");
-
-    return mail;
-}
-
-/**
- * Delete a mail by its ID for a specific user.
- * @param {string} userId
- * @param {string} mailId
- * @returns {Promise<boolean>} - Returns true if successfully deleted.
- * @throws {Error} If the user or mail is not found.
- */
-export async function deleteMailById(userId, mailId) {
-    const user = await getUserById(userId);
-    if (!user) throw new Error("User not found");
-
-    await getMailById(userId, mailId);
-
-    await user.populate("labels");
-
-    // Remove the mail from the user's mailbox
-    user.mails = user.mails.filter((mId) => !mId.equals(mailId));
-    user.labels.forEach((label) => {
-        label.mails = label.mails.filter((mId) => !mId.equals(mailId));
-    });
-
-    await user.save();
-
-    return true;
-}
+import { MailValidationError } from "../../core/errors/AppError.js";
+import { getAllLinksFromBody } from "../blacklist/getAllLinksFromBody.js";
+import { isURLBlacklisted } from "../blacklist/isURLBlacklisted.js";
+import { getUserByEmail } from "../user/getUserByEmail.js";
+import { getUserById } from "../user/getUserById.js";
+import { getMailById } from "./getMailById.js";
 
 /**
  * Update a mail by its ID for a specific user.
@@ -54,13 +11,13 @@ export async function deleteMailById(userId, mailId) {
  * @param {string} mailId
  * @param {object} updates - The updates to apply to the mail
  * @returns {Promise<Mail>} - The updated mail object.
- * @throws {Error} If the mail is invalid or update fails.
+ * @throws {MailValidationError} If the mail is invalid or update fails.
  */
 export async function updateMailById(userId, mailId, updates) {
     const mail = await getMailById(userId, mailId);
 
     if (!mail.draft) {
-        throw new Error("Only drafts can be updated");
+        throw new MailValidationError("Only drafts can be updated");
     }
 
     if (updates.subject) {
@@ -70,12 +27,12 @@ export async function updateMailById(userId, mailId, updates) {
         mail.body = updates.body;
     }
     if (updates.recipient) {
-        const recipientUser =
-            (await getUserById(updates.recipient)) ||
-            (await getUserByEmail(updates.recipient));
-        if (recipientUser) {
-            mail.recipient = recipientUser.id;
-        } else {
+        try {
+            const recipientUser =
+                (await getUserById(updates.recipient)) ||
+                (await getUserByEmail(updates.recipient));
+            if (recipientUser) mail.recipient = recipientUser.id;
+        } catch (error) {
             mail.recipient = updates.recipient;
         }
     }
@@ -99,7 +56,6 @@ export async function updateMailById(userId, mailId, updates) {
         const recipientUser =
             (await getUserById(mail.recipient)) ||
             (await getUserByEmail(mail.recipient));
-        if (!recipientUser) throw new Error("Recipient not found");
 
         // Add mailId to recipientUser.mails using updateOne
         await recipientUser.updateOne({ $addToSet: { mails: mailId } });

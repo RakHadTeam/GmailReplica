@@ -1,30 +1,16 @@
-import { randomUUID } from "crypto";
-import globals from "../core/globals.js";
+import mongoose from "mongoose";
 
-export function getUserById(id) {
-    return globals.users.find((user) => user.id === id);
-}
+const UserSchema = new mongoose.Schema(
+    {
+        email: { type: String, required: true, unique: true },
+        password: { type: String, required: true },
+        fullname: { type: String, required: true },
+        picture: { type: String, default: null },
+        labels: [{ type: mongoose.Schema.Types.ObjectId, ref: "Label" }],
+        mails: [{ type: mongoose.Schema.Types.ObjectId, ref: "Mail" }],
+    },
+    { timestamps: true }
+);
 
-export function getUserByEmail(email) {
-    return globals.users.find((user) => user.email === email);
-}
-
-export function createUser(data) {
-    const id = randomUUID();
-
-    if (getUserByEmail(data.email)) {
-        return { status: 400, error: "Email already exists" };
-    }
-
-    const newUser = { id, ...data };
-    globals.users.push(newUser);
-    return { status: 201 };
-}
-
-export function updateUserById(id, fieldsToUpdate) {
-    const user = getUserById(id);
-    if (!user) return false;
-
-    Object.assign(user, fieldsToUpdate);
-    return true;
-}
+const User = mongoose.model("User", UserSchema);
+export default User;

@@ -1,6 +1,7 @@
 import fs from "fs";
 import path from "path";
-import { updateUserById } from "../../../services/user.service.js";
+import { NotFoundError } from "../../../core/errors/AppError.js";
+import { updateUserById } from "../../../services/user/updateUserById.js";
 
 export async function patchUserByIdHandler(req, res) {
     const { id } = req.params;
@@ -29,9 +30,14 @@ export async function patchUserByIdHandler(req, res) {
         updatedFields.picture = `/uploads/${req.file.filename}`;
     }
 
-    await updateUserById(id, updatedFields);
-
-    res.status(200).json({ message: "User updated successfully" });
+    try {
+        await updateUserById(id, updatedFields);
+    } catch (error) {
+        if (error instanceof NotFoundError) {
+            return res.status(404).json({ error: "User not found" });
+        } else {
+            console.error("Error updating user:", error);
+            return res.status(500).json({ error: "Internal server error" });
+        }
+    }
 }
-
-
