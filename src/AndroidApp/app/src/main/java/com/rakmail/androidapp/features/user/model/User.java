@@ -1,6 +1,7 @@
 package com.rakmail.androidapp.features.user.model;
 
 public class User {
+    public String picture;
     private String fullname;
     private String email;
     private String profilePictureUrl;
