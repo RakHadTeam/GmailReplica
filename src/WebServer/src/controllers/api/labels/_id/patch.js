@@ -12,7 +12,7 @@ export async function patchLabel(req, res) {
 
     try {
         await updateLabelById(userId, id, { name });
-        return res.status(200).location(`/api/labels/${id}`).send();
+        return res.status(204).location(`/api/labels/${id}`).send();
     } catch (error) {
         if (error instanceof NotFoundError) {
             return res.status(404).json({ error: error.message });

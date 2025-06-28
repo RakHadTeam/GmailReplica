@@ -1,9 +1,10 @@
 import jwt from "jsonwebtoken";
+import { NotFoundError } from "../core/errors/AppError.js";
+import { getUserById } from "../services/user/getUserById.js";
 
-export function requireAuth(req, res, next) {
+export async function requireAuth(req, res, next) {
     const token =
-        req.cookies?.token ||
-        req.headers.authorization?.split(" ")[1];
+        req.cookies?.token || req.headers.authorization?.split(" ")[1];
 
     if (!token) {
         return res.status(401).json({ error: "No token provided" });
@@ -11,9 +12,12 @@ export function requireAuth(req, res, next) {
 
     try {
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
-        req.userId = decoded.id; // attach user info
+        const user = await getUserById(decoded.id);
+        req.userId = user.id; // attach user info
         next();
     } catch (err) {
-        return res.status(403).json({ error: "Invalid or expired token" });
+        if (err instanceof NotFoundError) {
+            return res.status(401).json({ error: "Unauthorized" });
+        }
     }
 }

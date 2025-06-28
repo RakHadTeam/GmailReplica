@@ -1,12 +1,12 @@
-import { useMailApp } from "../../context/MailAppContext";
-import { useTheme } from "../../context/ThemeContext";
-import BackButton from "./Buttons/BackButton";
-import DeleteButton from "./Buttons/DeleteButton";
-import LabelButton from "./Buttons/LabelButton";
-import RefreshButton from "./Buttons/RefreshButton";
+import { useMailApp } from "../../context/MailAppContext.js";
+import { useTheme } from "../../context/ThemeContext.js";
+import BackButton from "./Buttons/BackButton.jsx";
+import DeleteButton from "./Buttons/DeleteButton.jsx";
+import LabelButton from "./Buttons/LabelButton.jsx";
+import RefreshButton from "./Buttons/RefreshButton.jsx";
 import SelectAllButton from "./Buttons/SelectAllButton.jsx";
-import SpamButton from "./Buttons/SpamButton";
-import StarToggleButton from "./Buttons/StarToggleButton";
+import SpamButton from "./Buttons/SpamButton.jsx";
+import StarToggleButton from "./Buttons/StarToggleButton.jsx";
 import UnBinButton from "./Buttons/UnBinButton.jsx";
 
 export default function InboxHeaderControls({

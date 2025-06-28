@@ -16,7 +16,9 @@ export async function postLabels(req, res) {
 
     try {
         const label = await createLabel(userId, newLabel);
-        res.status(201).location(`/api/labels/${label.id}`).json({ id: label.id });
+        res.status(201)
+            .location(`/api/labels/${label.id}`)
+            .json({ id: label.id });
     } catch (error) {
         if (error instanceof AlreadyExistsError) {
             return res.status(409).json({ error: error.message });

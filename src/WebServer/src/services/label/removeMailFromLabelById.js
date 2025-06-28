@@ -1,26 +1,26 @@
 import {
     NotFoundError,
-    UnauthorizedError,
 } from "../../core/errors/AppError.js";
 import { getMailById } from "../mail/getMailById.js";
-import { getLabelById } from "./getLabelById.js";
+import Label from "../../models/label.model.js";
 
 /**
  * Remove a mail from a specific label owned by a user.
  * @param {string} userId - ID of the user.
  * @param {string} labelId - ID of the label.
  * @param {string} mailId - ID of the mail to remove.
- * @returns {Promise<{status: number}>}
+ * @returns {Promise<void>}
  * @throws {UnauthorizedError|NotFoundError}
  */
 export async function removeMailFromLabelById(userId, labelId, mailId) {
-    const label = await getLabelById(userId, labelId);
-
     const mail = await getMailById(userId, mailId);
 
-    const index = label.mails.findIndex((m) => m.equals(mail._id));
-    if (index !== -1) {
-        label.mails.splice(index, 1);
-        await label.save();
+    const result = await Label.updateOne(
+        { _id: labelId, userId: userId },
+        { $pull: { mails: mail._id } }
+    );
+
+    if (result.matchedCount === 0) {
+        throw new NotFoundError("Label not found or unauthorized");
     }
 }

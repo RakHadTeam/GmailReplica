@@ -1,3 +1,4 @@
+import Label from "../../models/label.model.js";
 import { getLabelById } from "./getLabelById.js";
 
 /** * Updates a label by its ID for a specific user.
@@ -9,9 +10,7 @@ import { getLabelById } from "./getLabelById.js";
  */
 export async function updateLabelById(userId, id, updates) {
 
-    const label = await getLabelById(userId, id);
-
-    Object.assign(label, updates);
-    await label.save();
+    await getLabelById(userId, id); // Ensure label exists
+    await Label.updateOne({ _id: id, userId: userId }, { $set: updates });
 
 }

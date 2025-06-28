@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useMailApp } from "../../context/MailAppContext.js";
-import { useTheme } from "../../context/ThemeContext";
+import { useTheme } from "../../context/ThemeContext.js";
 import { useLabelActions } from "../../hooks/useLabelActions.js";
 import LabelPopupCreatePrompt from "./LabelPopupCreatePrompt.jsx";
 import LabelPopupFooter from "./LabelPopupFooter.jsx";

@@ -18,7 +18,9 @@ export async function addMailToLabel(userId, labelId, mailId) {
     }
 
     if (!label.mails.some(id => id.equals(mail._id))) {
-        label.mails.push(mail._id);
-        await label.save();
+        await label.constructor.updateOne(
+            { _id: label._id },
+            { $push: { mails: mail._id } }
+        );
     }
 }

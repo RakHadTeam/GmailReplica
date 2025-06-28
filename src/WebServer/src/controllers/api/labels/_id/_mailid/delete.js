@@ -24,6 +24,7 @@ export async function deleteLabelMailAttachment(req, res) {
         if (error instanceof UnauthorizedError) {
             return res.status(403).json({ error: error.message });
         } else {
+            console.error("Error removing mail from label:", error);
             return res.status(500).json({ error: "Internal server error" });
         }
     }

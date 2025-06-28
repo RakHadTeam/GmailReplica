@@ -1,18 +1,21 @@
 import { useState } from "react";
-import SearchBar from "../SearchBar/SearchBar";
-import InboxHeaderControls from "./InboxHeaderControls";
-import LabelPopupWrapper from "./LabelPopupWrapper";
 import { useMailApp } from "../../context/MailAppContext.js";
+import SearchBar from "../SearchBar/SearchBar.jsx";
+import InboxHeaderControls from "./InboxHeaderControls.jsx";
+import LabelPopupWrapper from "./LabelPopupWrapper.jsx";
 
 export default function InboxHeader({
     searchQuery,
     setSearchQuery,
     openMail,
     setOpenMail,
+    toggleLabelManager,
 }) {
     const [showLabelPopup, setShowLabelPopup] = useState(false);
 
-    const { uiState: { setSelectedIds } } = useMailApp();
+    const {
+        uiState: { setSelectedIds },
+    } = useMailApp();
 
     const toggleLabelPopup = () => {
         setShowLabelPopup((prev) => !prev);
@@ -37,7 +40,10 @@ export default function InboxHeader({
                 closeMail={closeMail}
             />
             {showLabelPopup && (
-                <LabelPopupWrapper toggleLabelPopup={toggleLabelPopup} />
+                <LabelPopupWrapper
+                    toggleLabelPopup={toggleLabelPopup}
+                    toggleLabelManager={toggleLabelManager}
+                />
             )}
         </>
     );

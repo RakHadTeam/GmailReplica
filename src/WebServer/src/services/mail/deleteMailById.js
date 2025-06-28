@@ -1,5 +1,7 @@
+import User from "../../models/user.model.js";
 import { getUserById } from "../user/getUserById.js";
 import { getMailById } from "./getMailById.js";
+import Label from "../../models/label.model.js";
 
 /**
  * Delete a mail by its ID for a specific user.
@@ -10,18 +12,20 @@ import { getMailById } from "./getMailById.js";
  */
 export async function deleteMailById(userId, mailId) {
     const user = await getUserById(userId);
-
-    await getMailById(userId, mailId);
-
     await user.populate("labels");
 
-    // Remove the mail from the user's mailbox
-    user.mails = user.mails.filter((mId) => !mId.equals(mailId));
-    user.labels.forEach((label) => {
-        label.mails = label.mails.filter((mId) => !mId.equals(mailId));
-    });
+    await getMailById(userId, mailId); // Ensure mail exists and belongs to the user
 
-    await user.save();
+    // Remove the mail from the user's mailbox
+    await User.updateOne(
+        { _id: userId },
+        { $pull: { mails: mailId } }
+    );
+
+    await Label.updateMany(
+        { _id: { $in: user.labels.map((l) => l._id) }, userId: userId },
+        { $pull: { mails: mailId } }
+    );
 
     return true;
 }

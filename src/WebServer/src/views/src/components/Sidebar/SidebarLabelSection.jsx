@@ -35,17 +35,27 @@ export default function SidebarLabelSection({ onSelectLabel, onManageLabels }) {
             </div>
 
             {labels
-                .filter((label) => !systemLabels.has(label.id))
+                .filter((label) => !systemLabels.has(label.name))
                 .map((label) => (
                     <button
-                        key={label.id}
+                        key={label.name}
                         className={`btn d-flex align-items-center gap-2 text-start ${
-                            label.id === activeLabel ? "active" : ""
+                            label.name === activeLabel ? "active" : ""
                         } ${darkTheme ? "text-light" : "text-dark"}`}
-                        onClick={() => onSelectLabel(label.id)}
+                        onClick={() => onSelectLabel(label.name)}
                     >
                         <span className="material-symbols-rounded">label</span>
-                        {label.name}
+                        <span
+                            className="text-truncate"
+                            style={{
+                                maxWidth: "120px",
+                                overflow: "hidden",
+                                whiteSpace: "nowrap",
+                                textOverflow: "ellipsis",
+                            }}
+                        >
+                            {label.name}
+                        </span>
                     </button>
                 ))}
         </div>

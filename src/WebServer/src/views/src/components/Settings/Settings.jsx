@@ -4,10 +4,10 @@ import { useAuth } from "../../context/AuthContext.js";
 import { useTheme } from "../../context/ThemeContext.js";
 import { useLabelActions } from "../../hooks/useLabelActions.js";
 import { useMailActions } from "../../hooks/useMailActions.js";
-import SettingsBlacklist from "./SettingsBlacklist";
-import SettingsForm from "./SettingsForm";
-import SettingsHeader from "./SettingsHeader";
-import SettingsUserCard from "./SettingsUserCard";
+import SettingsBlacklist from "./SettingsBlacklist.jsx";
+import SettingsForm from "./SettingsForm.jsx";
+import SettingsHeader from "./SettingsHeader.jsx";
+import SettingsUserCard from "./SettingsUserCard.jsx";
 
 export default function Settings({ onClose }) {
     const { currentUser, setSignedin, setCurrentUser } = useAuth();
@@ -36,7 +36,7 @@ export default function Settings({ onClose }) {
                 credentials: "include",
             });
 
-            if (res.ok) {
+            if (res.status === 204) {
                 alert("Settings updated successfully!");
                 fetchMails();
                 fetchLabels();

@@ -1,16 +1,16 @@
-import { UnauthorizedError } from "../../../core/errors/AppError.js";
+import { NotFoundError } from "../../../core/errors/AppError.js";
 import { getUserById } from "../../../services/user/getUserById.js";
 
-export function getMe(req, res) {
+export async function getMe(req, res) {
     const userId = req.userId;
 
     try {
-        const user = getUserById(userId);
+        const user = await getUserById(userId);
         res.set("Cache-Control", "no-store")
             .status(200)
             .json({ userId: user.id });
     } catch (error) {
-        if (error instanceof UnauthorizedError) {
+        if (error instanceof NotFoundError) {
             return res.status(401).json({ error: "Unauthorized" });
         } else {
             console.error("Error fetching user:", error);

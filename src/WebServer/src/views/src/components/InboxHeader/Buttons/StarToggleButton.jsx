@@ -7,27 +7,27 @@ export default function StarToggleButton() {
     const {
         uiState: { selectedIds },
     } = useMailApp();
-    const { getLabel } = useLabelActions();
+    const { getLabelByName } = useLabelActions();
     const { toggleStarBulk } = useStarActions();
 
-    const [starred, setStarred] = useState(false);
+    const [someSelectedMailsAreStarred, setSomeSelectedMailsAreStarred] =
+        useState(false);
 
     useMemo(() => {
-        const starredLabel = getLabel("Starred");
-        const allStarred = selectedIds.every((id) =>
-            starredLabel.mails.includes(id)
+        const starredLabel = getLabelByName("Starred");
+        setSomeSelectedMailsAreStarred(
+            selectedIds.some((id) => starredLabel?.mails?.includes(id))
         );
-        setStarred(allStarred);
-    }, [selectedIds, getLabel]);
+    }, [selectedIds, getLabelByName]);
     return (
         <span
             className={`icon-button me-3 fs-5 ${
-                starred ? "text-warning" : ""
+                someSelectedMailsAreStarred ? "text-warning" : ""
             }`}
             style={{ cursor: "pointer" }}
-            onClick={() => toggleStarBulk()}
+            onClick={() => toggleStarBulk(!someSelectedMailsAreStarred)}
         >
-            {starred ? "★" : "☆"}
+            {someSelectedMailsAreStarred ? "★" : "☆"}
         </span>
     );
 }

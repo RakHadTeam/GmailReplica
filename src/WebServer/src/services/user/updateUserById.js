@@ -10,12 +10,6 @@ import { getUserById } from "./getUserById.js";
 export async function updateUserById(id, fieldsToUpdate) {
     const user = await getUserById(id);
 
-    if (fieldsToUpdate.fullname) {
-        user.fullname = fieldsToUpdate.fullname;
-    }
-    if (fieldsToUpdate.picture) {
-        user.picture = fieldsToUpdate.picture;
-    }
-    await user.save();
+    await user.updateOne({ $set: fieldsToUpdate });
     return true;
 }

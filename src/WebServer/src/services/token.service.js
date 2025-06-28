@@ -7,8 +7,8 @@ import User from "../models/user.model.js";
  * @returns {string} - Returns the user ID if credentials are valid.
  * @throws {UnauthorizedError} If the credentials are invalid.
  */
-export function validateCredentials(email, password) {
-    const user = User.findOne({ email, password });
+export async function validateCredentials(email, password) {
+    const user = await User.findOne({ email, password });
     if (!user) throw new UnauthorizedError("Invalid credentials");
     return {
         id: user.id,

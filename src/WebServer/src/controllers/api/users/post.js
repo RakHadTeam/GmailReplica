@@ -28,15 +28,12 @@ export async function postUsers(req, res) {
         email,
         password,
         fullname,
-        picture: req.file ? `/uploads/${req.file.filename}` : null,
+        picture: req.file ? `uploads/${req.file.filename}` : null,
         createdAt: new Date().toISOString(),
     };
 
-    console.log("Creating user:", newUser);
-
     try {
         const userId = await createUser(newUser);
-        console.log("User created with ID:", userId);
         return res
             .status(201)
             .json({ message: "User created successfully", userId });

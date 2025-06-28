@@ -21,7 +21,11 @@ export async function createLabel(userId, data) {
     if (existingLabel)
         throw new AlreadyExistsError("Label with this name already exists");
 
-    const newLabel = await Label.create({ name: data.name, mails: [] });
+    const newLabel = await Label.create({
+        name: data.name,
+        mails: [],
+        userId: user.id,
+    });
 
     user.labels.push(newLabel._id);
     await user.save();

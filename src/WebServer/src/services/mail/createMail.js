@@ -1,3 +1,4 @@
+import { NotFoundError } from "../../core/errors/AppError.js";
 import Mail from "../../models/mail.model.js";
 import { getAllLinksFromBody } from "../blacklist/getAllLinksFromBody.js";
 import { isURLBlacklisted } from "../blacklist/isURLBlacklisted.js";
@@ -22,11 +23,15 @@ export async function createMail(userId, { subject, body, recipient, draft }) {
 
     let recipientUser = null;
     try {
-        recipientUser =
-            (await getUserById(recipient)) || (await getUserByEmail(recipient));
+        recipientUser = await getUserById(recipient);
     } catch (error) {
-        if (error instanceof NotFoundError && !draft) {
-            throw error;
+        if (!(error instanceof NotFoundError)) throw error;
+        try {
+            recipientUser = await getUserByEmail(recipient);
+        } catch (innerError) {
+            if (innerError instanceof NotFoundError && !draft) {
+                throw innerError;
+            }
         }
     }
 
