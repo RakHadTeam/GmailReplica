@@ -1,6 +1,6 @@
 import { useState } from "react";
 import LabelManager from "../LabelManager/LabelManager.jsx";
-import LabelPopup from "../LabelPopup/LabelPopup";
+import LabelPopup from "../LabelPopup/LabelPopup.jsx";
 
 export default function ContextMenuLabel() {
     const [showLabelPopupMenu, setShowLabelPopupMenu] = useState(false);
@@ -23,7 +23,7 @@ export default function ContextMenuLabel() {
         >
             <button className="btn btn-light w-100 text-start d-flex align-items-center gap-2">
                 <span className="material-symbols-rounded">label</span>
-                Add Label
+                Set Labels
             </button>
             {showLabelPopupMenu && (
                 <div

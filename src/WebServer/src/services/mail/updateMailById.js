@@ -28,9 +28,7 @@ export async function updateMailById(userId, mailId, updates) {
     }
     if (updates.recipient) {
         try {
-            const recipientUser =
-                (await getUserById(updates.recipient)) ||
-                (await getUserByEmail(updates.recipient));
+            const recipientUser = await getUserByEmail(updates.recipient);
             if (recipientUser) mail.recipient = recipientUser.id;
         } catch (error) {
             mail.recipient = updates.recipient;
@@ -53,9 +51,14 @@ export async function updateMailById(userId, mailId, updates) {
             }
         }
 
-        const recipientUser =
-            (await getUserById(mail.recipient)) ||
-            (await getUserByEmail(mail.recipient));
+        let recipientUser = null;
+        try {
+            recipientUser = await getUserById(mail.recipient);
+        } catch (error) {
+            throw new MailValidationError(
+                "Recipient user not found for the provided email"
+            );
+        }
 
         // Add mailId to recipientUser.mails using updateOne
         await recipientUser.updateOne({ $addToSet: { mails: mailId } });
@@ -71,6 +74,7 @@ export async function updateMailById(userId, mailId, updates) {
             }
         }
 
+        await mail.updateOne({ draft: false });
         mail.draft = false;
 
         const sender = await getUserById(userId);
@@ -83,6 +87,7 @@ export async function updateMailById(userId, mailId, updates) {
                 await sentLabel.updateOne({ $addToSet: { mails: mailId } });
             }
         }
+
     }
 
     return mail;

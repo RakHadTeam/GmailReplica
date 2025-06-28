@@ -1,11 +1,11 @@
 import { NotFoundError } from "../../../core/errors/AppError.js";
 import { getUserById } from "../../../services/user/getUserById.js";
 
-export function getUserByIdHandler(req, res) {
+export async function getUserByIdHandler(req, res) {
     const { id } = req.params;
 
     try {
-        const user = getUserById(id);
+        const user = await getUserById(id);
         return res.status(200).json({
             id: user.id,
             fullname: user.fullname,

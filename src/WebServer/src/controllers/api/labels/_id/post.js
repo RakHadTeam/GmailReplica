@@ -1,4 +1,5 @@
-import { addMailToLabel } from "../../../../models/label.model.js";
+import { NotFoundError } from "../../../../core/errors/AppError.js";
+import { addMailToLabel } from "../../../../services/label/addMailToLabel.js";
 
 export async function postLabelMail(req, res) {
     const userId = req.userId;
@@ -11,16 +12,14 @@ export async function postLabelMail(req, res) {
             .json({ error: "Missing required field: mailId" });
     }
 
-    const { status, error } = addMailToLabel(userId, labelId, mailId);
-
-    if (error) {
-        return res
-            .status(status ?? 400)
-            .json({ error });
+    try {
+        await addMailToLabel(userId, labelId, mailId);
+        res.status(204).send();
+    } catch (error) {
+        if (error instanceof NotFoundError) {
+            return res.status(404).json({ error: error.message });
+        } else {
+            return res.status(500).json({ error: "Internal server error" });
+        }
     }
-
-    return res
-        .status(status)
-        .location(`/api/labels/${labelId}`)
-        .json({ message: "Mail added to label successfully" });
 }

@@ -1,7 +1,8 @@
 import { useMemo, useState } from "react";
 import { useAuth } from "../../context/AuthContext.js";
 import { useMailApp } from "../../context/MailAppContext.js";
-import { useTheme } from "../../context/ThemeContext";
+import { useTheme } from "../../context/ThemeContext.js";
+import { useLabelActions } from "../../hooks/useLabelActions.js";
 import { useStarActions } from "../../hooks/useStarActions.js";
 
 export default function MailListRow({
@@ -13,10 +14,11 @@ export default function MailListRow({
 }) {
     const { darkTheme } = useTheme();
     const {
-        labelState: { labels },
         uiState: { activeLabel },
     } = useMailApp();
-    const starLabel = labels.find((label) => label.id === "Starred");
+    const { getLabelByName } = useLabelActions();
+
+    const starLabel = getLabelByName("Starred");
     const [starred, setStarred] = useState();
     const { currentUser } = useAuth();
 

@@ -1,37 +1,50 @@
 services:
-  blacklist_server:
-    container_name: "blacklist_server"
-    build:
-      context: ./src/BlacklistServer
-      dockerfile: Dockerfile.server
-    command: ["4545", "1000", "1", "2"]
-    tty: true
-    stdin_open: true
-    volumes:
-      - ./data/:/usr/src/BlacklistServer/build/data
-  blacklist_tests:
-    container_name: "blacklist_tests"
-    build:
-      context: ./src/BlacklistServer
-      dockerfile: Dockerfile.tests
-    tty: true
-    stdin_open: true
-    volumes:
-      - ./data/:/usr/src/BlacklistServer/build/data
+    blacklist_server:
+        container_name: "blacklist_server"
+        build:
+            context: ./src/BlacklistServer
+            dockerfile: Dockerfile.server
+        command: ["4545", "1000", "1", "2"]
+        tty: true
+        stdin_open: true
+        volumes:
+            - ./data/:/usr/src/BlacklistServer/build/data
+    blacklist_tests:
+        container_name: "blacklist_tests"
+        build:
+            context: ./src/BlacklistServer
+            dockerfile: Dockerfile.tests
+        tty: true
+        stdin_open: true
+        volumes:
+            - ./data/:/usr/src/BlacklistServer/build/data
 
-  webserver:
-    container_name: "webserver"
-    build:
-      context: ./src/WebServer
-      dockerfile: Dockerfile.webserver
-    ports:
-      - "8000:8000"
+    webserver:
+        container_name: "webserver"
+        build:
+            context: ./src/WebServer
+            dockerfile: Dockerfile.webserver
+        ports:
+            - "80:80"
+        environment:
+            - NODE_ENV=production
+        depends_on:
+            - mongodb
+            - blacklist_server
 
-  blacklist_client:
-    container_name: "blacklist_client"
-    build:
-      context: ./src/BlacklistClient
-      dockerfile: Dockerfile.client
-    command: ["blacklist_server", "4545"]
-    tty: true
-    stdin_open: true
+    blacklist_client:
+        container_name: "blacklist_client"
+        build:
+            context: ./src/BlacklistClient
+            dockerfile: Dockerfile.client
+        command: ["blacklist_server", "4545"]
+        tty: true
+        stdin_open: true
+
+    mongodb:
+        image: mongo:7.0
+        container_name: "mongodb"
+        ports:
+            - "27017:27017"
+        volumes:
+            - ./db:/data/db

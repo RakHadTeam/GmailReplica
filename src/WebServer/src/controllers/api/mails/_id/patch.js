@@ -15,7 +15,7 @@ export async function patchMail(req, res) {
             draft,
         });
 
-        return res.status(200).location(`/api/mails/${id}`).send();
+        return res.status(204).location(`/api/mails/${id}`).send();
     } catch (err) {
         if (err instanceof MailValidationError)
             return res.status(400).json({ error: err.message });

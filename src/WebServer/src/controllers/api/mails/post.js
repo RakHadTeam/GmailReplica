@@ -1,7 +1,6 @@
 import { NotFoundError } from "../../../core/errors/AppError.js";
 import { createMail } from "../../../services/mail/createMail.js";
 
-
 export async function postMail(req, res) {
     const userId = req.userId;
     const { subject, body, recipient, draft = false } = req.body;

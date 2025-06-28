@@ -6,19 +6,20 @@ This REST API is part of the APProject WebServer and provides endpoints for user
 To run the web server, you can use our docker-compose setup. Make sure you have Docker installed and then run the following command:
 
 ```bash
-docker compose up --build webserver blacklist_server
+docker compose up --build webserver
 ```
 
-This will start the web server on port `3000` by default.
-And will start the blacklist server on port `4545`, and with configuration `1000 1 2` (Refer to [Server README](../Server/README.md)).
+- `webserver` runs the frontend + backend on port `80`
+- `blacklist_server` runs the TCP Blacklist server on port `4545` (Refer to the [Blacklist Server README](../BlacklistServer/README.md) for more details)
+- `mongo_db` runs the MongoDB database on port `27017`
 
-⚠️ **Note**: A `.env` file must be present in the root of the project for the server to run properly.
+⚠️ **Note**: A `.env.production` file must be present in the config folder of the project for the server to run properly.
 This file contains essential environment variables such as `PORT` and JWT configurations.
 If it's missing, the server may fall back to defaults or fail to start properly.
 
-### .env File Template (Included in the project)
+### .env.production File Template (Included in the project)
 
-Create a `.env` file in the root directory with the following contents:
+Create a `.env.production` file in the config directory with the following contents:
 
 ```
 # Server configuration
@@ -29,10 +30,11 @@ JWT_SECRET=your_jwt_secret_key
 
 # Other configurations (optional)
 TOKEN_EXPIRY=3600 # (put in seconds, e.g., 1 hour)
+
+MONGO_URI=mongodb://localhost:27017/rakmail
 ```
 
 Replace `your_jwt_secret_key` with a secure random string.  
-Environment variables prefixed with `REACT_APP_` are used in the React frontend.
 
 Example:
 ![image](https://github.com/user-attachments/assets/fb2f7780-7c6a-4816-aea2-a4e7a12e6b47)
