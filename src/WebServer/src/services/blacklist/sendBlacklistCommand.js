@@ -1,12 +1,16 @@
 import net from "net";
-import globals from "../core/globals.js";
 
-export function sendBlacklistCommand(command) {
+/** * Sends a command to the blacklist server and returns the response.
+ * @param {string} command - The command to send to the blacklist server.
+ * @returns {Promise<number>} - A promise that resolves with the response code from the server.
+ */
+
+export async function sendBlacklistCommand(command) {
     return new Promise((resolve, reject) => {
         const clientSocket = net.createConnection(
             {
-                host: globals.blacklistServer.host,
-                port: globals.blacklistServer.port,
+                host: process.env.BLACKLIST_HOST,
+                port: process.env.BLACKLIST_PORT,
             },
             () => {
                 const encodedMessage = Buffer.from(`${command}\n`, "utf-8");
@@ -38,16 +42,4 @@ export function sendBlacklistCommand(command) {
             reject(err);
         });
     });
-}
-
-export function addURLToBlacklist(url) {
-    return sendBlacklistCommand(`POST ${url}`);
-}
-
-export function deleteURLFromBlacklist(id) {
-    return sendBlacklistCommand(`DELETE ${id}`);
-}
-
-export function isURLBlacklisted(url) {
-    return sendBlacklistCommand(`GET ${url}`);
 }

@@ -1,110 +1,23 @@
-import globals from "../core/globals.js";
-import { getAllLinksFromBody } from "./mails.model.js";
-import { isURLBlacklisted } from "./blacklist.model.js";
-import { getUserByEmail, getUserById } from "./user.model.js";
+import mongoose from "mongoose";
 
-export function getMailById(userId, id) {
-    const user = getUserById(userId);
-    if (!user) {
-        return { status: 401 };
-    }
-    const mailIndex = user.mails.find((m) => globals.mails[m].id === id);
-    if (mailIndex == undefined) {
-        return { status: 404 };
-    }
-    return { status: 200, mail: globals.mails[mailIndex] };
-}
+const MailSchema = new mongoose.Schema(
+    {
+        subject: { type: String, required: true },
+        sender: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "User",
+            required: true,
+        },
+        recipient: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "User",
+            required: true,
+        },
+        draft: { type: Boolean, default: false },
+        body: { type: String, required: true },
+    },
+    { timestamps: true }
+);
 
-export function deleteMailById(userId, id) {
-    const user = getUserById(userId);
-    if (!user) {
-        return { status: 401 };
-    }
-
-    const { mail, status, error } = getMailById(userId, id);
-
-    if (error) return { status, error };
-
-    // Remove the mail from the user's mailbox
-    user.mails = user.mails.filter(
-        (mailIndex) => globals.mails[mailIndex].id !== id
-    );
-    user.labels.forEach((label) => {
-        label.mails = label.mails.filter((mailId) => mailId !== id);
-    });
-
-    return { status: 204 };
-}
-
-export function updateMailById(userId, id, updates) {
-    const { mail, status, error } = getMailById(userId, id);
-    if (error) {
-        return { status, error };
-    }
-
-    if (!mail.draft) {
-        return { status: 400, error: "Only drafts can be updated" };
-    }
-
-    if (updates.subject) {
-        mail.subject = updates.subject;
-    }
-    if (updates.body) {
-        mail.body = updates.body;
-    }
-    if (updates.recipient) {
-        const recipientUser = getUserById(updates.recipient) || getUserByEmail(updates.recipient);
-        if (recipientUser) {
-            mail.recipient = recipientUser.id;
-        } else {
-            mail.recipient = updates.recipient;
-        }
-    }
-
-    if (
-        updates.draft === false &&
-        updates.recipient &&
-        updates.body &&
-        updates.subject
-    ) {
-        const links = getAllLinksFromBody(mail.body).concat(
-            getAllLinksFromBody(mail.subject)
-        );
-        let spammed = false;
-        for (const link of links) {
-            if (isURLBlacklisted(link)) {
-                spammed = true;
-            }
-        }
-
-        const recipientUser = getUserById(mail.recipient) || getUserByEmail(mail.recipient);
-        if (!recipientUser) {
-            return { status: 404, error: "Recipient not found" };
-        }
-
-        const draftIndex = globals.mails.findIndex((m) => m.id === id);
-        if (recipientUser.id !== userId) {
-            recipientUser.mails.push(draftIndex);
-        }
-
-        if (spammed) {
-            const spamLabel = recipientUser.labels.find(label => label.name === "Spam");
-            if (spamLabel && !spamLabel.mails.includes(id)) {
-                spamLabel.mails.push(id);
-            }
-        }
-
-        mail.draft = false;
-
-        const sender = getUserById(userId);
-        if (sender) {
-            const sentLabel = sender.labels.find(label => label.name === "Sent");
-            if (sentLabel && !sentLabel.mails.includes(id)) {
-                sentLabel.mails.push(id);
-            }
-        }
-    }
-
-    return { status: 204, mail };
-}
-
+const Mail = mongoose.model("Mail", MailSchema);
+export default Mail;

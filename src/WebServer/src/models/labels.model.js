@@ -1,5 +1,5 @@
-import { getUserById } from "./user.model.js";
 import crypto from "crypto";
+import { getUserById } from "../services/user/getUserById.js";
 
 export function getAllLabels(userId) {
     const user = getUserById(userId);

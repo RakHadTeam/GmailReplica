@@ -1,4 +1,4 @@
-import { getUserById } from "./user.model.js";
+import { getUserById } from "../services/user/getUserById.js";
 
 export function getLabelById(userId, id) {
 

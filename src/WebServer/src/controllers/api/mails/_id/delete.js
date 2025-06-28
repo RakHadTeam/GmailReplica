@@ -1,15 +1,19 @@
-import { deleteMailById } from "../../../../models/mail.model.js";
+import { deleteMailById } from "../../../../services/mail/deleteMailById.js";
 
-export function deleteMail(req, res) {
+export async function deleteMail(req, res) {
     const { id } = req.params;
 
     const userId = req.userId;
 
-    const { status, error } = deleteMailById(userId, id);
-
-    if (error) {
-        return res.status(status).json({ error });
+    try {
+        const { status } = await deleteMailById(userId, id);
+        return res.status(status).end();
+    } catch (err) {
+        if (err instanceof NotFoundError) {
+            return res.status(404).json({ error: err.message });
+        } else {
+            console.error("Error deleting mail:", err);
+            return res.status(500).json({ error: "Internal server error" });
+        }
     }
-
-    return res.status(status).end();
 }
