@@ -27,8 +27,9 @@ export function postUsers(req, res) {
         email,
         password,
         fullname,
-        picture: req.file ? `/uploads/${req.file.filename}` : null,
+        picture: req.file ? `uploads/${req.file.filename}` : null,
         createdAt: new Date().toISOString(),
+        darkTheme: req.body.darkTheme ?? false,
         mails: [],
         labels: [
             {

@@ -1,31 +1,38 @@
-import { useEffect, useRef } from "react";
-import { useMailApp } from "../../context/MailAppContext";
-import { useMailActions } from "../../hooks/useMailActions";
-import { useSpamActions } from "../../hooks/useSpamActions";
-import { useStarActions } from "../../hooks/useStarActions";
-import ContextMenuItem from "./ContextMenuItem";
-import ContextMenuLabel from "./ContextMenuLabel";
+import { useEffect, useRef, useState } from "react";
+import { useTheme } from "../../context/ThemeContext.js";
+import { useMailApp } from "../../context/MailAppContext.js";
+import { useLabelActions } from "../../hooks/useLabelActions.js";
+import { useMailActions } from "../../hooks/useMailActions.js";
+import { useSpamActions } from "../../hooks/useSpamActions.js";
+import { useStarActions } from "../../hooks/useStarActions.js";
+import ContextMenuItem from "./ContextMenuItem.jsx";
+import ContextMenuLabel from "./ContextMenuLabel.jsx";
 
 export default function ContextMenu({ contextMenu, onClose }) {
+    const { darkTheme } = useTheme();
     const {
         uiState: { selectedIds, activeLabel },
-        labelState: { labels },
     } = useMailApp();
 
     const { deleteBulk, unbinBulk } = useMailActions();
     const { toggleStarBulk } = useStarActions();
     const { toggleSpamBulk } = useSpamActions();
+    const { getLabelByName } = useLabelActions();
+    const [someSelectedMailsAreStarred, setSomeSelectedMailsAreStarred] = useState(false);
+    const [someSelectedMailsAreSpammed, setSomeSelectedMailsAreSpammed] = useState(false);
     const contextRef = useRef(null);
 
-    const starredLabel = labels.find((l) => l.name === "Starred");
-    const spamLabel = labels.find((l) => l.name === "Spam");
+    const starredLabel = getLabelByName("Starred");
+    const spamLabel = getLabelByName("Spam");
 
-    const someSelectedMailsAreStarred = selectedIds.some((id) =>
-        starredLabel?.mails?.includes(id)
-    );
-    const someSelectedMailsAreSpammed = selectedIds.some((id) =>
-        spamLabel?.mails?.includes(id)
-    );
+    useEffect(() => {
+        setSomeSelectedMailsAreStarred(selectedIds.some((id) =>
+            starredLabel?.mails?.includes(id)
+        ));
+        setSomeSelectedMailsAreSpammed(selectedIds.some((id) =>
+            spamLabel?.mails?.includes(id)
+        ));
+    }, [selectedIds, starredLabel, spamLabel]);
 
     const handleClick = (e, operation, apply) => {
         e.preventDefault();
@@ -52,7 +59,7 @@ export default function ContextMenu({ contextMenu, onClose }) {
     return (
         <div
             ref={contextRef}
-            className="shadow bg-white border rounded"
+            className={`shadow border rounded ${darkTheme ? "bg-dark text-light" : "bg-white text-dark"}`}
             style={{
                 position: "absolute",
                 top: contextMenu.y - 130,

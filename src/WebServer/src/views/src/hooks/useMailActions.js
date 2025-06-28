@@ -1,7 +1,7 @@
 import { useAuth } from "../context/AuthContext.js";
-import { useMailApp } from "../context/MailAppContext";
+import { useMailApp } from "../context/MailAppContext.js";
 import defaultPicture from "../resources/default-profile-picture.svg";
-import { useLabelActions } from "./useLabelActions";
+import { useLabelActions } from "./useLabelActions.js";
 
 export function useMailActions() {
     const {
@@ -12,7 +12,7 @@ export function useMailActions() {
 
     const { setSignedin } = useAuth();
 
-    const { getLabel, updateLabel, fetchLabels } = useLabelActions();
+    const { getLabelByName, updateLabel, fetchLabels } = useLabelActions();
 
     const fetchMails = async () => {
         try {
@@ -89,7 +89,7 @@ export function useMailActions() {
     };
 
     const deleteMail = async (id) => {
-        const bin = getLabel("Bin");
+        const bin = getLabelByName("Bin");
         if (!bin) return;
         const isBinned = bin.mails.includes(id);
 
@@ -115,7 +115,7 @@ export function useMailActions() {
             deleteMail(id);
         }
 
-        const bin = getLabel("Bin");
+        const bin = getLabelByName("Bin");
         if (!bin) return;
         setLabels((prev) =>
             prev.map((l) => {
@@ -130,21 +130,12 @@ export function useMailActions() {
     };
 
     const unbinBulk = () => {
-        const bin = getLabel("Bin");
+        const bin = getLabelByName("Bin");
         if (!bin) return;
 
         for (const id of selectedIds) {
             updateLabel(bin.id, id, false);
         }
-
-        setLabels((prev) =>
-            prev.map((l) => {
-                if (l.id !== bin.id) return l;
-                const mails = new Set(l.mails || []);
-                selectedIds.forEach((id) => mails.delete(id));
-                return { ...l, mails: [...mails] };
-            })
-        );
 
         setSelectedIds([]);
     };
