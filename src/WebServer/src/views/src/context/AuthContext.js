@@ -33,7 +33,7 @@ export function AuthProvider({ children }) {
                     userData.picture = userData.picture ?? defaultPicture;
                     if (userData.darkTheme != undefined) {
                         console.log("Setting dark theme from user data:", userData.darkTheme);
-                        setDarkTheme(userData.darkTheme);
+                        setDarkTheme(userData.darkTheme === "true" || userData.darkTheme === true);
                     }
 
                     setCurrentUser(userData);
