@@ -10,7 +10,7 @@ import { getUserById } from "../user/getUserById.js";
  * @param {string} userId - The user's ID.
  * @param {{ name: string }} data - The label data containing a unique name.
  * @returns {Promise<Label>}
- * @throws {NotFoundError} If the user is not found.
+ * @throws {NotFoundError|AlreadyExistsError} If the user is not found or the label already exists.
  */
 export async function createLabel(userId, data) {
     const user = await getUserById(userId);
