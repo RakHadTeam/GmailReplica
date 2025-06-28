@@ -87,6 +87,7 @@ export async function updateMailById(userId, mailId, updates) {
                 await sentLabel.updateOne({ $addToSet: { mails: mailId } });
             }
         }
+
     }
 
     return mail;
