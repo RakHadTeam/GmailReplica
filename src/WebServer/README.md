@@ -45,7 +45,7 @@ Make sure Docker is installed, then run the following from the root:
 docker compose up --build webserver blacklist_server
 ```
 
-- `webserver` runs the frontend + backend on port `3000`
+- `webserver` runs the frontend + backend on port `8000`
 - `blacklist_server` runs the TCP Blacklist server on port `4545`
 
 The blacklist server uses configuration `1000 1 2` and responds to malicious content.
