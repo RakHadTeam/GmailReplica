@@ -1,3 +1,4 @@
+import { useTheme } from "../../context/ThemeContext";
 export default function LabelPopupCreatePrompt({
     newLabel,
     setNewLabel,
@@ -5,19 +6,21 @@ export default function LabelPopupCreatePrompt({
     onCancel,
     error,
 }) {
+    const { darkTheme } = useTheme();
     return (
         <div
             className="position-absolute top-0 start-0 w-100 h-100 bg-dark bg-opacity-25 d-flex justify-content-center align-items-center"
             style={{ zIndex: 10000 }}
         >
             <div
-                className="p-4 rounded shadow border bg-white text-dark dark:bg-dark dark:text-white"
+                className={`p-4 rounded shadow border ${darkTheme ? "bg-dark text-white" : "bg-white text-dark"}`}
                 style={{ width: "300px" }}
             >
                 <div className="d-flex justify-content-between align-items-center mb-3">
                     <h6 className="m-0">Create New Label</h6>
                     <button
-                        className="btn-close btn-close-white"
+                        className="btn-close"
+                        style={darkTheme ? { filter: "invert(1)" } : {}}
                         onClick={() => onCancel()}
                     ></button>
                 </div>
@@ -26,7 +29,7 @@ export default function LabelPopupCreatePrompt({
                 )}
                 <input
                     type="text"
-                    className="form-control mb-3"
+                    className={`form-control mb-3 ${darkTheme ? "bg-dark text-white border-secondary" : ""}`}
                     placeholder="Label name"
                     value={newLabel}
                     onChange={(e) => setNewLabel(e.target.value)}

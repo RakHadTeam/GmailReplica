@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { useTheme } from "../../context/ThemeContext.js";
 import { useMailApp } from "../../context/MailAppContext.js";
 import { useLabelActions } from "../../hooks/useLabelActions.js";
 import { useMailActions } from "../../hooks/useMailActions.js";
@@ -8,6 +9,7 @@ import ContextMenuItem from "./ContextMenuItem.jsx";
 import ContextMenuLabel from "./ContextMenuLabel.jsx";
 
 export default function ContextMenu({ contextMenu, onClose }) {
+    const { darkTheme } = useTheme();
     const {
         uiState: { selectedIds, activeLabel },
     } = useMailApp();
@@ -57,7 +59,7 @@ export default function ContextMenu({ contextMenu, onClose }) {
     return (
         <div
             ref={contextRef}
-            className="shadow bg-white border rounded"
+            className={`shadow border rounded ${darkTheme ? "bg-dark text-light" : "bg-white text-dark"}`}
             style={{
                 position: "absolute",
                 top: contextMenu.y - 130,

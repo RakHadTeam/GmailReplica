@@ -35,8 +35,12 @@ export default function MailListRow({
             key={mail.id}
             data-mail-id={mail.id}
             className={`d-flex rounded-1 align-items-center border-top py-2 px-3 hover-bg ${
-                isSelected ? "bg-primary bg-opacity-10" : ""
-            } ${darkTheme ? "bg-dark text-white" : ""}`}
+                isSelected
+                    ? darkTheme
+                        ? "bg-secondary bg-opacity-25"
+                        : "bg-primary bg-opacity-10"
+                    : ""
+            } ${darkTheme ? " text-white" : ""}`}
             style={{ cursor: "pointer" }}
             onContextMenu={(e) => onRightClick(e, mail.id)}
             onClick={() => onClick(mail.id)}

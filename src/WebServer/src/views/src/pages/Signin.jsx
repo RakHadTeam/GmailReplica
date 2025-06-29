@@ -7,6 +7,7 @@ export function Signin() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [loginError, setLoginError] = useState(null);
+    const [showPassword, setShowPassword] = useState(false);
     const { signedin, setSignedin } = useAuth();
     const { darkTheme } = useTheme();
 
@@ -64,25 +65,34 @@ export function Signin() {
                         </label>
                         <input
                             type="email"
-                            className="form-control"
+                            className={`form-control ${darkTheme ? "bg-secondary text-white border-0" : ""}`}
                             id="email"
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
                             required
                         />
                     </div>
-                    <div className="form-group mb-3">
+                    <div className="form-group mb-3 position-relative">
                         <label htmlFor="password" className="form-label">
                             Password
                         </label>
                         <input
-                            type="password"
-                            className="form-control"
+                            type={showPassword ? "text" : "password"}
+                            className={`form-control pe-5 ${darkTheme ? "bg-secondary text-white border-0" : ""}`}
                             id="password"
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
                             required
                         />
+                        <span
+                            className={`material-symbols-rounded position-absolute end-0 translate-middle-y me-3 cursor-pointer ${
+                                darkTheme ? "text-white" : "text-muted"
+                            }`}
+                            style={{ userSelect: "none", top: "72%" }}
+                            onClick={() => setShowPassword(!showPassword)}
+                        >
+                            {showPassword ? "visibility_off" : "visibility"}
+                        </span>
                     </div>
                     {loginError && (
                         <div className="alert alert-danger py-2 text-center">

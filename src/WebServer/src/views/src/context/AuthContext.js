@@ -1,11 +1,14 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import defaultPicture from "../resources/default-profile-picture.svg";
+import { useTheme } from "./ThemeContext.js";
 
 const AuthContext = createContext();
 
 export function AuthProvider({ children }) {
     const [signedin, setSignedin] = useState(false);
     const [currentUser, setCurrentUser] = useState(null);
+
+    const { darkTheme, setDarkTheme } = useTheme();
 
     useEffect(() => {
         const checkLoggedin = async () => {
@@ -28,6 +31,10 @@ export function AuthProvider({ children }) {
                     const userData = await userRes.json();
 
                     userData.picture = userData.picture ?? defaultPicture;
+                    if (userData.darkTheme != undefined) {
+                        console.log("Setting dark theme from user data:", userData.darkTheme);
+                        setDarkTheme(userData.darkTheme === "true" || userData.darkTheme === true);
+                    }
 
                     setCurrentUser(userData);
                 }
@@ -37,6 +44,29 @@ export function AuthProvider({ children }) {
         };
         checkLoggedin();
     }, [signedin]);
+
+    useEffect(() => {
+        console.log("Updating dark theme preference:", darkTheme);
+        console.log("Current user:", currentUser);
+        if (!currentUser || currentUser.id === undefined || !signedin) return;
+
+        const updateTheme = async () => {
+            try {
+                await fetch(`/api/users/${currentUser.id}`, {
+                    method: "PATCH",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    credentials: "include",
+                    body: JSON.stringify({ darkTheme }),
+                });
+            } catch (err) {
+                console.error("Failed to update dark theme preference:", err);
+            }
+        };
+
+        updateTheme();
+    }, [darkTheme]);
 
     return (
         <AuthContext.Provider
