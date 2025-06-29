@@ -16,6 +16,9 @@ export async function patchUserByIdHandler(req, res) {
     if (req.body.fullname) {
         updatedFields.fullname = req.body.fullname;
     }
+    if (req.body.darkTheme !== undefined) {
+        updatedFields.darkTheme = req.body.darkTheme === "true" || req.body.darkTheme === true;
+    }
 
     if (req.file) {
         // Remove old picture if exists

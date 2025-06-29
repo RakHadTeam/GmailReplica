@@ -28,6 +28,9 @@ export async function postUsers(req, res) {
         email,
         password,
         fullname,
+        darkTheme: req.body.darkTheme
+            ? req.body.darkTheme === "true" || req.body.darkTheme === true
+            : false,
         picture: req.file ? `uploads/${req.file.filename}` : null,
         createdAt: new Date().toISOString(),
     };

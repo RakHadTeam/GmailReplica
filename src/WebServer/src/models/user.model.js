@@ -6,6 +6,7 @@ const UserSchema = new mongoose.Schema(
         password: { type: String, required: true },
         fullname: { type: String, required: true },
         picture: { type: String, default: null },
+        darkTheme: { type: Boolean, default: false },
         labels: [{ type: mongoose.Schema.Types.ObjectId, ref: "Label" }],
         mails: [{ type: mongoose.Schema.Types.ObjectId, ref: "Mail" }],
     },
