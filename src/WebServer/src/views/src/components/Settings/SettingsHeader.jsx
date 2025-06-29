@@ -6,7 +6,7 @@ export default function SettingsHeader({ onClose }) {
     return (
         <div
             className={`d-flex justify-content-between align-items-center mb-4 ${
-                darkTheme ? "bg-dark text-light" : "bg-light text-dark"
+                darkTheme ? "bg-dark text-light" : "text-dark"
             }`}
         >
             <div className="d-flex align-items-center gap-2">

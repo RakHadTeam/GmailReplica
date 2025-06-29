@@ -6,7 +6,7 @@ import MailDetail from "../components/MailDetail/MailDetail.jsx";
 import MailList from "../components/MailsList/MailsList.jsx";
 import Sidebar from "../components/Sidebar/Sidebar.jsx";
 import { useMailApp } from "../context/MailAppContext.js";
-import { useTheme } from "../context/ThemeContext";
+import { useTheme } from "../context/ThemeContext.js";
 import { useLabelActions } from "../hooks/useLabelActions.js";
 import { useMailActions } from "../hooks/useMailActions.js";
 
@@ -71,6 +71,7 @@ export function Inbox() {
                             setSearchQuery={setSearchQuery}
                             openMail={openMail}
                             setOpenMail={setOpenMail}
+                            toggleLabelManager={toggleLabelManager}
                         />
                         {openMail ? (
                             openMail.draft ? (

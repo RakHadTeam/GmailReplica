@@ -1,10 +1,12 @@
 import { useState } from "react";
 import LabelManager from "../LabelManager/LabelManager.jsx";
-import LabelPopup from "../LabelPopup/LabelPopup";
+import LabelPopup from "../LabelPopup/LabelPopup.jsx";
+import { useTheme } from "../../context/ThemeContext.js";
 
 export default function ContextMenuLabel() {
     const [showLabelPopupMenu, setShowLabelPopupMenu] = useState(false);
     const [showLabelManager, setShowLabelManager] = useState(false);
+    const { darkTheme } = useTheme();
 
     const toggleLabelPopup = () => {
         setShowLabelPopupMenu((prev) => !prev);
@@ -21,9 +23,9 @@ export default function ContextMenuLabel() {
             onMouseLeave={() => setShowLabelPopupMenu(false)}
             className="position-relative"
         >
-            <button className="btn btn-light w-100 text-start d-flex align-items-center gap-2">
+            <button className={`btn ${darkTheme ? "btn-dark text-light" : "btn-light text-dark"} w-100 text-start d-flex align-items-center gap-2`}>
                 <span className="material-symbols-rounded">label</span>
-                Add Label
+                Set Labels
             </button>
             {showLabelPopupMenu && (
                 <div

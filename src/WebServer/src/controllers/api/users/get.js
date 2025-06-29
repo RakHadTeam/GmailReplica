@@ -12,5 +12,6 @@ export function getUserByIdHandler(req, res) {
         email: user.email,
         picture: user.picture,
         createdAt: user.createdAt,
+        darkTheme: user.darkTheme ?? false,
     });
 }
