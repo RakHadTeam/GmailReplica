@@ -9,7 +9,7 @@ To run the web server, you can use our docker-compose setup. Make sure you have 
 docker compose up --build webserver blacklist_server
 ```
 
-This will start the web server on port `3000` by default.
+This will start the web server on port `8000` by default.
 And will start the blacklist server on port `4545`, and with configuration `1000 1 2` (Refer to [Server README](../Server/README.md)).
 
 ⚠️ **Note**: A `.env` file must be present in the root of the project for the server to run properly.

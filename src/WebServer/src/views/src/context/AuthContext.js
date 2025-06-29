@@ -32,7 +32,6 @@ export function AuthProvider({ children }) {
 
                     userData.picture = userData.picture ?? defaultPicture;
                     if (userData.darkTheme != undefined) {
-                        console.log("Setting dark theme from user data:", userData.darkTheme);
                         setDarkTheme(userData.darkTheme === "true" || userData.darkTheme === true);
                     }
 
@@ -46,8 +45,6 @@ export function AuthProvider({ children }) {
     }, [signedin]);
 
     useEffect(() => {
-        console.log("Updating dark theme preference:", darkTheme);
-        console.log("Current user:", currentUser);
         if (!currentUser || currentUser.id === undefined || !signedin) return;
 
         const updateTheme = async () => {
