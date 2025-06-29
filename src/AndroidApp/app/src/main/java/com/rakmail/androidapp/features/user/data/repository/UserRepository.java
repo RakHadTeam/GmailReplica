@@ -22,12 +22,10 @@ public class UserRepository {
     private final UserApi api;
 
     public UserRepository() {
-
         api = ApiClient.get().create(UserApi.class);
     }
 
     public void signup(String fullname, String email, String password, File profileImageFile, SignupCallback cb) {
-
         MultipartBody.Part imagePart = null;
         if (profileImageFile != null) {
             RequestBody fileBody = RequestBody.create(
@@ -78,12 +76,38 @@ public class UserRepository {
         });
     }
 
+    // ✅ NEW: Fetch user by ID
+    public void getUserById(String userId, GetUserCallback cb) {
+        api.getUserById(userId).enqueue(new Callback<>() {
+            @Override public void onResponse(@NonNull Call<User> call,
+                                             @NonNull Response<User> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    cb.onSuccess(response.body());
+                } else {
+                    cb.onFailure("Failed to fetch user: " + response.code());
+                }
+            }
+
+            @Override public void onFailure(@NonNull Call<User> call,
+                                            @NonNull Throwable t) {
+                cb.onFailure(t.getMessage());
+            }
+        });
+    }
+
+    // Callbacks
     public interface SignupCallback {
         void onSuccess(User user);
         void onFailure(String msg);
     }
+
     public interface SignInCallback {
-        void onSuccess(String token );
+        void onSuccess(String token);
+        void onFailure(String msg);
+    }
+
+    public interface GetUserCallback {
+        void onSuccess(User user);
         void onFailure(String msg);
     }
 }
