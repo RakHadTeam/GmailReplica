@@ -20,5 +20,10 @@
     <string name="logout">Logout</string>
     <string name="mail_detail_title">Mail Detail</string>
     <string name="content_avatar">Sender avatar</string>
+    <string name="manage_labels">Manage Labels</string>
+    <string name="new_label">New label</string>
+    <string name="add">Add</string>
+    <string name="search_labels">Search labels</string>
+    <string name="delete_label">Delete label</string>
 
 </resources>
