@@ -6,7 +6,7 @@
     "scripts": {
         "test": "cd src/views && npm test",
         "start": "node src/index.js",
-        "build": "cd src/views && npm run build",
+        "build": "cd src/views && npm install && npm run build",
         "prod": "npm run build && node src/index.js",
         "client": "cd src/views && npm start"
     },
