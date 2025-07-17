@@ -18,4 +18,7 @@
     <string name="select_image">Select Image</string>
     <string name="profile_picture">Profile Picture</string>
     <string name="logout">Logout</string>
+    <string name="mail_detail_title">Mail Detail</string>
+    <string name="content_avatar">Sender avatar</string>
+
 </resources>
