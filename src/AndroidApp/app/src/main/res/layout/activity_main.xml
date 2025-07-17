@@ -64,6 +64,13 @@
                 android:padding="8dp"
                 android:src="@android:drawable/ic_menu_edit"
                 android:contentDescription="Mark" />
+            <ImageView
+                android:id="@+id/btnLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="8dp"
+                android:src="@android:drawable/ic_menu_manage"
+                android:contentDescription="Mark" />
         </LinearLayout>
 
         <!-- ⬇️ SwipeRefreshLayout wraps the RecyclerView -->
