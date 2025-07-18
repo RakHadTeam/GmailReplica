@@ -11,6 +11,7 @@ export async function getUserByIdHandler(req, res) {
             fullname: user.fullname,
             email: user.email,
             picture: user.picture,
+            darkTheme: user.darkTheme,
             createdAt: user.createdAt,
             updatedAt: user.updatedAt,
         });

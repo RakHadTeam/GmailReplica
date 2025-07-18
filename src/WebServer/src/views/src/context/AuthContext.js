@@ -31,6 +31,7 @@ export function AuthProvider({ children }) {
                     const userData = await userRes.json();
 
                     userData.picture = userData.picture ?? defaultPicture;
+                    console.log("Setting dark theme based on user preference:", userData.darkTheme);
                     if (userData.darkTheme != undefined) {
                         setDarkTheme(userData.darkTheme === "true" || userData.darkTheme === true);
                     }
