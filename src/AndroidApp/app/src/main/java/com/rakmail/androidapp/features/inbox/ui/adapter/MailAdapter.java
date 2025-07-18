@@ -1,14 +1,8 @@
-// app/src/main/java/com/rakmail/androidapp/features/inbox/ui/adapter/MailAdapter.java
 package com.rakmail.androidapp.features.inbox.ui.adapter;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Color;
-import android.os.Handler;
-import android.os.Looper;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,16 +17,12 @@ import com.rakmail.androidapp.R;
 import com.rakmail.androidapp.features.inbox.model.Mail;
 import com.rakmail.androidapp.features.inbox.ui.MailDetailActivity;
 
-import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 public class MailAdapter extends RecyclerView.Adapter<MailAdapter.ViewHolder> {
-    private static final String BASE_URL = "http://10.0.2.2:3000";
     private final List<Mail> items = new ArrayList<>();
     private final Set<String> selectedIds = new HashSet<>();
     private OnSelectionChangeListener selListener;

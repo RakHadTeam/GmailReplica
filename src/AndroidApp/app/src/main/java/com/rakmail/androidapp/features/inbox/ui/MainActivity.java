@@ -3,9 +3,6 @@ package com.rakmail.androidapp.features.inbox.ui;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
-import android.view.View;
-import android.widget.ImageView;
-import android.widget.TextView;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -28,7 +25,6 @@ import com.rakmail.androidapp.features.user.model.User;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 import java.util.concurrent.CountDownLatch;
 
 public class MainActivity extends AppCompatActivity {
@@ -41,9 +37,6 @@ public class MainActivity extends AppCompatActivity {
     private MailAdapter adapter;
     private final UserRepository userRepo = new UserRepository();
 
-    private View selectionBar;
-    private TextView selectionCount;
-    private ImageView btnDelete, btnMark, btnLabel;
     private SwipeRefreshLayout swipeRefresh;
 
     private void triggerMailRefresh() {
@@ -58,11 +51,6 @@ public class MainActivity extends AppCompatActivity {
         MaterialToolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        selectionBar   = findViewById(R.id.selectionBar);
-        selectionCount = findViewById(R.id.selectionCount);
-        btnDelete      = findViewById(R.id.btnDelete);
-        btnMark        = findViewById(R.id.btnMark);
-        btnLabel       = findViewById(R.id.btnLabel);
         swipeRefresh   = findViewById(R.id.swipeRefresh);
 
         RecyclerView rv = findViewById(R.id.recyclerMails);
@@ -73,8 +61,7 @@ public class MainActivity extends AppCompatActivity {
         rv.setAdapter(adapter);
 
         adapter.setOnSelectionChangeListener(selectedIds -> {
-            if (!selectedIds.isEmpty()) showSelectionBar(selectedIds);
-            else hideSelectionBar();
+            invalidateOptionsMenu();
         });
 
         adapter.setOnDeleteMailListener(id -> {
@@ -82,24 +69,6 @@ public class MainActivity extends AppCompatActivity {
                 @Override public void onSuccess() { Log.d(TAG, "Deleted mail: " + id); }
                 @Override public void onError(String message) { Log.e(TAG, "Delete failed: " + message); }
             });
-        });
-
-        btnDelete.setOnClickListener(v -> {
-            adapter.deleteSelected();
-            hideSelectionBar();
-        });
-
-        btnMark.setOnClickListener(v -> {
-            adapter.markSelected();
-            hideSelectionBar();
-        });
-
-        btnLabel.setOnClickListener(v -> {
-            Set<String> mailIds = adapter.getSelectedMailIds();
-            LabelManagerDialogFragment dialog =
-                LabelManagerDialogFragment.newInstance(new ArrayList<>(mailIds));
-            dialog.show(getSupportFragmentManager(), "labelManager");
-            hideSelectionBar();
         });
 
         viewModel = new ViewModelProvider(this).get(InboxViewModel.class);
@@ -112,7 +81,10 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_mail_actions, menu);
+        if (!adapter.getSelectedMailIds().isEmpty())
+            getMenuInflater().inflate(R.menu.menu_mail_actions, menu);
+        else
+            getMenuInflater().inflate(R.menu.top_menu, menu);
         return true;
     }
 
@@ -130,36 +102,6 @@ public class MainActivity extends AppCompatActivity {
     private int dpToPx(int dp) {
         float density = getResources().getDisplayMetrics().density;
         return Math.round(dp * density);
-    }
-
-    private void showSelectionBar(Set<String> selectedIds) {
-        selectionBar.setVisibility(View.VISIBLE);
-        RecyclerView recycler = findViewById(R.id.recyclerMails);
-        recycler.setPadding(
-            recycler.getPaddingLeft(), dpToPx(56),
-            recycler.getPaddingRight(), recycler.getPaddingBottom()
-        );
-        selectionCount.setText(selectedIds.size() + " selected");
-    }
-
-// In MainActivity.java
-
-    private void hideSelectionBar() {
-        // If it's already hidden, bail out
-        if (selectionBar.getVisibility() != View.VISIBLE) return;
-
-        selectionBar.setVisibility(View.GONE);
-        RecyclerView recycler = findViewById(R.id.recyclerMails);
-        recycler.setPadding(
-            recycler.getPaddingLeft(), 0,
-            recycler.getPaddingRight(), recycler.getPaddingBottom()
-        );
-        adapter.setOnSelectionChangeListener(null);
-        adapter.clearSelection();
-        adapter.setOnSelectionChangeListener(selectedIds -> {
-            if (!selectedIds.isEmpty()) showSelectionBar(selectedIds);
-            else hideSelectionBar();
-        });
     }
 
 
