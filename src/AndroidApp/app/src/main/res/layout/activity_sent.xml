@@ -9,12 +9,11 @@
     android:fitsSystemWindows="true"
     tools:openDrawer="start">
 
-    <!-- ───────────  MAIN CONTENT  ─────────── -->
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <!-- AppBar + Toolbar -->
+        <!-- App‑Bar עם Toolbar -->
         <com.google.android.material.appbar.AppBarLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -25,12 +24,12 @@
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
                 android:background="?attr/colorPrimary"
-                android:title="RakMail"
+                android:title="Sent"
                 android:titleTextColor="@android:color/white"
                 app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
         </com.google.android.material.appbar.AppBarLayout>
 
-        <!-- Bar שמופיע בעת בחירה מרובה -->
+        <!-- סרגל בחירה (מופיע רק כשיש Selected) -->
         <LinearLayout
             android:id="@+id/selectionBar"
             android:layout_width="match_parent"
@@ -75,7 +74,7 @@
                 android:contentDescription="Labels" />
         </LinearLayout>
 
-        <!-- Recycler‑list + Swipe‑to‑Refresh -->
+        <!-- תוכן הרשימה עם Swipe‑to‑Refresh -->
         <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
             android:id="@+id/swipeRefresh"
             android:layout_width="match_parent"
@@ -90,18 +89,17 @@
                 android:paddingBottom="8dp"
                 android:clipToPadding="false"
                 tools:listitem="@layout/item_mail_row" />
+
         </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
-    <!-- ───────────  NAVIGATION DRAWER  ─────────── -->
     <com.google.android.material.navigation.NavigationView
         android:id="@+id/navView"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_gravity="start"
-        android:fitsSystemWindows="true"
-        app:headerLayout="@layout/drawer_header"
-        app:menu="@menu/nav_menu" />
+        app:menu="@menu/nav_menu"
+        app:headerLayout="@layout/drawer_header" />
 
 </androidx.drawerlayout.widget.DrawerLayout>

@@ -15,4 +15,6 @@ public interface MailApi {
     /** toggle star on a mail */
     @PATCH("/api/mails/{id}/star")
     Call<Void> toggleStar(@Path("id") String id);
+    @GET("/api/mails/sent")
+    Call<List<Mail>> getSentMails();
 }

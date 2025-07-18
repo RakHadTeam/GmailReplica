@@ -50,6 +50,10 @@
         <activity
             android:name=".features.user.ui.signin.SigninActivity"
             android:exported="false" />
+        <activity
+            android:name=".features.sent.ui.SentActivity"
+            android:exported="false"
+            android:theme="@style/Theme.AndroidApp.NoActionBar"/>
 
     </application>
 </manifest>

@@ -20,6 +20,7 @@ public class InboxViewModel extends ViewModel {
 
     private final MailRepository repository = new MailRepository();
     private final MutableLiveData<List<Mail>> mails = new MutableLiveData<>(Collections.emptyList());
+    private String currentLabel = "Inbox";
 
     /**
      * LiveData of the mail list which the UI observes.
