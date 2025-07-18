@@ -64,8 +64,8 @@ export function MailAppProvider({ children }) {
             if (activeLabel === "All") {
                 return !isExcludedFromAll(mail);
             }
-            const custom = labels.find((l) => l.id === activeLabel);
-            return custom?.mails?.includes(mail.id);
+            const custom = labels.find((l) => l.name === activeLabel);
+            return custom?.mails?.includes(mail.id) && !labelMailMap.Bin?.includes(mail.id);
         });
     }, [labels, mails, activeLabel]);
 

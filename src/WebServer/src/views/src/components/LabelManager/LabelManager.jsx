@@ -1,9 +1,9 @@
 // LabelManager.jsx
 import { useEffect, useRef, useState } from "react";
 import { useTheme } from "../../context/ThemeContext.js";
-import LabelList from "./LabelList";
-import LabelManagerHeader from "./LabelManagerHeader";
-import LabelManagerInput from "./LabelManagerInput";
+import LabelList from "./LabelList.jsx";
+import LabelManagerHeader from "./LabelManagerHeader.jsx";
+import LabelManagerInput from "./LabelManagerInput.jsx";
 
 export default function LabelManager({ onClose }) {
     const { darkTheme } = useTheme();

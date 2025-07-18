@@ -1,13 +1,15 @@
 import { useEffect, useState } from "react";
-import { useTheme } from "../../context/ThemeContext";
+import { useTheme } from "../../context/ThemeContext.js";
 import { useMailActions } from "../../hooks/useMailActions.js";
-import ComposeFields from "./ComposeFields";
-import ComposeFooter from "./ComposeFooter";
-import ComposeHeader from "./ComposeHeader";
+import ComposeFields from "./ComposeFields.jsx";
+import ComposeFooter from "./ComposeFooter.jsx";
+import ComposeHeader from "./ComposeHeader.jsx";
 
 export default function ComposeMail({ draftMail = null, onClose }) {
     if (typeof onClose !== "function") {
-        throw new Error("ComposeMail: 'onClose' prop is required and must be a function.");
+        throw new Error(
+            "ComposeMail: 'onClose' prop is required and must be a function."
+        );
     }
     const { deleteMail, sendOrSaveMail } = useMailActions();
     const { darkTheme } = useTheme();
@@ -43,7 +45,7 @@ export default function ComposeMail({ draftMail = null, onClose }) {
             recipient: recipientEmail,
             subject,
             body,
-            isDraft, 
+            isDraft,
             onSuccess: onClose,
             onError: setError,
         });

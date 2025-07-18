@@ -1,7 +1,6 @@
-import { createLabel } from "../../../models/labels.model.js";
+import { createLabel } from "../../../services/label/createLabel.js";
 
-
-export function postLabels(req, res) {
+export async function postLabels(req, res) {
     const userId = req.userId;
 
     const { name } = req.body;
@@ -12,14 +11,21 @@ export function postLabels(req, res) {
 
     let newLabel = {
         name,
-        mails:[],
+        mails: [],
     };
 
-    const { status, label, error } = createLabel(userId, newLabel)
-
-    if (error) {
-        return res.status(status ?? 400).json({ error });
+    try {
+        const label = await createLabel(userId, newLabel);
+        res.status(201)
+            .location(`/api/labels/${label.id}`)
+            .json({ id: label.id });
+    } catch (error) {
+        if (error instanceof AlreadyExistsError) {
+            return res.status(409).json({ error: error.message });
+        } else if (error instanceof NotFoundError) {
+            return res.status(404).json({ error: error.message });
+        } else {
+            return res.status(500).json({ error: "Internal server error" });
+        }
     }
-
-    res.status(status).location(`/api/labels/${label.id}`).json({ id: label.id })
 }

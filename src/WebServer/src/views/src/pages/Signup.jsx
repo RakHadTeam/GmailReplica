@@ -10,6 +10,7 @@ export function Signup() {
     const [password, setPassword] = useState("");
     const [passwordError, setPasswordError] = useState("");
     const [formError, setFormError] = useState("");
+    const [showPassword, setShowPassword] = useState(false);
 
     const { darkTheme } = useTheme();
 
@@ -103,7 +104,11 @@ export function Signup() {
                                 value={firstname}
                                 onChange={(e) => setFirstname(e.target.value)}
                                 required
-                                className="form-control"
+                                className={`form-control ${
+                                    darkTheme
+                                        ? "bg-secondary text-white border-0"
+                                        : ""
+                                }`}
                                 autoComplete="given-name"
                             />
                         </div>
@@ -117,7 +122,11 @@ export function Signup() {
                                 name="surname"
                                 value={surname}
                                 onChange={(e) => setSurname(e.target.value)}
-                                className="form-control"
+                                className={`form-control ${
+                                    darkTheme
+                                        ? "bg-secondary text-white border-0"
+                                        : ""
+                                }`}
                                 autoComplete="family-name"
                                 required
                             />
@@ -133,7 +142,11 @@ export function Signup() {
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
                                 required
-                                className="form-control"
+                                className={`form-control ${
+                                    darkTheme
+                                        ? "bg-secondary text-white border-0"
+                                        : ""
+                                }`}
                                 autoComplete="email"
                             />
                         </div>
@@ -147,26 +160,43 @@ export function Signup() {
                                 name="picture"
                                 accept="image/*"
                                 onChange={(e) => setPicture(e.target.files[0])}
-                                className="form-control"
+                                className={`form-control ${
+                                    darkTheme
+                                        ? "bg-secondary text-white border-0"
+                                        : ""
+                                }`}
                                 style={{ padding: "6px 16px", height: "40px" }}
                             />
                         </div>
-                        <div className="form-group mb-3">
+                        <div className="form-group mb-3 position-relative">
                             <label htmlFor="password" className="form-label">
                                 Password
                             </label>
                             <input
-                                type="password"
+                                type={showPassword ? "text" : "password"}
                                 id="password"
                                 name="password"
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
                                 required
-                                className={`form-control${
+                                className={`form-control  ${
                                     passwordError ? " is-invalid" : ""
+                                } ${
+                                    darkTheme
+                                        ? "bg-secondary text-white border-0"
+                                        : ""
                                 }`}
                                 autoComplete="new-password"
                             />
+                            <span
+                                className={`material-symbols-rounded position-relative translate-middle-y cursor-pointer ${
+                                    darkTheme ? "text-white-50" : "text-muted"
+                                }`}
+                                style={{ userSelect: "none", bottom: "17px", left: "85%" }}
+                                onClick={() => setShowPassword(!showPassword)}
+                            >
+                                {showPassword ? "visibility_off" : "visibility"}
+                            </span>
                             {passwordError && (
                                 <div className="text-danger small" role="alert">
                                     {passwordError}

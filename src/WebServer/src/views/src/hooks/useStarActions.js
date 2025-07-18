@@ -7,11 +7,14 @@ export function useStarActions() {
     } = useMailApp();
 
     const { toggleLabel, toggleLabelBulk } = useLabelActions();
+    const { getLabelByName } = useLabelActions();
 
-    const toggleStar = (mailId) => toggleLabel("Starred", mailId);
+    const starredLabel = getLabelByName("Starred");
+
+    const toggleStar = (mailId) => toggleLabel(starredLabel.id, mailId);
 
     const toggleStarBulk = (apply) => {
-        toggleLabelBulk("Starred", selectedIds, apply);
+        toggleLabelBulk(starredLabel.id, selectedIds, apply);
     };
 
     return { toggleStar, toggleStarBulk };

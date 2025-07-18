@@ -11,11 +11,11 @@ This is the frontend React application for **RakMail**, a feature-rich mail clie
 Make sure Docker is installed. Then run:
 
 ```bash
-docker compose up --build webserver blacklist_server
+docker compose up --build webserver
 ```
 
 This command does two things:
-- Starts the **React App and mail server** on port `8000`, and a blacklist filter on port `4545`
+- Starts the **React App and mail server** on port `80`, and a blacklist filter on port `4545`, and a MongoDB database on port `27017`.
 
 ---
 

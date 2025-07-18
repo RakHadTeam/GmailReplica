@@ -1,7 +1,8 @@
+import { UnauthorizedError } from "../../../core/errors/AppError.js";
 import { generateToken } from "../../../core/jwt.js";
-import { validateCredentials } from "../../../models/token.model.js";
+import { validateCredentials } from "../../../services/token.service.js";
 
-export function postTokens(req, res) {
+export async function postTokens(req, res) {
     const { email, password } = req.body;
     if (!email || !password) {
         return res
@@ -9,19 +10,18 @@ export function postTokens(req, res) {
             .json({ error: "Email and password are required" });
     }
 
-    const { status, user } = validateCredentials(email, password);
-
-    if (status != 200) {
-        return res.status(status).json({ error: "Invalid credentials" });
+    try {
+        const user = await validateCredentials(email, password);
+        const token = generateToken(user);
+        res.cookie("token", token, {
+            httpOnly: true,
+            maxAge: 1000 * 60 * 60 * 24, // 1 day
+        });
+        return res.status(200).json({ token });
+    } catch (error) {
+        if (error instanceof UnauthorizedError) {
+            return res.status(401).json({ error: "Invalid email or password" });
+        }
+        return res.status(500).json({ error: "Internal server error" });
     }
-
-    const token = generateToken(user);
-
-    res.cookie("token", token, {
-        httpOnly: true,
-        secure: false,
-        sameSite: "Strict",
-        maxAge: 60 * 60 * 1000
-    })
-        .json({ token });
 }

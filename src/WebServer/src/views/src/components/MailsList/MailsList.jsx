@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
-import { useMailApp } from "../../context/MailAppContext";
-import { useTheme } from "../../context/ThemeContext";
-import { useStarActions } from "../../hooks/useStarActions";
+import { useMailApp } from "../../context/MailAppContext.js";
+import { useTheme } from "../../context/ThemeContext.js";
+import { useStarActions } from "../../hooks/useStarActions.js";
 import ContextMenu from "../ContextMenu/ContextMenu.jsx";
 import MailsListRow from "./MailsListRow.jsx";
 

@@ -1,21 +1,27 @@
-import { updateMailById } from "../../../../models/mail.model.js";
+import { MailValidationError } from "../../../../core/errors/AppError.js";
+import { updateMailById } from "../../../../services/mail/updateMailById.js";
 
-export function patchMail(req, res) {
+export async function patchMail(req, res) {
     const { id } = req.params; //get the mail ID from the request parameters
     const { subject, body, recipient, draft } = req.body;
 
     const userId = req.userId;
 
-    const { status, error } = updateMailById(userId, id, {
-        subject,
-        body,
-        recipient,
-        draft,
-    });
+    try {
+        await updateMailById(userId, id, {
+            subject,
+            body,
+            recipient,
+            draft,
+        });
 
-    if (error) {
-        return res.status(status ?? 400).json({ error });
+        return res.status(204).location(`/api/mails/${id}`).send();
+    } catch (err) {
+        if (err instanceof MailValidationError)
+            return res.status(400).json({ error: err.message });
+        else {
+            console.error("Error updating mail:", err);
+            return res.status(500).json({ error: "Internal server error" });
+        }
     }
-
-    return res.status(status).location(`/api/mails/${id}`).send();
 }

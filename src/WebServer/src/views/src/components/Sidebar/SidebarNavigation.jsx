@@ -1,6 +1,7 @@
 import { useMemo, useState } from "react";
 import { useMailApp } from "../../context/MailAppContext.js";
-import { useTheme } from "../../context/ThemeContext";
+import { useTheme } from "../../context/ThemeContext.js";
+import { useLabelActions } from "../../hooks/useLabelActions.js";
 
 export default function SidebarNavigation() {
     const { darkTheme } = useTheme();
@@ -10,16 +11,18 @@ export default function SidebarNavigation() {
         uiState: { activeLabel, setActiveLabel },
     } = useMailApp();
 
+    const { getLabelByName } = useLabelActions();
+
     const [starredIds, setStarredIds] = useState([]);
     const [spammedIds, setSpammedIds] = useState([]);
     const [binnedIds, setBinnedIds] = useState([]);
     const [sentIds, setSentIds] = useState([]);
 
     useMemo(() => {
-        const starredLabel = labels.find((label) => label.id === "Starred");
-        const spamLabel = labels.find((label) => label.id === "Spam");
-        const binLabel = labels.find((label) => label.id === "Bin");
-        const sentLabel = labels.find((label) => label.id === "Sent");
+        const starredLabel = getLabelByName("Starred");
+        const spamLabel = getLabelByName("Spam");
+        const binLabel = getLabelByName("Bin");
+        const sentLabel = getLabelByName("Sent");
 
         setStarredIds(starredLabel ? starredLabel.mails : []);
         setSpammedIds(spamLabel ? spamLabel.mails : []);
@@ -71,8 +74,11 @@ export default function SidebarNavigation() {
                     id: "Spam",
                     icon: "report",
                     label: "Spam",
-                    count: mails.filter((m) => spammedIds.includes(m.id))
-                        .length,
+                    count: mails.filter(
+                        (m) =>
+                            spammedIds.includes(m.id) &&
+                            !binnedIds.includes(m.id)
+                    ).length,
                 },
                 {
                     id: "Bin",

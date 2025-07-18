@@ -1,11 +1,12 @@
-import { getUserById, updateUserById } from "../../../models/user.model.js";
 import fs from "fs";
-import path from "path";
+import { NotFoundError } from "../../../core/errors/AppError.js";
+import { getUserById } from "../../../services/user/getUserById.js";
+import { updateUserById } from "../../../services/user/updateUserById.js";
 
-export function patchUserByIdHandler(req, res) {
+export async function patchUserByIdHandler(req, res) {
     const { id } = req.params;
 
-    const user = getUserById(id);
+    const user = await getUserById(id);
     if (!user) {
         return res.status(404).json({ error: "User not found" });
     }
@@ -15,23 +16,32 @@ export function patchUserByIdHandler(req, res) {
     if (req.body.fullname) {
         updatedFields.fullname = req.body.fullname;
     }
+    if (req.body.darkTheme !== undefined) {
+        updatedFields.darkTheme = req.body.darkTheme === "true" || req.body.darkTheme === true;
+    }
 
     if (req.file) {
         // Remove old picture if exists
         if (user.picture) {
             try {
-                fs.unlinkSync(path.join("uploads", user.picture));
+                fs.unlinkSync(user.picture);
             } catch (err) {
                 console.warn("Failed to delete old picture:", err);
             }
         }
 
-        updatedFields.picture = `/uploads/${req.file.filename}`;
+        updatedFields.picture = `uploads/${req.file.filename}`;
     }
 
-    updateUserById(id, updatedFields); // implement this in your model
-
-    res.status(200).json({ message: "User updated successfully" });
+    try {
+        await updateUserById(id, updatedFields);
+        return res.status(204).send();
+    } catch (error) {
+        if (error instanceof NotFoundError) {
+            return res.status(404).json({ error: "User not found" });
+        } else {
+            console.error("Error updating user:", error);
+            return res.status(500).json({ error: "Internal server error" });
+        }
+    }
 }
-
-

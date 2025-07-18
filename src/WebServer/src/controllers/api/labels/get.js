@@ -1,14 +1,15 @@
-import { getAllLabels } from "../../../models/labels.model.js";
+import { NotFoundError } from "../../../core/errors/AppError.js";
+import { getAllLabels } from "../../../services/label/getAllLabels.js";
 
-export function getLabels(req, res) {
+export async function getLabels(req, res) {
     const userId = req.userId;
 
-    const { status, labels, error } = getAllLabels(userId);
-
-    if (error) {
-        return res.status(status ?? 400).json({ error });
+    try {
+        const allLabels = await getAllLabels(userId);
+        res.status(200).json(allLabels);
+    } catch (error) {
+        if (error instanceof NotFoundError)
+            res.status(404).json({ error: error.message });
+        else res.status(500).json({ error: "Internal server error" });
     }
-
-    res.status(status).json(labels);
 }
-

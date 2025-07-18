@@ -1,6 +1,7 @@
 import multer from "multer";
 import path from "path";
-import { createUser } from "../../../models/user.model.js";
+import { UserAlreadyExistsError } from "../../../core/errors/AppError.js";
+import { createUser } from "../../../services/user/createUser.js";
 
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
@@ -14,7 +15,7 @@ const storage = multer.diskStorage({
 
 export const upload = multer({ storage });
 
-export function postUsers(req, res) {
+export async function postUsers(req, res) {
     const { email, password, fullname } = req.body;
 
     // Validate input
@@ -27,41 +28,24 @@ export function postUsers(req, res) {
         email,
         password,
         fullname,
-        picture: req.file ? `/uploads/${req.file.filename}` : null,
+        darkTheme: req.body.darkTheme
+            ? req.body.darkTheme === "true" || req.body.darkTheme === true
+            : false,
+        picture: req.file ? `uploads/${req.file.filename}` : null,
         createdAt: new Date().toISOString(),
-        mails: [],
-        labels: [
-            {
-                name: "Starred",
-                id: "Starred",
-                mails: [],
-            },
-            {
-                name: "Bin",
-                id: "Bin",
-                mails: [],
-            },
-            {
-                name: "Spam",
-                id: "Spam",
-                mails: [],
-            },
-            {
-                name: "Sent",
-                id: "Sent",
-                mails: [],
-            },
-        ],
     };
 
-    console.log("Creating user:", newUser);
-
-    const { status, error } = createUser(newUser);
-    if (status === 201) {
-        return res.status(201).json({ message: "User created successfully" });
-    } else {
+    try {
+        const userId = await createUser(newUser);
         return res
-            .status(status)
-            .json({ error: error || "User creation failed" });
+            .status(201)
+            .json({ message: "User created successfully", userId });
+    } catch (error) {
+        if (error instanceof UserAlreadyExistsError) {
+            return res.status(409).json({ error: "User already exists" });
+        } else {
+            console.error("Error creating user:", error);
+            return res.status(500).json({ error: "Internal server error" });
+        }
     }
 }

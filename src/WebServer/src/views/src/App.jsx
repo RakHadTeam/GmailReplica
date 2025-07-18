@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { Route, Routes, useLocation, useNavigate } from "react-router-dom";
 import NotSignedInAlert from "./components/NotSignedInAlert/NotSignedInAlert.jsx";
-import TopBarButtons from "./components/TopBarButtons/TopBarButtons";
+import TopBarButtons from "./components/TopBarButtons/TopBarButtons.jsx";
 import { useAuth } from "./context/AuthContext.js";
 import Home from "./pages/Home.jsx";
 import { Inbox } from "./pages/Inbox.jsx";
@@ -24,7 +24,8 @@ function App() {
             {!signedin &&
                 location.pathname !== "/signup" &&
                 location.pathname !== "/signin" &&
-                location.pathname !== "/home" && <NotSignedInAlert />}
+                location.pathname !== "/home" &&
+                location.pathname !== "/" && <NotSignedInAlert />}
             <TopBarButtons />
             <Routes>
                 <Route path="/signin" element={<Signin />} />

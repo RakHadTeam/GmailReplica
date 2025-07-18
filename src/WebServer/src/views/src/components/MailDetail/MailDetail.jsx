@@ -1,9 +1,9 @@
 import { useEffect } from "react";
 import { useMailApp } from "../../context/MailAppContext.js";
 import { useTheme } from "../../context/ThemeContext.js";
-import MailDetailBodyContent from "./MailDetailBodyContent";
-import MailDetailHeader from "./MailDetailHeader";
-import MailDetailSenderInfo from "./MailDetailSenderInfo";
+import MailDetailBodyContent from "./MailDetailBodyContent.jsx";
+import MailDetailHeader from "./MailDetailHeader.jsx";
+import MailDetailSenderInfo from "./MailDetailSenderInfo.jsx";
 
 export default function MailDetail({ mail }) {
     const { darkTheme } = useTheme();
@@ -20,9 +20,7 @@ export default function MailDetail({ mail }) {
     return (
         <div
             className={`card mt-4 shadow-sm rounded-4 ${
-                darkTheme
-                    ? "bg-dark text-white "
-                    : "bg-white text-dark"
+                darkTheme ? "bg-dark text-white " : "bg-white text-dark"
             }`}
         >
             <MailDetailHeader mail={mail} />
