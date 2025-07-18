@@ -19,4 +19,6 @@
     <color name="teal_700">#146c43</color>
     <color name="black">#000000</color>
     <color name="white">#FFFFFF</color>
+    <color name="md_theme_error">#B3261E</color>
+
 </resources>

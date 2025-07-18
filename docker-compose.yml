@@ -25,7 +25,9 @@ services:
       context: ./src/WebServer
       dockerfile: Dockerfile.webserver
     ports:
-      - "8000:8000"
+      - "80:80"
+    depends_on:
+      - blacklist_server
 
   blacklist_client:
     container_name: "blacklist_client"

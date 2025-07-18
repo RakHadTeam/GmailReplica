@@ -1,12 +1,22 @@
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
     <item
         android:id="@+id/action_delete"
         android:title="Delete"
         android:icon="@android:drawable/ic_menu_delete"
-        android:showAsAction="ifRoom"/>
+        app:showAsAction="ifRoom" />
+
     <item
         android:id="@+id/action_mark"
         android:title="Mark"
         android:icon="@android:drawable/ic_menu_edit"
-        android:showAsAction="ifRoom"/>
+        app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/action_manage_labels"
+        android:title="Manage Labels"
+        android:icon="@android:drawable/ic_menu_manage"
+        app:showAsAction="ifRoom" />
+
 </menu>
