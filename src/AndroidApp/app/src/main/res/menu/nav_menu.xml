@@ -5,26 +5,29 @@
         <item
             android:id="@+id/nav_inbox"
             android:icon="@android:drawable/ic_dialog_email"
-            android:title="Inbox" />
+            android:title="@string/inbox_label" />
         <item
             android:id="@+id/nav_sent"
             android:icon="@android:drawable/ic_menu_send"
-            android:title="Sent" />
+            android:title="@string/sent_label" />
         <item
             android:id="@+id/nav_starred"
             android:icon="@android:drawable/btn_star"
-            android:title="Starred" />
+            android:title="@string/starred_label" />
         <item
             android:id="@+id/nav_drafts"
             android:icon="@android:drawable/ic_menu_edit"
-            android:title="Drafts" />
+            android:title="@string/drafts_label" />
         <item
             android:id="@+id/nav_spam"
             android:icon="@android:drawable/ic_delete"
-            android:title="Spam" />
+            android:title="@string/spam_label" />
         <item
             android:id="@+id/nav_bin"
             android:icon="@android:drawable/ic_menu_delete"
-            android:title="Bin" />
+            android:title="@string/bin_label" />
+
+    </group>
+    <group android:id="@+id/group_custom_labels">
     </group>
 </menu>

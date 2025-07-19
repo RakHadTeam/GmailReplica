@@ -3,13 +3,10 @@ package com.rakmail.androidapp.features.inbox.ui;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.format.DateFormat;
-import android.widget.ImageView;
-import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.google.android.material.appbar.MaterialToolbar;
 import com.rakmail.androidapp.R;
 import com.rakmail.androidapp.features.inbox.model.Mail;
 import com.rakmail.androidapp.features.inbox.viewmodel.MailDetailViewModel;
@@ -23,21 +20,17 @@ public class MailDetailActivity extends AppCompatActivity {
 
     public static final String EXTRA_MAIL = "extra_mail";
     private MailDetailViewModel vm;
+    private com.rakmail.androidapp.databinding.ActivityMailDetailBinding binding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_mail_detail);
+        binding = com.rakmail.androidapp.databinding.ActivityMailDetailBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
 
-        MaterialToolbar tb = findViewById(R.id.toolbar);
-        tb.setNavigationOnClickListener(v -> finish());
-
-        TextView tvSub   = findViewById(R.id.tvSubject);
-        TextView tvName  = findViewById(R.id.tvSenderName);
-        TextView tvEmail = findViewById(R.id.tvSenderEmail);
-        TextView tvDate  = findViewById(R.id.tvDate);
-        TextView tvBody  = findViewById(R.id.tvBody);
-        ImageView ivAv   = findViewById(R.id.ivAvatar);
+        // Set status bar color and icon visibility
+        getWindow().setStatusBarColor(getResources().getColor(R.color.colorPrimary));
+        getWindow().getDecorView().setSystemUiVisibility(0); // ensures icons are light
 
         vm = new ViewModelProvider(this).get(MailDetailViewModel.class);
 
@@ -47,12 +40,10 @@ public class MailDetailActivity extends AppCompatActivity {
                 return;
             }
 
-            tvSub.setText(m.subject == null ? "(no subject)" : m.subject);
-            tvName.setText(m.senderName == null ? "(no sender)" : m.senderName);
-            tvEmail.setText("<" + (m.senderEmail == null ? "no-email" : m.senderEmail) + ">");
-
+            binding.mailSubject.setText(m.getSubject() == null ? "(no subject)" : m.getSubject());
+            binding.mailSender.setText(m.getSenderName() == null ? "(no sender)" : m.getSenderName() + " <" + (m.getSenderEmail() == null ? "no-email" : m.getSenderEmail()) + ">");
             // parse ISO-8601 timestamp
-            String raw = m.createdAt;
+            String raw = m.getCreatedAt();
             Date date;
             try {
                 SimpleDateFormat iso = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.US);
@@ -61,20 +52,18 @@ public class MailDetailActivity extends AppCompatActivity {
             } catch (ParseException e) {
                 date = new Date(); // fallback to now
             }
-            tvDate.setText(DateFormat.format("dd MMM yyyy  HH:mm", date));
-
-            tvBody.setText(m.body == null ? "" : m.body);
-
-            // no-lib image load
-            if (m.senderPicture != null && !m.senderPicture.isEmpty()) {
+            binding.mailDate.setText(DateFormat.format("dd MMM yyyy  HH:mm", date));
+            binding.mailBody.setText(m.getBody() == null ? "" : m.getBody());
+            // Profile picture
+            if (m.getSenderPicture() != null && !m.getSenderPicture().isEmpty()) {
                 try {
-                    Uri uri = Uri.parse(m.senderPicture);
-                    ivAv.setImageURI(uri);
+                    Uri uri = Uri.parse(m.getSenderPicture());
+                    binding.mailProfilePicture.setImageURI(uri);
                 } catch (Exception e) {
-                    ivAv.setImageResource(R.drawable.ic_account_circle);
+                    binding.mailProfilePicture.setImageResource(R.drawable.ic_account_circle);
                 }
             } else {
-                ivAv.setImageResource(R.drawable.ic_account_circle);
+                binding.mailProfilePicture.setImageResource(R.drawable.ic_account_circle);
             }
         });
 
@@ -86,6 +75,8 @@ public class MailDetailActivity extends AppCompatActivity {
             String id = getIntent().getStringExtra("mailId");
             vm.load(id);
         }
+
+        binding.toolbar.setNavigationOnClickListener(v -> finish());
     }
 
 

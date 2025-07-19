@@ -30,7 +30,6 @@
                 app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
         </com.google.android.material.appbar.AppBarLayout>
 
-        <!-- Bar שמופיע בעת בחירה מרובה -->
         <LinearLayout
             android:id="@+id/selectionBar"
             android:layout_width="match_parent"
@@ -86,7 +85,7 @@
                 android:id="@+id/recyclerMails"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:paddingTop="112dp"
+                android:paddingTop="0dp"
                 android:paddingBottom="8dp"
                 android:clipToPadding="false"
                 tools:listitem="@layout/item_mail_row" />

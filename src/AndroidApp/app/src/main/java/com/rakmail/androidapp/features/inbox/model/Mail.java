@@ -7,67 +7,67 @@ import com.google.gson.annotations.SerializedName;
 
 public class Mail implements Parcelable {
     @SerializedName("id")
-    public String id;
+    private String id;
 
     @SerializedName("subject")
-    public String subject;
+    private String subject;
 
     @SerializedName("body")
-    public String body;
+    private String body;
 
     @SerializedName("sender")
-    public String senderId;
+    private String senderId;
 
     @SerializedName("recipient")
-    public String recipientId;
+    private String recipientId;
 
     @SerializedName("draft")
-    public boolean draft;
+    private boolean draft;
 
     @SerializedName("createdAt")
-    public String createdAt;
+    private String createdAt;
 
     // These are enriched later on the client (not from the API response)
-    public String senderName;
-    public String senderEmail;
-    public String senderPicture;
-    public String recipientName;
-    public String recipientEmail;
-    public String recipientPicture;
+    private String senderName;
+    private String senderEmail;
+    private String senderPicture;
+    private String recipientName;
+    private String recipientEmail;
+    private String recipientPicture;
 
     public Mail() {}
 
     protected Mail(Parcel in) {
-        id = in.readString();
-        subject = in.readString();
-        body = in.readString();
-        senderId = in.readString();
-        recipientId = in.readString();
-        draft = in.readByte() != 0;
-        createdAt = in.readString();
-        senderName = in.readString();
-        senderEmail = in.readString();
-        senderPicture = in.readString();
-        recipientName = in.readString();
-        recipientEmail = in.readString();
-        recipientPicture = in.readString();
+        setId(in.readString());
+        setSubject(in.readString());
+        setBody(in.readString());
+        setSenderId(in.readString());
+        setRecipientId(in.readString());
+        setDraft(in.readByte() != 0);
+        setCreatedAt(in.readString());
+        setSenderName(in.readString());
+        setSenderEmail(in.readString());
+        setSenderPicture(in.readString());
+        setRecipientName(in.readString());
+        setRecipientEmail(in.readString());
+        setRecipientPicture(in.readString());
     }
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(id);
-        dest.writeString(subject);
-        dest.writeString(body);
-        dest.writeString(senderId);
-        dest.writeString(recipientId);
-        dest.writeByte((byte) (draft ? 1 : 0));
-        dest.writeString(createdAt);
-        dest.writeString(senderName);
-        dest.writeString(senderEmail);
-        dest.writeString(senderPicture);
-        dest.writeString(recipientName);
-        dest.writeString(recipientEmail);
-        dest.writeString(recipientPicture);
+        dest.writeString(getId());
+        dest.writeString(getSubject());
+        dest.writeString(getBody());
+        dest.writeString(getSenderId());
+        dest.writeString(getRecipientId());
+        dest.writeByte((byte) (isDraft() ? 1 : 0));
+        dest.writeString(getCreatedAt());
+        dest.writeString(getSenderName());
+        dest.writeString(getSenderEmail());
+        dest.writeString(getSenderPicture());
+        dest.writeString(getRecipientName());
+        dest.writeString(getRecipientEmail());
+        dest.writeString(getRecipientPicture());
     }
 
     @Override
@@ -86,4 +86,108 @@ public class Mail implements Parcelable {
             return new Mail[size];
         }
     };
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getSubject() {
+        return subject;
+    }
+
+    public void setSubject(String subject) {
+        this.subject = subject;
+    }
+
+    public String getBody() {
+        return body;
+    }
+
+    public void setBody(String body) {
+        this.body = body;
+    }
+
+    public String getSenderId() {
+        return senderId;
+    }
+
+    public void setSenderId(String senderId) {
+        this.senderId = senderId;
+    }
+
+    public String getRecipientId() {
+        return recipientId;
+    }
+
+    public void setRecipientId(String recipientId) {
+        this.recipientId = recipientId;
+    }
+
+    public boolean isDraft() {
+        return draft;
+    }
+
+    public void setDraft(boolean draft) {
+        this.draft = draft;
+    }
+
+    public String getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(String createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public String getSenderName() {
+        return senderName;
+    }
+
+    public void setSenderName(String senderName) {
+        this.senderName = senderName;
+    }
+
+    public String getSenderEmail() {
+        return senderEmail;
+    }
+
+    public void setSenderEmail(String senderEmail) {
+        this.senderEmail = senderEmail;
+    }
+
+    public String getSenderPicture() {
+        return senderPicture;
+    }
+
+    public void setSenderPicture(String senderPicture) {
+        this.senderPicture = senderPicture;
+    }
+
+    public String getRecipientName() {
+        return recipientName;
+    }
+
+    public void setRecipientName(String recipientName) {
+        this.recipientName = recipientName;
+    }
+
+    public String getRecipientEmail() {
+        return recipientEmail;
+    }
+
+    public void setRecipientEmail(String recipientEmail) {
+        this.recipientEmail = recipientEmail;
+    }
+
+    public String getRecipientPicture() {
+        return recipientPicture;
+    }
+
+    public void setRecipientPicture(String recipientPicture) {
+        this.recipientPicture = recipientPicture;
+    }
 }

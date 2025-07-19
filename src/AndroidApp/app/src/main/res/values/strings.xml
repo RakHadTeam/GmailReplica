@@ -27,4 +27,13 @@
     <string name="delete_label">Delete label</string>
     <string name="open_drawer">Open navigation drawer</string>
     <string name="close_drawer">Close navigation drawer</string>
+    <string name="sent_label">Sent</string>
+    <string name="starred_label">Starred</string>
+    <string name="drafts_label">Drafts</string>
+    <string name="spam_label">Spam</string>
+    <string name="bin_label">Bin</string>
+    <string name="inbox_label">Inbox</string>
+    <string name="mail_deleted_success">Mail Deleted!</string>
+    <string name="mail_deleted_error">Error Deleting Mail</string>
+    <string name="delete_btn">Delete</string>
 </resources>

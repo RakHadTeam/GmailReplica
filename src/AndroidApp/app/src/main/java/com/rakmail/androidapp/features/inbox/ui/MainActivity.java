@@ -1,159 +1,264 @@
 package com.rakmail.androidapp.features.inbox.ui;
-import android.content.Intent;
+
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.GravityCompat;
-import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-import com.google.android.material.appbar.MaterialToolbar;
-import com.google.android.material.navigation.NavigationView;
+
 import com.rakmail.androidapp.R;
+import com.rakmail.androidapp.databinding.ActivityMainBinding;
 import com.rakmail.androidapp.features.inbox.data.MailRepository;
-import com.rakmail.androidapp.features.inbox.model.Mail;
 import com.rakmail.androidapp.features.inbox.ui.adapter.MailAdapter;
 import com.rakmail.androidapp.features.inbox.viewmodel.InboxViewModel;
+import com.rakmail.androidapp.features.inbox.viewmodel.InboxViewModelFactory;
+import com.rakmail.androidapp.features.label.model.Label;
+import com.rakmail.androidapp.features.label.repository.LabelRepository;
 import com.rakmail.androidapp.features.label.view.fragment.LabelManagerDialogFragment;
-import com.rakmail.androidapp.features.sent.ui.SentActivity;
+import com.rakmail.androidapp.features.label.viewmodel.LabelViewModel;
 import com.rakmail.androidapp.features.user.data.repository.UserRepository;
-import com.rakmail.androidapp.features.user.model.User;
+
 import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.CountDownLatch;
+// Removed HashMap and Map imports if not used elsewhere after navigation change
 
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
     private static final long REFRESH_INTERVAL_MS = 10_000;
-    private final Handler refreshHandler = new Handler();
-    private final Runnable refreshRunnable = this::triggerMailRefresh;
-    private DrawerLayout drawer;
-    private NavigationView navView;
-    private SwipeRefreshLayout swipeRefresh;
+
+    private final Handler refreshHandler = new Handler(Looper.getMainLooper()); // Best practice to specify Looper
     private MailAdapter adapter;
-    private InboxViewModel viewModel;
-    private final UserRepository userRepo = new UserRepository();
+    private ActivityMainBinding binding;
+    private InboxViewModel inboxViewModel;
+    private LabelViewModel labelViewModel;
 
     private void triggerMailRefresh() {
-        viewModel.fetchMails();
+        Log.d(TAG, "Triggering mail refresh.");
+        inboxViewModel.fetchMails();
         refreshHandler.postDelayed(refreshRunnable, REFRESH_INTERVAL_MS);
-    }
+    }    private final Runnable refreshRunnable = this::triggerMailRefresh;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        binding = ActivityMainBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
 
-        MaterialToolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-
-        drawer = findViewById(R.id.drawer_layout);
-        navView = findViewById(R.id.navView);
-
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-            this, drawer, toolbar,
-            R.string.open_drawer, R.string.close_drawer);
-        drawer.addDrawerListener(toggle);
-        toggle.syncState();
-
-        navView.setNavigationItemSelectedListener(item -> {
-            drawer.closeDrawer(GravityCompat.START);
-            int id = item.getItemId();
-            if (id == R.id.nav_inbox) {
-                return true;
-            } else if (id == R.id.nav_sent) {
-                startActivity(new Intent(this, SentActivity.class));
-                return true;
-            }
-            // TODO: add other destinations (Starred, Drafts …)
-            return false;
-        });
-
-        navView.getHeaderView(0).findViewById(R.id.btnCompose)
-            .setOnClickListener(v -> {
-                // TODO open Compose activity / fragment
-            });
-
-        swipeRefresh = findViewById(R.id.swipeRefresh);
-        RecyclerView rv = findViewById(R.id.recyclerMails);
-        rv.setLayoutManager(new LinearLayoutManager(this));
-        rv.setPadding(rv.getPaddingLeft(), 0, rv.getPaddingRight(), rv.getPaddingBottom());
-
-        adapter = new MailAdapter();
-        rv.setAdapter(adapter);
-
-        adapter.setOnSelectionChangeListener(sel -> invalidateOptionsMenu());
-        adapter.setOnDeleteMailListener(id ->
-            new MailRepository().deleteMailById(id, new MailRepository.Callback() {
-                @Override public void onSuccess() { Log.d(TAG, "Deleted mail " + id); }
-                @Override public void onError(String msg){ Log.e(TAG, "Delete fail: " + msg); }
-            }));
-
-        viewModel = new ViewModelProvider(this).get(InboxViewModel.class);
-        viewModel.getMails().observe(this, this::enrichMails);
-
-        swipeRefresh.setOnRefreshListener(() -> viewModel.fetchMails());
-        viewModel.fetchMails();
-        refreshHandler.postDelayed(refreshRunnable, REFRESH_INTERVAL_MS);
+        setupLabelViewModel();
+        setupToolbar();
+        setupNavigationDrawer();
+        setupRecyclerView();
+        setupViewModel();
+        setupSwipeToRefresh();
+        setupComposeButton();
     }
 
-    @Override public boolean onCreateOptionsMenu(Menu menu) {
-        if (adapter.getSelectedMailIds().isEmpty())
+    private void setupLabelViewModel() {
+        labelViewModel = new ViewModelProvider(this).get(LabelViewModel.class);
+        // Only fetch labels once on startup
+        labelViewModel.fetchLabels();
+        labelViewModel.visibleLabels().observe(this, labels -> {
+            Log.d(TAG, "Labels updated: " + labels.size());
+            Menu menu = binding.navView.getMenu();
+            int customGroupId = R.id.group_custom_labels;
+            menu.removeGroup(customGroupId);
+            for (Label label : labels) {
+                Log.d(TAG, "Adding label to menu: " + label.getName());
+                MenuItem item = menu.add(customGroupId, label.getId().hashCode(), Menu.NONE, label.getName());
+                item.setIcon(R.drawable.ic_label);
+                item.setTitleCondensed(label.getId());
+            }
+        });
+    }
+
+    private void setupToolbar() {
+        setSupportActionBar(binding.toolbar);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setHomeButtonEnabled(true);
+        }
+    }
+
+    private void setupNavigationDrawer() {
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+            this, binding.drawerLayout, binding.toolbar,
+            R.string.open_drawer, R.string.close_drawer);
+        binding.drawerLayout.addDrawerListener(toggle);
+        toggle.syncState();
+
+        binding.navView.setNavigationItemSelectedListener(item -> {
+            binding.drawerLayout.closeDrawer(GravityCompat.START);
+            int id = item.getItemId();
+            boolean handled = true;
+
+            if (id == R.id.nav_inbox) {
+                inboxViewModel.setCurrentLabelId("");
+                setTitle("Inbox");
+            } else if (id == R.id.nav_sent) {
+                Label sentLabel = labelViewModel.getLabelByName("Sent");
+                inboxViewModel.setCurrentLabelId(sentLabel.getId());
+                setTitle("Sent");
+            } else if (id == R.id.nav_spam) {
+                Label spamLabel = labelViewModel.getLabelByName("Spam");
+                inboxViewModel.setCurrentLabelId(spamLabel.getId());
+                setTitle("Spam");
+            } else if (id == R.id.nav_bin) {
+                Label binLabel = labelViewModel.getLabelByName("Bin");
+                inboxViewModel.setCurrentLabelId(binLabel.getId());
+                setTitle("Bin");
+            } else if (id == R.id.nav_starred) {
+                Label starredLabel = labelViewModel.getLabelByName("Starred");
+                inboxViewModel.setCurrentLabelId(starredLabel.getId());
+                setTitle("Starred");
+            } else if (id == R.id.nav_drafts) {
+                inboxViewModel.setCurrentLabelId("Drafts");
+                setTitle("Drafts");
+            } else {
+                Label label = labelViewModel.getLabelById(item.getTitleCondensed().toString());
+                if (label != null) {
+                    inboxViewModel.setCurrentLabelId(label.getId());
+                    setTitle(label.getName());
+                } else {
+                    Log.w(TAG, "Label not found for id: " + item.getTitleCondensed());
+                    handled = false; // If label not found, do not handle the click
+                }
+            }
+            return handled;
+        });
+    }
+
+    private void setupRecyclerView() {
+        adapter = new MailAdapter();
+        binding.recyclerMails.setLayoutManager(new LinearLayoutManager(this));
+
+        binding.recyclerMails.setAdapter(adapter);
+
+        adapter.setOnSelectionChangeListener(selectedIds -> invalidateOptionsMenu());
+
+        adapter.setOnDeleteMailListener(mailId -> {
+            inboxViewModel.deleteMailById(mailId);
+        });
+    }
+
+    private void setupViewModel() {
+        MailRepository mailRepository = MailRepository.getInstance();
+        LabelRepository labelRepository = LabelRepository.getInstance();
+        UserRepository userRepository = UserRepository.getInstance();
+        InboxViewModelFactory factory = new InboxViewModelFactory(mailRepository, labelRepository, userRepository);
+        inboxViewModel = new ViewModelProvider(this, factory).get(InboxViewModel.class);
+
+        inboxViewModel.getVisibleMails().observe(this, mails -> {
+            Log.d(TAG, "Mails LiveData updated. Count: " + (mails != null ? mails.size() : 0));
+            adapter.setMails(mails);
+            if (binding.swipeRefresh.isRefreshing()) {
+                binding.swipeRefresh.setRefreshing(false);
+            }
+        });
+
+        inboxViewModel.getIsLoading().observe(this, isLoading -> {
+            binding.swipeRefresh.setRefreshing(isLoading != null && isLoading);
+        });
+        inboxViewModel.getErrorMessage().observe(this, error -> {
+            if (error != null && !error.isEmpty()) {
+                Toast.makeText(this, error, Toast.LENGTH_LONG).show();
+            }
+        });
+
+        Log.d(TAG, "Initiating first mail fetch from setupViewModel.");
+        inboxViewModel.fetchMails();
+    }
+
+    private void setupSwipeToRefresh() {
+        binding.swipeRefresh.setOnRefreshListener(() -> {
+            Log.d(TAG, "Swipe to refresh triggered.");
+            inboxViewModel.fetchMails();
+        });
+        // You can set custom colors for the refresh indicator
+        // binding.swipeRefresh.setColorSchemeResources(android.R.color.holo_blue_bright,
+        //         android.R.color.holo_green_light,
+        //         android.R.color.holo_orange_light,
+        //         android.R.color.holo_red_light);
+    }
+
+    private void setupComposeButton() {
+        binding.navView.getHeaderView(0).findViewById(R.id.btnCompose)
+            .setOnClickListener(v -> {
+                Toast.makeText(this, "Compose mail clicked (TODO)", Toast.LENGTH_SHORT).show();
+                // TODO: open Compose activity / fragment
+                // Example: Intent intent = new Intent(MainActivity.this, ComposeActivity.class);
+                // startActivity(intent);
+            });
+    }
+
+    private void startAutoRefresh() {
+        Log.d(TAG, "Starting auto-refresh mechanism.");
+        refreshHandler.removeCallbacks(refreshRunnable);
+        // Post the initial refresh task
+        refreshHandler.post(refreshRunnable);
+    }
+
+    private void stopAutoRefresh() {
+        Log.d(TAG, "Stopping auto-refresh mechanism.");
+        refreshHandler.removeCallbacks(refreshRunnable);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        // Start auto-refresh when the activity becomes visible
+        startAutoRefresh();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        // Stop auto-refresh when the activity is no longer visible
+        stopAutoRefresh();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        if (adapter == null || adapter.getSelectedMailIds().isEmpty()) {
             getMenuInflater().inflate(R.menu.top_menu, menu);
-        else
+        } else {
             getMenuInflater().inflate(R.menu.menu_mail_actions, menu);
+        }
         return true;
     }
 
-    @Override public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        if (item.getItemId() == R.id.action_manage_labels) {
-            LabelManagerDialogFragment
-                .newInstance(new ArrayList<>(adapter.getSelectedMailIds()))
-                .show(getSupportFragmentManager(), "labelManager");
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        int itemId = item.getItemId();
+        if (itemId == R.id.action_manage_labels) {
+            if (adapter != null && !adapter.getSelectedMailIds().isEmpty()) {
+                LabelManagerDialogFragment
+                    .newInstance(new ArrayList<>(adapter.getSelectedMailIds()))
+                    .show(getSupportFragmentManager(), "labelManager");
+            } else {
+//                Toast.makeText(this, getString(R.string.no_mail_selected_for_labels), Toast.LENGTH_SHORT).show();
+            }
             return true;
         }
+        // Handle other menu items if any
         return super.onOptionsItemSelected(item);
     }
 
-    private void enrichMails(List<Mail> mails) {
-        new Thread(() -> {
-            List<Mail> enriched = new ArrayList<>();
-            CountDownLatch latch = new CountDownLatch(mails.size());
-            for (Mail mail : mails) {
-                if (!mail.draft) {
-                    if (mail.senderEmail == null || mail.senderEmail.isEmpty()) {
-                        userRepo.getUserById(mail.senderId, new UserRepository.GetUserCallback() {
-                            @Override public void onSuccess(User sender) {
-                                mail.senderName    = sender.getFullname();
-                                mail.senderEmail   = sender.getEmail();
-                                mail.senderPicture = sender.picture;
-                                latch.countDown();
-                            }
-                            @Override public void onFailure(String msg) {
-                                Log.e(TAG, "Sender fetch failed"); latch.countDown();
-                            }
-                        });
-                    } else latch.countDown();
-                } else latch.countDown();
-                enriched.add(mail);
-            }
-            try { latch.await(); } catch (InterruptedException ignored) {}
-            runOnUiThread(() -> {
-                adapter.setMails(enriched);
-                swipeRefresh.setRefreshing(false);
-            });
-        }).start();
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        // Although onStop should handle it, it's a good safeguard,
+        // especially if onStop is not always guaranteed to be called before onDestroy in all scenarios.
+        stopAutoRefresh();
+        binding = null; // Important for ViewBinding to avoid memory leaks in Activities
     }
 
-    @Override protected void onDestroy() {
-        super.onDestroy();
-        refreshHandler.removeCallbacks(refreshRunnable);
-    }
+
 }
