@@ -4,6 +4,7 @@ package com.rakmail.androidapp.features.label.view.fragment;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,9 +19,7 @@ import com.rakmail.androidapp.core.api.ApiClient;
 import com.rakmail.androidapp.databinding.DialogLabelManagerBinding;
 import com.rakmail.androidapp.features.label.data.LabelApi;
 import com.rakmail.androidapp.features.label.model.Label;
-import com.rakmail.androidapp.features.label.repository.LabelRepository;
 import com.rakmail.androidapp.features.label.view.adapter.LabelListAdapter;
-import com.rakmail.androidapp.features.label.viewmodel.LabelVMFactory;
 import com.rakmail.androidapp.features.label.viewmodel.LabelViewModel;
 
 import java.io.IOException;
@@ -67,9 +66,7 @@ public class LabelManagerDialogFragment extends DialogFragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         // 1) Set up ViewModel
-        vm = new ViewModelProvider(this,
-            new LabelVMFactory(LabelRepository.getInstance()))
-            .get(LabelViewModel.class);
+        vm = new ViewModelProvider(this).get(LabelViewModel.class);
 
         // 2) Create adapter with onToggle + onDelete callbacks
         LabelListAdapter adapter = new LabelListAdapter(
@@ -106,7 +103,7 @@ public class LabelManagerDialogFragment extends DialogFragment {
                         continue;
                     }
                     // only check if this label applies to ALL selected mails
-                    List<String> labMails = lab.getMails();
+                    List<String> labMails = lab.getMailsIds();
                     if (labMails == null) continue;
                     boolean coversAll = true;
                     for (String mid : mailIds) {
@@ -127,6 +124,7 @@ public class LabelManagerDialogFragment extends DialogFragment {
 
         // 5) Observe labels, filter out special ones, and submit to adapter
         vm.visibleLabels().observe(getViewLifecycleOwner(), labels -> {
+            Log.d("labelFrag", "labels changed: " + labels);
             List<Label> filtered = new ArrayList<>();
             if (labels != null) {
                 for (Label l : labels) {

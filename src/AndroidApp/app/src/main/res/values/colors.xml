@@ -21,4 +21,9 @@
     <color name="white">#FFFFFF</color>
     <color name="md_theme_error">#B3261E</color>
 
+    <!-- Additional colors for layout resolution -->
+    <color name="colorPrimary">#0d6efd</color>
+    <color name="errorColor">#B3261E</color>
+    <color name="dividerColor">#DDDDDD</color>
+
 </resources>

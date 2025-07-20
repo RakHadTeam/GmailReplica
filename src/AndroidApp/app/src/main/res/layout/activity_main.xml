@@ -9,11 +9,12 @@
     android:fitsSystemWindows="true"
     tools:openDrawer="start">
 
+    <!-- ───────────  MAIN CONTENT  ─────────── -->
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <!-- App bar -->
+        <!-- AppBar + Toolbar -->
         <com.google.android.material.appbar.AppBarLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -29,7 +30,6 @@
                 app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
         </com.google.android.material.appbar.AppBarLayout>
 
-        <!-- Selection bar -->
         <LinearLayout
             android:id="@+id/selectionBar"
             android:layout_width="match_parent"
@@ -47,7 +47,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:textColor="@android:color/white"
-                android:text="1 selected" />
+                android:text="0 selected" />
 
             <ImageView
                 android:id="@+id/btnDelete"
@@ -64,16 +64,17 @@
                 android:padding="8dp"
                 android:src="@android:drawable/ic_menu_edit"
                 android:contentDescription="Mark" />
+
             <ImageView
                 android:id="@+id/btnLabel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:padding="8dp"
                 android:src="@android:drawable/ic_menu_manage"
-                android:contentDescription="Mark" />
+                android:contentDescription="Labels" />
         </LinearLayout>
 
-        <!-- ⬇️ SwipeRefreshLayout wraps the RecyclerView -->
+        <!-- Recycler‑list + Swipe‑to‑Refresh -->
         <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
             android:id="@+id/swipeRefresh"
             android:layout_width="match_parent"
@@ -84,13 +85,22 @@
                 android:id="@+id/recyclerMails"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:paddingTop="112dp"
+                android:paddingTop="0dp"
                 android:paddingBottom="8dp"
                 android:clipToPadding="false"
                 tools:listitem="@layout/item_mail_row" />
-
         </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+    <!-- ───────────  NAVIGATION DRAWER  ─────────── -->
+    <com.google.android.material.navigation.NavigationView
+        android:id="@+id/navView"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        android:fitsSystemWindows="true"
+        app:headerLayout="@layout/drawer_header"
+        app:menu="@menu/nav_menu" />
 
 </androidx.drawerlayout.widget.DrawerLayout>

@@ -1,4 +1,4 @@
-package com.rakmail.androidapp.core.api;
+package com.rakmail.androidapp.features.user;
 
 import com.rakmail.androidapp.features.user.model.SigninRequest;
 import com.rakmail.androidapp.features.user.model.TokenResponse;

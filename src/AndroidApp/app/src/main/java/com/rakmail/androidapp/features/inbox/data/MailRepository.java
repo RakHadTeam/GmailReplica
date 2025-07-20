@@ -6,7 +6,6 @@ import com.rakmail.androidapp.features.inbox.model.Mail;
 import java.io.IOException;
 import java.util.List;
 
-import retrofit2.Call;
 import retrofit2.Response;
 
 /**
@@ -14,9 +13,21 @@ import retrofit2.Response;
  */
 public class MailRepository {
     private final MailApi api;
+    private static volatile MailRepository INSTANCE;
 
-    public MailRepository() {
+    private MailRepository() {
         this.api = ApiClient.get().create(MailApi.class);
+    }
+
+    public static MailRepository getInstance() {
+        if (INSTANCE == null) {
+            synchronized (MailRepository.class) {
+                if (INSTANCE == null) {
+                    INSTANCE = new MailRepository();
+                }
+            }
+        }
+        return INSTANCE;
     }
 
     /**
@@ -38,7 +49,7 @@ public class MailRepository {
      */
     public Mail getMailById(String id) throws IOException {
         for (Mail m : getMails()) {
-            if (m.id.equals(id)) return m;
+            if (m.getId().equals(id)) return m;
         }
         return null;
     }

@@ -4,7 +4,9 @@
     android:orientation="vertical"
     android:padding="24dp"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:background="@drawable/bg_dialog_rounded"
+    android:elevation="4dp">
 
     <TextView
         android:id="@+id/title"
@@ -13,6 +15,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textSize="20sp"
+        android:gravity="center"
+        android:textStyle="bold"
         android:layout_marginBottom="16dp"/>
 
     <EditText
@@ -20,7 +24,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="@string/new_label"
-        android:textSize="18sp"/>
+        android:layout_marginBottom="8dp"
+        android:background="@drawable/bg_edittext_rounded"
+        android:padding="12dp"
+        android:textSize="18sp" />
 
     <Button
         android:id="@+id/addButton"
@@ -29,7 +36,10 @@
         android:text="@string/add"
         android:textSize="18sp"
         android:layout_gravity="end"
-        android:layout_marginTop="8dp"/>
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        android:backgroundTint="@color/colorPrimary"
+        android:textColor="@android:color/white" />
 
     <EditText
         android:id="@+id/searchInput"
@@ -37,22 +47,34 @@
         android:layout_height="wrap_content"
         android:hint="@string/search_labels"
         android:textSize="18sp"
-        android:layout_marginTop="16dp"/>
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        android:background="@drawable/bg_edittext_rounded"
+        android:padding="12dp" />
 
     <TextView
         android:id="@+id/error"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textColor="@color/md_theme_error"
+        android:layout_marginBottom="8dp"
+        android:textColor="@color/errorColor"
         android:visibility="gone"
-        android:textSize="16sp"
-        android:layout_marginTop="8dp"/>
+        android:textSize="14sp" />
 
-    <!-- FIXED HEIGHT LIST: it will scroll internally when too long -->
+    <!-- Add a divider for better separation -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginBottom="8dp"
+        android:background="@color/dividerColor" />
+
+    <!-- Labels list placeholder -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/labelList"
         android:layout_width="match_parent"
-        android:layout_height="300dp"
-        android:layout_marginTop="16dp"
-        android:scrollbars="vertical"/>
+        android:layout_height="200dp"
+        android:layout_marginBottom="8dp"
+        android:background="@android:color/transparent"
+        android:overScrollMode="ifContentScrolls" />
+
 </LinearLayout>

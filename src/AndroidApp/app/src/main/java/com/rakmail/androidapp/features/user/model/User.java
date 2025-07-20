@@ -1,15 +1,21 @@
 package com.rakmail.androidapp.features.user.model;
 
 public class User {
+    private final String id;
+    private final String fullname;
+    private final String email;
+    private final String profilePictureUrl;
     public String picture;
-    private String fullname;
-    private String email;
-    private String profilePictureUrl;
 
-    public User(String fullname, String email, String profilePictureUrl) {
+    public User(String id, String fullname, String email, String profilePictureUrl) {
+        this.id = id;
         this.fullname = fullname;
         this.email = email;
         this.profilePictureUrl = profilePictureUrl;
+    }
+
+    public String getId() {
+        return id;
     }
 
     public String getFullname() {
@@ -22,5 +28,9 @@ public class User {
 
     public String getProfilePictureUrl() {
         return profilePictureUrl;
+    }
+
+    public String getPicture() {
+        return picture;
     }
 }

@@ -43,11 +43,12 @@ public class MailAdapter extends RecyclerView.Adapter<MailAdapter.ViewHolder> {
         if (delListener != null) {
             for (String id : selectedIds) delListener.onDelete(id);
         }
-        items.removeIf(m -> selectedIds.contains(m.id));
+        items.removeIf(m -> selectedIds.contains(m.getId()));
         clearSelection();
     }
     public void markSelected() {
-        for (Mail m : items) if (selectedIds.contains(m.id)) m.subject = "★ " + m.subject;
+        for (Mail m : items)
+            if (selectedIds.contains(m.getId())) m.setSubject("★ " + m.getSubject());
         clearSelection();
     }
 
@@ -62,15 +63,15 @@ public class MailAdapter extends RecyclerView.Adapter<MailAdapter.ViewHolder> {
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Mail m = items.get(position);
-        boolean isSelected = selectedIds.contains(m.id);
+        boolean isSelected = selectedIds.contains(m.getId());
 
-        holder.subject.setText(m.subject != null ? m.subject : "(no subject)");
-        holder.preview.setText(
-            m.body != null && m.body.length() > 80
-                ? m.body.substring(0, 80) + "…"
-                : (m.body != null ? m.body : "")
+        holder.getSubject().setText(m.getSubject() != null ? m.getSubject() : "(no subject)");
+        holder.getPreview().setText(
+            m.getBody() != null && m.getBody().length() > 80
+                ? m.getBody().substring(0, 80) + "…"
+                : (m.getBody() != null ? m.getBody() : "")
         );
-        holder.sender.setText(m.senderName != null ? m.senderName : "(no sender)");
+        holder.getSender().setText(m.getSenderName() != null ? m.getSenderName() : "(no sender)");
 
         holder.itemView.setBackgroundColor(isSelected
             ? ContextCompat.getColor(holder.itemView.getContext(), R.color.teal_200)
@@ -99,7 +100,7 @@ public class MailAdapter extends RecyclerView.Adapter<MailAdapter.ViewHolder> {
             selectedIds.clear();
             notifyDataSetChanged();
         } else if (m != null) {
-            if (!selectedIds.remove(m.id)) selectedIds.add(m.id);
+            if (!selectedIds.remove(m.getId())) selectedIds.add(m.getId());
             notifyItemChanged(h.getAdapterPosition());
         }
         if (selListener != null) selListener.onSelectionChanged(selectedIds);
@@ -110,9 +111,21 @@ public class MailAdapter extends RecyclerView.Adapter<MailAdapter.ViewHolder> {
         return new HashSet<>(selectedIds);
     }
 
+    // Getters for listeners (optional, if needed externally)
+    public OnSelectionChangeListener getOnSelectionChangeListener() {
+        return selListener;
+    }
+
+    public interface OnSelectionChangeListener { void onSelectionChanged(Set<String> ids); }
+    public interface OnDeleteMailListener      { void onDelete(String mailId); }
+
+    public OnDeleteMailListener getOnDeleteMailListener() {
+        return delListener;
+    }
+
     static class ViewHolder extends RecyclerView.ViewHolder {
-        final ImageView avatar;
-        final TextView  subject, preview, sender;
+        private final ImageView avatar;
+        private final TextView subject, preview, sender;
         ViewHolder(View v) {
             super(v);
             avatar  = v.findViewById(R.id.mailAvatar);
@@ -120,8 +133,21 @@ public class MailAdapter extends RecyclerView.Adapter<MailAdapter.ViewHolder> {
             preview = v.findViewById(R.id.mailPreview);
             sender  = v.findViewById(R.id.mailSender);
         }
-    }
 
-    public interface OnSelectionChangeListener { void onSelectionChanged(Set<String> ids); }
-    public interface OnDeleteMailListener      { void onDelete(String mailId); }
+        public ImageView getAvatar() {
+            return avatar;
+        }
+
+        public TextView getSubject() {
+            return subject;
+        }
+
+        public TextView getPreview() {
+            return preview;
+        }
+
+        public TextView getSender() {
+            return sender;
+        }
+    }
 }

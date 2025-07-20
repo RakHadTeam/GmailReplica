@@ -3,9 +3,6 @@ package com.rakmail.androidapp.features.label.repository;
 
 import android.util.Log;
 
-import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
-
 import com.rakmail.androidapp.core.api.ApiClient;
 import com.rakmail.androidapp.features.label.data.LabelApi;
 import com.rakmail.androidapp.features.label.model.Label;
@@ -21,24 +18,37 @@ import retrofit2.Response;
 public class LabelRepository {
 
     private static final String TAG = "LabelRepository";
-    private static LabelRepository INSTANCE;
+    private static volatile LabelRepository INSTANCE;
     private final LabelApi api;
-    private final MutableLiveData<List<Label>> labels = new MutableLiveData<>(new ArrayList<>());
+    private final List<Label> labels = new ArrayList<>();
 
     private LabelRepository() {
         this.api = ApiClient.get().create(LabelApi.class);
     }
 
-    public static synchronized LabelRepository getInstance() {
+    public static LabelRepository getInstance() {
         if (INSTANCE == null) {
-            INSTANCE = new LabelRepository();
+            synchronized (LabelRepository.class) {
+                if (INSTANCE == null) {
+                    INSTANCE = new LabelRepository();
+                }
+            }
         }
         return INSTANCE;
     }
 
-    /** LiveData of all labels */
-    public LiveData<List<Label>> getLabels() {
+    public List<Label> getLabels() {
         return labels;
+    }
+
+    public Label getLabelByName(String name) {
+        Log.d(TAG, "getLabelByName() called with: name = [" + name + "], labels = [" + labels + "]");
+        for (Label label : labels) {
+            if (label.getName().equals(name)) {
+                return label;
+            }
+        }
+        return null; // Not found
     }
 
     /** Fetch the latest labels from the API */
@@ -47,12 +57,23 @@ public class LabelRepository {
             try {
                 Response<List<Label>> res = api.fetchLabels().execute();
                 if (res.isSuccessful() && res.body() != null) {
-                    labels.postValue(res.body());
+                    labels.clear();
+                    labels.addAll(res.body());
                 }
             } catch (IOException ex) {
                 Log.e(TAG, "fetchLabels failed", ex);
             }
         });
+    }
+
+    public Label getLabelById(String id) {
+        Log.d(TAG, "getLabelById() called with: id = [" + id + "], labels = [" + labels + "]");
+        for (Label label : labels) {
+            if (label.getId().equals(id)) {
+                return label;
+            }
+        }
+        return null; // Not found
     }
 
     /** Create a new label */
@@ -61,10 +82,7 @@ public class LabelRepository {
             try {
                 Response<Label> res = api.createLabel(Collections.singletonMap("name", name)).execute();
                 if (res.isSuccessful() && res.body() != null) {
-                    // Append and post
-                    List<Label> cur = new ArrayList<>(labels.getValue());
-                    cur.add(res.body());
-                    labels.postValue(cur);
+                    labels.add(res.body());
                 } else {
                     onError.run();
                 }

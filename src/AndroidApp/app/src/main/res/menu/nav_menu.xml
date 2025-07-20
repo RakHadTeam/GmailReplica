@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:id="@+id/group_system_labels">
+        <item
+            android:id="@+id/nav_inbox"
+            android:icon="@android:drawable/ic_dialog_email"
+            android:title="@string/inbox_label" />
+        <item
+            android:id="@+id/nav_sent"
+            android:icon="@android:drawable/ic_menu_send"
+            android:title="@string/sent_label" />
+        <item
+            android:id="@+id/nav_starred"
+            android:icon="@android:drawable/btn_star"
+            android:title="@string/starred_label" />
+        <item
+            android:id="@+id/nav_drafts"
+            android:icon="@android:drawable/ic_menu_edit"
+            android:title="@string/drafts_label" />
+        <item
+            android:id="@+id/nav_spam"
+            android:icon="@android:drawable/ic_delete"
+            android:title="@string/spam_label" />
+        <item
+            android:id="@+id/nav_bin"
+            android:icon="@android:drawable/ic_menu_delete"
+            android:title="@string/bin_label" />
+
+    </group>
+    <group android:id="@+id/group_custom_labels">
+    </group>
+</menu>

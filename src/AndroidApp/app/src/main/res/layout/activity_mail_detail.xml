@@ -1,87 +1,114 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true">
 
-    <!-- Top app bar -->
-    <com.google.android.material.appbar.MaterialToolbar
-        android:id="@+id/toolbar"
+    <!-- AppBar + Toolbar -->
+    <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:navigationIcon="@drawable/ic_baseline_arrow_back_24"
-        app:title="RakMail"
-        app:titleTextColor="@android:color/white"
-        android:background="?attr/colorPrimary" />
+        android:theme="@style/ThemeOverlay.AppCompat.Dark"
+        app:elevation="4dp">
 
-    <!-- Content -->
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="?attr/colorPrimary"
+            android:title="Mail Detail"
+            android:titleTextColor="@android:color/white"
+            app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
+    </com.google.android.material.appbar.AppBarLayout>
+
     <ScrollView
+        android:id="@+id/scrollView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:paddingTop="0dp"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <LinearLayout
-            android:orientation="vertical"
-            android:padding="16dp"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:elevation="4dp"
+            android:padding="24dp">
 
-            <!-- Avatar -->
-            <ImageView
-                android:id="@+id/ivAvatar"
-                android:layout_width="72dp"
-                android:layout_height="72dp"
-                android:layout_gravity="center_horizontal"
-                android:src="@drawable/ic_account_circle"
-                android:contentDescription="@string/content_avatar" />
-
-            <!-- Subject -->
             <TextView
-                android:id="@+id/tvSubject"
+                android:id="@+id/mailSubject"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:textAppearance="?attr/textAppearanceHeadline6"
+                android:layout_marginBottom="12dp"
+                android:textColor="@color/dark"
+                android:textSize="22sp"
                 android:textStyle="bold" />
 
-            <!-- Sender name -->
-            <TextView
-                android:id="@+id/tvSenderName"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:textAppearance="?attr/textAppearanceBody1" />
+                android:layout_marginBottom="8dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
 
-            <!-- Sender email -->
+                <ImageView
+                    android:id="@+id/mailProfilePicture"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_marginEnd="12dp"
+                    android:background="@drawable/bg_profile_circle"
+                    android:contentDescription="@string/profile_picture"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/ic_account_circle" />
+
+                <TextView
+                    android:id="@+id/mailSender"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="0dp"
+                    android:textColor="@color/secondary"
+                    android:textSize="16sp" />
+            </LinearLayout>
+
             <TextView
-                android:id="@+id/tvSenderEmail"
-                android:layout_width="match_parent"
+                android:id="@+id/mailDate"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                android:textAppearance="?attr/textAppearanceBody2" />
+                android:layout_marginBottom="16dp"
+                android:textColor="@color/secondary"
+                android:textSize="14sp" />
 
-            <!-- Date -->
-            <TextView
-                android:id="@+id/tvDate"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                android:textAppearance="?attr/textAppearanceCaption" />
-
-            <!-- Divider -->
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:background="?attr/colorControlHighlight"
-                android:layout_marginVertical="16dp" />
+                android:layout_marginBottom="16dp"
+                android:background="@color/dividerColor" />
 
-            <!-- Body -->
             <TextView
-                android:id="@+id/tvBody"
+                android:id="@+id/mailBody"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textAppearance="?attr/textAppearanceBody2" />
+                android:layout_marginBottom="24dp"
+                android:lineSpacingExtra="4dp"
+                android:textColor="@color/dark"
+                android:textSize="16sp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="end"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/deleteButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:backgroundTint="@color/errorColor"
+                    android:text="@string/delete_btn"
+                    android:textColor="@android:color/white" />
+            </LinearLayout>
 
         </LinearLayout>
     </ScrollView>
-</LinearLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

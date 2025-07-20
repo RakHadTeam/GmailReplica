@@ -20,7 +20,7 @@
             android:layout_height="48dp"
             android:scaleType="centerCrop"
             android:layout_marginEnd="16dp"
-            android:src="@drawable/default_avatar"
+            android:src="@drawable/ic_account_circle"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:contentDescription="Sender Picture" />
 

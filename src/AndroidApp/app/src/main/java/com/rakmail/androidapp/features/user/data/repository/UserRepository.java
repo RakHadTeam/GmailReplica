@@ -3,7 +3,7 @@ package com.rakmail.androidapp.features.user.data.repository;
 import androidx.annotation.NonNull;
 
 import com.rakmail.androidapp.core.api.ApiClient;
-import com.rakmail.androidapp.core.api.UserApi;
+import com.rakmail.androidapp.features.user.UserApi;
 import com.rakmail.androidapp.features.user.model.SigninRequest;
 import com.rakmail.androidapp.features.user.model.TokenResponse;
 import com.rakmail.androidapp.features.user.model.User;
@@ -21,8 +21,21 @@ public class UserRepository {
 
     private final UserApi api;
 
-    public UserRepository() {
+    private static volatile UserRepository INSTANCE;
+
+    private UserRepository() {
         api = ApiClient.get().create(UserApi.class);
+    }
+
+    public static UserRepository getInstance() {
+        if (INSTANCE == null) {
+            synchronized (UserRepository.class) {
+                if (INSTANCE == null) {
+                    INSTANCE = new UserRepository();
+                }
+            }
+        }
+        return INSTANCE;
     }
 
     public void signup(String fullname, String email, String password, File profileImageFile, SignupCallback cb) {

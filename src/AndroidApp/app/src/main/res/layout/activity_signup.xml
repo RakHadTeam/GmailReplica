@@ -30,7 +30,7 @@
                 android:layout_marginTop="16dp"
                 android:contentDescription="@string/profile_picture"
                 android:scaleType="centerCrop"
-                android:src="@drawable/default_profile_picture"
+                android:src="@drawable/ic_account_circle"
                 app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.CircleImage"
                 app:strokeColor="@android:color/darker_gray"
                 app:strokeWidth="1dp" />

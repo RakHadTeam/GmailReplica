@@ -24,7 +24,7 @@ public class Label {
     }
 
     /** This is the key—Retrofit/Gson will populate this from the JSON `mails` field */
-    public List<String> getMails() {
+    public List<String> getMailsIds() {
         return mails;
     }
 

@@ -14,7 +14,7 @@ import java.io.IOException;
  */
 public class MailDetailViewModel extends ViewModel {
 
-    private final MailRepository repository = new MailRepository();
+    private final MailRepository repository = MailRepository.getInstance();
     private final MutableLiveData<Mail> mail = new MutableLiveData<>();
 
     public LiveData<Mail> getMail() {
