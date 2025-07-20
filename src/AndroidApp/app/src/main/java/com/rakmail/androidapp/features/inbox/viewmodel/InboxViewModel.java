@@ -107,6 +107,10 @@ public class InboxViewModel extends ViewModel {
         filterMails();
     }
 
+    public String getCurrentLabelId() {
+        return currentLabelId;
+    }
+
     /**
      * Debounced fetch mails to avoid excessive refreshes.
      * Fetches mails from repository and updates LiveData.
@@ -147,6 +151,8 @@ public class InboxViewModel extends ViewModel {
                     String mailId = mail.getId();
                     if (currentLabelId.isEmpty()) return !isExcludedFromAll(mail);
                     Label labelObj = labelRepository.getLabelById(currentLabelId);
+                    if (labelObj == binLabel)
+                        return finalBinIds.contains(mailId);
                     if (labelObj != null)
                         return labelObj.getMailsIds().contains(mailId) && !finalBinIds.contains(mailId);
                     else if ("Drafts".equals(currentLabelId))

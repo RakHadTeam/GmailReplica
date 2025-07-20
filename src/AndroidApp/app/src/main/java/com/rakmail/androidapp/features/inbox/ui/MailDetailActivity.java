@@ -28,10 +28,6 @@ public class MailDetailActivity extends AppCompatActivity {
         binding = com.rakmail.androidapp.databinding.ActivityMailDetailBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        // Set status bar color and icon visibility
-        getWindow().setStatusBarColor(getResources().getColor(R.color.colorPrimary));
-        getWindow().getDecorView().setSystemUiVisibility(0); // ensures icons are light
-
         vm = new ViewModelProvider(this).get(MailDetailViewModel.class);
 
         vm.getMail().observe(this, m -> {
