@@ -28,7 +28,6 @@ import com.rakmail.androidapp.features.label.viewmodel.LabelViewModel;
 import com.rakmail.androidapp.features.user.data.repository.UserRepository;
 
 import java.util.ArrayList;
-// Removed HashMap and Map imports if not used elsewhere after navigation change
 
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
@@ -181,11 +180,6 @@ public class MainActivity extends AppCompatActivity {
             Log.d(TAG, "Swipe to refresh triggered.");
             inboxViewModel.fetchMails();
         });
-        // You can set custom colors for the refresh indicator
-        // binding.swipeRefresh.setColorSchemeResources(android.R.color.holo_blue_bright,
-        //         android.R.color.holo_green_light,
-        //         android.R.color.holo_orange_light,
-        //         android.R.color.holo_red_light);
     }
 
     private void setupComposeButton() {
