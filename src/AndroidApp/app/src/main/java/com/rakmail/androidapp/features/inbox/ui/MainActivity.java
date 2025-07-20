@@ -111,6 +111,9 @@ public class MainActivity extends AppCompatActivity {
                 setTitle("Spam");
             } else if (id == R.id.nav_bin) {
                 Label binLabel = labelViewModel.getLabelByName("Bin");
+                Log.d(TAG, "Setting current label to Bin: " + binLabel.getId());
+                // print the mails
+                Log.d(TAG, "Bin mails: " + binLabel.getMailsIds());
                 inboxViewModel.setCurrentLabelId(binLabel.getId());
                 setTitle("Bin");
             } else if (id == R.id.nav_starred) {
@@ -155,7 +158,6 @@ public class MainActivity extends AppCompatActivity {
         inboxViewModel = new ViewModelProvider(this, factory).get(InboxViewModel.class);
 
         inboxViewModel.getVisibleMails().observe(this, mails -> {
-            Log.d(TAG, "Mails LiveData updated. Count: " + (mails != null ? mails.size() : 0));
             adapter.setMails(mails);
             if (binding.swipeRefresh.isRefreshing()) {
                 binding.swipeRefresh.setRefreshing(false);
@@ -171,13 +173,11 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        Log.d(TAG, "Initiating first mail fetch from setupViewModel.");
         inboxViewModel.fetchMails();
     }
 
     private void setupSwipeToRefresh() {
         binding.swipeRefresh.setOnRefreshListener(() -> {
-            Log.d(TAG, "Swipe to refresh triggered.");
             inboxViewModel.fetchMails();
         });
     }
@@ -187,20 +187,15 @@ public class MainActivity extends AppCompatActivity {
             .setOnClickListener(v -> {
                 Toast.makeText(this, "Compose mail clicked (TODO)", Toast.LENGTH_SHORT).show();
                 // TODO: open Compose activity / fragment
-                // Example: Intent intent = new Intent(MainActivity.this, ComposeActivity.class);
-                // startActivity(intent);
             });
     }
 
     private void startAutoRefresh() {
-        Log.d(TAG, "Starting auto-refresh mechanism.");
         refreshHandler.removeCallbacks(refreshRunnable);
-        // Post the initial refresh task
         refreshHandler.post(refreshRunnable);
     }
 
     private void stopAutoRefresh() {
-        Log.d(TAG, "Stopping auto-refresh mechanism.");
         refreshHandler.removeCallbacks(refreshRunnable);
     }
 
@@ -220,8 +215,11 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+        Label currentLabel = labelViewModel.getLabelById(inboxViewModel.getCurrentLabelId());
         if (adapter == null || adapter.getSelectedMailIds().isEmpty()) {
             getMenuInflater().inflate(R.menu.top_menu, menu);
+        } else if (currentLabel != null && currentLabel.getName().equals("Bin")) {
+            getMenuInflater().inflate(R.menu.bin_mail_actions, menu);
         } else {
             getMenuInflater().inflate(R.menu.menu_mail_actions, menu);
         }
@@ -241,6 +239,18 @@ public class MainActivity extends AppCompatActivity {
             }
             return true;
         }
+        if (itemId == R.id.action_delete) {
+            // Todo: Implement delete action
+            // check if its binned already
+            // if true, delete the mails directly using MailApi
+            // if false, toggle label "Bin" with applyExplicit true
+            // use adapter.getSelectedMailIds() to get selected mails
+            // for each
+            // toggle with labelId "Bin" and applyExplicit true
+            // using labelViewModel.toggleLabel("Bin", mailId, true);
+
+        }
+
         // Handle other menu items if any
         return super.onOptionsItemSelected(item);
     }
@@ -248,8 +258,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        // Although onStop should handle it, it's a good safeguard,
-        // especially if onStop is not always guaranteed to be called before onDestroy in all scenarios.
         stopAutoRefresh();
         binding = null; // Important for ViewBinding to avoid memory leaks in Activities
     }
