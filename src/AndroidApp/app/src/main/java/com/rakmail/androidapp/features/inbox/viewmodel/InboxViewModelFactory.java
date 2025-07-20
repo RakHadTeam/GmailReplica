@@ -6,7 +6,7 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.rakmail.androidapp.features.inbox.data.MailRepository;
 import com.rakmail.androidapp.features.label.repository.LabelRepository;
-import com.rakmail.androidapp.features.user.data.repository.UserRepository;
+import com.rakmail.androidapp.features.user.data.UserRepository;
 
 /**
  * Factory for InboxViewModel to inject repositories.

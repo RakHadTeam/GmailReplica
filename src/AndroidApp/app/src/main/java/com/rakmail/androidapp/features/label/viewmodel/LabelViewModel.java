@@ -63,6 +63,22 @@ public class LabelViewModel extends ViewModel {
 
     /** Toggle (apply/remove) a label on a single mail */
     public void toggle(String labelId, String mailId, Boolean applyExplicit) {
+        List<Label> currentLabels = labels.getValue();
+        if (currentLabels == null) return;
+        for (Label label : currentLabels) {
+            if (!label.getId().equals(labelId)) continue;
+            List<String> mailsIds = label.getMailsIds();
+            if (mailsIds == null) break;
+            if (applyExplicit != null) {
+                if (applyExplicit && !mailsIds.contains(mailId)) mailsIds.add(mailId);
+                else if (!applyExplicit) mailsIds.remove(mailId);
+            } else {
+                if (mailsIds.contains(mailId)) mailsIds.remove(mailId);
+                else mailsIds.add(mailId);
+            }
+            break;
+        }
+        labels.setValue(currentLabels);
         repo.toggle(labelId, mailId, applyExplicit);
     }
 

@@ -2,8 +2,8 @@ package com.rakmail.androidapp.core.api;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.rakmail.androidapp.core.preferences.AuthInterceptor;
-import com.rakmail.androidapp.core.preferences.AuthPreferences;
+import com.rakmail.androidapp.core.auth.AuthInterceptor;
+import com.rakmail.androidapp.core.auth.AuthPreferences;
 
 import java.util.concurrent.TimeUnit;
 
@@ -26,8 +26,9 @@ public class ApiClient {
         OkHttpClient ok = new OkHttpClient.Builder()
             .cookieJar(cookieJar)
             .addInterceptor(new AuthInterceptor(AuthPreferences.getInstance()))
-            .connectTimeout(15, TimeUnit.SECONDS)
-            .readTimeout(15, TimeUnit.SECONDS)
+            .connectTimeout(5, TimeUnit.SECONDS)
+            .readTimeout(5, TimeUnit.SECONDS)
+            .writeTimeout(5, TimeUnit.SECONDS)
             .build();
 
         Gson gson = new GsonBuilder().setLenient().create();
@@ -39,7 +40,7 @@ public class ApiClient {
             .build();
     }
 
-    public static synchronized ApiClient get() {
+    public static synchronized ApiClient getInstance() {
         if (instance == null) instance = new ApiClient();
         return instance;
     }

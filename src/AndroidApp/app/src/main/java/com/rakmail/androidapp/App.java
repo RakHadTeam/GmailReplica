@@ -2,7 +2,7 @@ package com.rakmail.androidapp;
 
 import android.app.Application;
 
-import com.rakmail.androidapp.core.preferences.AuthPreferences;
+import com.rakmail.androidapp.core.auth.AuthPreferences;
 
 public class App extends Application {
 

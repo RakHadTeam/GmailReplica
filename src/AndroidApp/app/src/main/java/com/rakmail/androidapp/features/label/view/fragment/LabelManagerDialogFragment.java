@@ -87,7 +87,7 @@ public class LabelManagerDialogFragment extends DialogFragment {
         new Thread(() -> {
             Set<String> initialChecked = new HashSet<>();
             try {
-                LabelApi api = ApiClient.get().create(LabelApi.class);
+                LabelApi api = ApiClient.getInstance().create(LabelApi.class);
                 Response<List<Label>> resp = api.fetchLabels().execute();
                 List<Label> all = resp.body() != null ? resp.body() : Collections.emptyList();
 

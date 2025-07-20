@@ -1,14 +1,18 @@
-package com.rakmail.androidapp.features.user.data.repository;
+package com.rakmail.androidapp.features.user.data;
+
+import android.content.Context;
+import android.net.Uri;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 
 import com.rakmail.androidapp.core.api.ApiClient;
-import com.rakmail.androidapp.features.user.UserApi;
 import com.rakmail.androidapp.features.user.model.SigninRequest;
 import com.rakmail.androidapp.features.user.model.TokenResponse;
 import com.rakmail.androidapp.features.user.model.User;
 
 import java.io.File;
+import java.io.InputStream;
 
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
@@ -24,7 +28,7 @@ public class UserRepository {
     private static volatile UserRepository INSTANCE;
 
     private UserRepository() {
-        api = ApiClient.get().create(UserApi.class);
+        api = ApiClient.getInstance().create(UserApi.class);
     }
 
     public static UserRepository getInstance() {
@@ -89,7 +93,6 @@ public class UserRepository {
         });
     }
 
-    // ✅ NEW: Fetch user by ID
     public void getUserById(String userId, GetUserCallback cb) {
         api.getUserById(userId).enqueue(new Callback<>() {
             @Override public void onResponse(@NonNull Call<User> call,
@@ -108,6 +111,66 @@ public class UserRepository {
         });
     }
 
+    public void updateUserProfile(Context context, String userId, String newName, Uri profileImageUri, UpdateUserCallback cb) {
+        RequestBody fn = RequestBody.create(MediaType.parse("text/plain"), newName);
+        MultipartBody.Part imagePart = null;
+        if (profileImageUri != null) {
+            try {
+                InputStream inputStream = context.getContentResolver().openInputStream(profileImageUri);
+                String fileName = "profile_image";
+                java.io.File tempFile = java.io.File.createTempFile(fileName, null, context.getCacheDir());
+                java.io.FileOutputStream out = new java.io.FileOutputStream(tempFile);
+                byte[] buffer = new byte[4096];
+                int bytesRead;
+                while ((bytesRead = inputStream.read(buffer)) != -1) {
+                    out.write(buffer, 0, bytesRead);
+                }
+                out.close();
+                inputStream.close();
+                RequestBody fileBody = RequestBody.create(MediaType.parse("image/*"), tempFile);
+                imagePart = MultipartBody.Part.createFormData("picture", tempFile.getName(), fileBody);
+            } catch (Exception e) {
+                Log.e("UserRepository", "Failed to convert Uri to File", e);
+                cb.onFailure("Failed to process profile image");
+                return;
+            }
+        }
+        api.updateUserProfile(userId, fn, imagePart).enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(@NonNull Call<Void> call, @NonNull Response<Void> response) {
+                if (response.isSuccessful()) {
+                    cb.onSuccess();
+                } else {
+                    Log.d("USERREPO", response.message());
+                    cb.onFailure("Failed to update settings: " + response.code());
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<Void> call, @NonNull Throwable t) {
+                cb.onFailure(t.getMessage());
+            }
+        });
+    }
+
+    /**
+     * Synchronously fetches the userId string from /api/me.
+     * Returns null if the request fails or userId is missing.
+     */
+    public String getUserId() {
+        try {
+            Response<okhttp3.ResponseBody> response = api.getUserId().execute();
+            if (response.isSuccessful() && response.body() != null) {
+                String json = response.body().string();
+                org.json.JSONObject obj = new org.json.JSONObject(json);
+                return obj.optString("userId", null);
+            }
+        } catch (Exception e) {
+            Log.e("UserRepository", "Failed to get userId", e);
+        }
+        return null;
+    }
+
     // Callbacks
     public interface SignupCallback {
         void onSuccess(User user);
@@ -123,4 +186,17 @@ public class UserRepository {
         void onSuccess(User user);
         void onFailure(String msg);
     }
+
+    public interface UpdateUserCallback {
+        void onSuccess();
+
+        void onFailure(String error);
+    }
+
+    public interface GetUserIdCallback {
+        void onSuccess(String userId);
+
+        void onFailure(String error);
+    }
+
 }

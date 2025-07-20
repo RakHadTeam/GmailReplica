@@ -6,8 +6,8 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.MutableLiveData;
 
-import com.rakmail.androidapp.core.preferences.AuthPreferences;
-import com.rakmail.androidapp.features.user.data.repository.UserRepository;
+import com.rakmail.androidapp.core.auth.AuthPreferences;
+import com.rakmail.androidapp.features.user.data.UserRepository;
 import com.rakmail.androidapp.features.user.model.User;
 
 import java.io.File;
@@ -31,7 +31,6 @@ public class SignupViewModel extends AndroidViewModel {
             @Override
             public void onSuccess(User user) {
                 prefs.setSignedIn(true);
-                prefs.saveUserId(user.getId());
                 signupSuccess.postValue(true);
             }
 

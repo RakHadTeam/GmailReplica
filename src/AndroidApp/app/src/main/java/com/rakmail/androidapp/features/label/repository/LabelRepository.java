@@ -23,7 +23,7 @@ public class LabelRepository {
     private final List<Label> labels = new ArrayList<>();
 
     private LabelRepository() {
-        this.api = ApiClient.get().create(LabelApi.class);
+        this.api = ApiClient.getInstance().create(LabelApi.class);
     }
 
     public static LabelRepository getInstance() {
@@ -117,10 +117,11 @@ public class LabelRepository {
      * @param mailId        The mail ID (String)
      * @param applyExplicit If true → apply; false → remove; null → toggle
      */
-    public void toggle(String labelId, String mailId, Boolean applyExplicit) {
+    public void toggle(String labelId, String mailId, final Boolean applyExplicit) {
         Executors.newSingleThreadExecutor().execute(() -> {
             try {
-                if (applyExplicit == null || applyExplicit) {
+                boolean apply = applyExplicit != null ? applyExplicit : !getLabelById(labelId).getMailsIds().contains(mailId);
+                if (apply) {
                     api.applyLabel(labelId, Collections.singletonMap("mailId", mailId)).execute();
                 } else {
                     api.removeLabel(labelId, mailId).execute();

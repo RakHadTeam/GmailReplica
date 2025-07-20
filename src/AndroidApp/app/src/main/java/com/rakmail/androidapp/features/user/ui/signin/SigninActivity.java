@@ -3,7 +3,7 @@ package com.rakmail.androidapp.features.user.ui.signin;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Log;                // ← add this
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -26,10 +26,16 @@ public class SigninActivity extends AppCompatActivity {
         super.onCreate(s);
         setContentView(R.layout.activity_signin);
 
-        EditText email   = findViewById(R.id.emailInput);
-        EditText pwd     = findViewById(R.id.passwordInput);
-        TextView errText = findViewById(R.id.errorText);
-        Button   btn     = findViewById(R.id.signInButton);
+        // Set status bar icons to dark for visibility on light background
+        getWindow().getDecorView().setSystemUiVisibility(
+            android.view.View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+        );
+
+        EditText email = findViewById(R.id.emailEditText);
+        EditText pwd = findViewById(R.id.passwordEditText);
+        TextView errText = findViewById(R.id.signinErrorText);
+        Button btn = findViewById(R.id.signinButton);
+        Button btnReturn = findViewById(R.id.returnButton);
 
         vm = new ViewModelProvider(this).get(SigninViewModel.class);
 
@@ -58,5 +64,6 @@ public class SigninActivity extends AppCompatActivity {
             Log.d(TAG, "Sign-in button clicked: email=" + e);
             vm.signIn(e, p);
         });
+        btnReturn.setOnClickListener(v -> finish());
     }
 }

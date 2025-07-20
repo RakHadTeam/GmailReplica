@@ -10,7 +10,7 @@ import com.rakmail.androidapp.features.inbox.data.MailRepository;
 import com.rakmail.androidapp.features.inbox.model.Mail;
 import com.rakmail.androidapp.features.label.model.Label;
 import com.rakmail.androidapp.features.label.repository.LabelRepository;
-import com.rakmail.androidapp.features.user.data.repository.UserRepository;
+import com.rakmail.androidapp.features.user.data.UserRepository;
 import com.rakmail.androidapp.features.user.model.User;
 
 import java.util.ArrayList;

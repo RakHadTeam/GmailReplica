@@ -25,7 +25,7 @@ import java.io.InputStream;
 public class SignupActivity extends AppCompatActivity {
 
     private EditText fullNameInput, emailInput, passwordInput;
-    private Button signupButton, selectImageButton;
+    private Button signupButton, selectImageButton, btnReturn;
     private ImageView profileImage;
     private SignupViewModel viewModel;
     private Uri selectedImageUri = null;
@@ -43,12 +43,18 @@ public class SignupActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_signup);
 
-        fullNameInput = findViewById(R.id.fullNameInput);
-        emailInput = findViewById(R.id.emailInput);
-        passwordInput = findViewById(R.id.passwordInput);
+        // Set status bar icons to dark for visibility on light background
+        getWindow().getDecorView().setSystemUiVisibility(
+            android.view.View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+        );
+
+        fullNameInput = findViewById(R.id.fullNameEditText);
+        emailInput = findViewById(R.id.emailEditText);
+        passwordInput = findViewById(R.id.passwordEditText);
         signupButton = findViewById(R.id.signupButton);
         selectImageButton = findViewById(R.id.selectImageButton);
-        profileImage = findViewById(R.id.profileImage);
+        profileImage = findViewById(R.id.profileImageView);
+        btnReturn = findViewById(R.id.returnButton);
 
         viewModel = new ViewModelProvider(this).get(SignupViewModel.class);
 
@@ -67,6 +73,8 @@ public class SignupActivity extends AppCompatActivity {
             File imageFile = selectedImageUri != null ? getFileFromUri(selectedImageUri) : null;
             viewModel.signup(fullName, email, password, imageFile);
         });
+
+        btnReturn.setOnClickListener(v -> finish());
 
         viewModel.signupSuccess.observe(this, success -> {
             if (Boolean.TRUE.equals(success)) {

@@ -1,4 +1,4 @@
-package com.rakmail.androidapp.core.preferences;
+package com.rakmail.androidapp.core.auth;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -8,7 +8,6 @@ public class AuthPreferences {
     private static final String PREFS_NAME = "app_prefs";
     private static final String KEY_IS_SIGNED = "is_signed_in";
     private static final String KEY_ACCESS_JWT = "access_token";
-    private static final String KEY_USER_ID = "user_id";
 
     private static AuthPreferences instance;
 
@@ -34,10 +33,6 @@ public class AuthPreferences {
         return prefs.getString(KEY_ACCESS_JWT, null);
     }
 
-    public String getUserId() {
-        return prefs.getString(KEY_USER_ID, null);
-    }
-
     public void setSignedIn(boolean b) {
         prefs.edit().putBoolean(KEY_IS_SIGNED, b).apply();
     }
@@ -46,15 +41,26 @@ public class AuthPreferences {
         prefs.edit().putString(KEY_ACCESS_JWT, jwt).apply();
     }
 
-    public void saveUserId(String id) {
-        prefs.edit().putString(KEY_USER_ID, id).apply();
-    }
-
     public void clear() {
         prefs.edit().clear().apply();
     }
 
     public void clearSession() {
         clear();
+    }
+
+    private static UnauthorizedListener unauthorizedListener;
+
+    public static UnauthorizedListener getUnauthorizedListener() {
+        return unauthorizedListener;
+    }
+
+    public static void setUnauthorizedListener(UnauthorizedListener listener) {
+        unauthorizedListener = listener;
+    }
+
+    // Listener for unauthorized events
+    public interface UnauthorizedListener {
+        void onUnauthorized();
     }
 }

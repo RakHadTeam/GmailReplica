@@ -18,7 +18,11 @@
         android:icon="@drawable/ic_star_outline"
         android:title="Star"
         app:showAsAction="ifRoom" />
-
+    <item
+        android:id="@+id/action_spam"
+        android:icon="@drawable/ic_spam"
+        android:title="Mark as Spam"
+        app:showAsAction="ifRoom" />
     <item
         android:id="@+id/action_manage_labels"
         android:icon="@drawable/ic_label"

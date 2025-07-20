@@ -17,39 +17,24 @@ import com.rakmail.androidapp.R;
 import com.rakmail.androidapp.features.inbox.model.Mail;
 import com.rakmail.androidapp.features.inbox.ui.MailDetailActivity;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.Date;
 import java.util.List;
-import java.util.Set;
+import java.util.Locale;
 
-public class MailAdapter extends RecyclerView.Adapter<MailAdapter.ViewHolder> {
+public class MailAdapter extends BaseMailAdapter<MailAdapter.ViewHolder> {
     private final List<Mail> items = new ArrayList<>();
-    private final Set<String> selectedIds = new HashSet<>();
-    private OnSelectionChangeListener selListener;
-    private OnDeleteMailListener     delListener;
+
+    public MailAdapter() {
+        super();
+    }
 
     public void setMails(List<Mail> mails) {
         items.clear();
         items.addAll(mails);
-        selectedIds.clear();
+        clearSelection();
         notifyDataSetChanged();
-        if (selListener != null) selListener.onSelectionChanged(selectedIds);
-    }
-    public void setOnSelectionChangeListener(OnSelectionChangeListener l) { selListener = l; }
-    public void setOnDeleteMailListener(OnDeleteMailListener l)           { delListener = l; }
-
-    public void clearSelection() { toggleSelection(null, null, true); }
-    public void deleteSelected() {
-        if (delListener != null) {
-            for (String id : selectedIds) delListener.onDelete(id);
-        }
-        items.removeIf(m -> selectedIds.contains(m.getId()));
-        clearSelection();
-    }
-    public void markSelected() {
-        for (Mail m : items)
-            if (selectedIds.contains(m.getId())) m.setSubject("★ " + m.getSubject());
-        clearSelection();
     }
 
     @NonNull @Override
@@ -63,20 +48,37 @@ public class MailAdapter extends RecyclerView.Adapter<MailAdapter.ViewHolder> {
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Mail m = items.get(position);
-        boolean isSelected = selectedIds.contains(m.getId());
 
-        holder.getSubject().setText(m.getSubject() != null ? m.getSubject() : "(no subject)");
-        holder.getPreview().setText(
-            m.getBody() != null && m.getBody().length() > 80
-                ? m.getBody().substring(0, 80) + "…"
-                : (m.getBody() != null ? m.getBody() : "")
-        );
-        holder.getSender().setText(m.getSenderName() != null ? m.getSenderName() : "(no sender)");
-
-        holder.itemView.setBackgroundColor(isSelected
+        if (holder.getSubject() != null)
+            holder.getSubject().setText(m.getSubject() != null ? m.getSubject() : "(no subject)");
+        if (holder.getSender() != null)
+            holder.getSender().setText(m.getSenderName() != null ? m.getSenderName() : "(no sender)");
+        if (holder.getDate() != null) {
+            String rawDate = m.getCreatedAt();
+            String formattedDate = rawDate;
+            if (rawDate != null && !rawDate.isEmpty()) {
+                try {
+                    SimpleDateFormat isoFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.getDefault());
+                    Date date = isoFormat.parse(rawDate);
+                    if (date != null) {
+                        formattedDate = new SimpleDateFormat("MMM dd, yyyy HH:mm", Locale.getDefault()).format(date);
+                    }
+                } catch (Exception e) {
+                    // fallback: show raw date
+                }
+            }
+            holder.getDate().setText(formattedDate != null ? formattedDate : "");
+        }
+        if (holder.getPreview() != null) {
+            holder.getPreview().setText(
+                m.getBody() != null && m.getBody().length() > 80
+                    ? m.getBody().substring(0, 80) + "…"
+                    : (m.getBody() != null ? m.getBody() : "")
+            );
+        }
+        holder.itemView.setBackgroundColor(isSelected(m.getId())
             ? ContextCompat.getColor(holder.itemView.getContext(), R.color.teal_200)
             : Color.TRANSPARENT);
-
         holder.itemView.setOnClickListener(v -> {
             if (selectedIds.isEmpty()) {
                 Context c = v.getContext();
@@ -84,54 +86,26 @@ public class MailAdapter extends RecyclerView.Adapter<MailAdapter.ViewHolder> {
                 i.putExtra(MailDetailActivity.EXTRA_MAIL, m);
                 c.startActivity(i);
             } else {
-                toggleSelection(m, holder, isSelected);
+                toggleSelection(m, holder, isSelected(m.getId()));
             }
         });
         holder.itemView.setOnLongClickListener(v -> {
-            toggleSelection(m, holder, isSelected);
+            toggleSelection(m, holder, isSelected(m.getId()));
             return true;
         });
-
-        // (avatar‐loading code omitted for brevity)
-    }
-
-    private void toggleSelection(Mail m, ViewHolder h, boolean clearAll) {
-        if (clearAll) {
-            selectedIds.clear();
-            notifyDataSetChanged();
-        } else if (m != null) {
-            if (!selectedIds.remove(m.getId())) selectedIds.add(m.getId());
-            notifyItemChanged(h.getAdapterPosition());
-        }
-        if (selListener != null) selListener.onSelectionChanged(selectedIds);
-    }
-
-    /** Expose selected mail IDs **/
-    public Set<String> getSelectedMailIds() {
-        return new HashSet<>(selectedIds);
-    }
-
-    // Getters for listeners (optional, if needed externally)
-    public OnSelectionChangeListener getOnSelectionChangeListener() {
-        return selListener;
-    }
-
-    public interface OnSelectionChangeListener { void onSelectionChanged(Set<String> ids); }
-    public interface OnDeleteMailListener      { void onDelete(String mailId); }
-
-    public OnDeleteMailListener getOnDeleteMailListener() {
-        return delListener;
+        loadSenderImage(m.getSenderPicture(), holder.avatar);
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {
         private final ImageView avatar;
-        private final TextView subject, preview, sender;
+        private final TextView subject, preview, sender, date;
         ViewHolder(View v) {
             super(v);
-            avatar  = v.findViewById(R.id.mailAvatar);
+            avatar = v.findViewById(R.id.mailAvatar);
             subject = v.findViewById(R.id.mailSubject);
             preview = v.findViewById(R.id.mailPreview);
-            sender  = v.findViewById(R.id.mailSender);
+            sender = v.findViewById(R.id.mailSender);
+            date = v.findViewById(R.id.mailDate);
         }
 
         public ImageView getAvatar() {
@@ -148,6 +122,10 @@ public class MailAdapter extends RecyclerView.Adapter<MailAdapter.ViewHolder> {
 
         public TextView getSender() {
             return sender;
+        }
+
+        public TextView getDate() {
+            return date;
         }
     }
 }

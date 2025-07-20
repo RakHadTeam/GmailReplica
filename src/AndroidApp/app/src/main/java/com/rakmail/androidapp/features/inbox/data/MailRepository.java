@@ -16,7 +16,7 @@ public class MailRepository {
     private static volatile MailRepository INSTANCE;
 
     private MailRepository() {
-        this.api = ApiClient.get().create(MailApi.class);
+        this.api = ApiClient.getInstance().create(MailApi.class);
     }
 
     public static MailRepository getInstance() {
