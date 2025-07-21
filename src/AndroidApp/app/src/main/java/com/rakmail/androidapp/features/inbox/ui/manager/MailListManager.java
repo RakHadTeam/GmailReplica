@@ -37,9 +37,13 @@ public class MailListManager {
                 selectionChangeListener.onSelectionChanged(selectedIds);
             }
         });
-        adapter.setOnDeleteMailListener(mailId -> {
-            inboxViewModel.deleteMailById(mailId);
-        });
+    }
+
+    /**
+     * Call this when switching current label to clear all mail selections
+     */
+    public void onCurrentLabelChanged() {
+        adapter.onNavigationChanged();
     }
 
     public MailAdapter getAdapter() {

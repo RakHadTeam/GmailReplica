@@ -4,27 +4,29 @@
     <group android:id="@+id/group_system_labels">
         <item
             android:id="@+id/nav_inbox"
-            android:icon="@android:drawable/ic_dialog_email"
+            android:icon="@drawable/ic_mail"
             android:title="@string/inbox_label" />
         <item
             android:id="@+id/nav_sent"
-            android:icon="@android:drawable/ic_menu_send"
+            android:icon="@drawable/ic_send"
             android:title="@string/sent_label" />
         <item
             android:id="@+id/nav_starred"
-            android:icon="@android:drawable/btn_star"
+            android:icon="@drawable/ic_star_filled"
+            android:tint="?attr/colorOnPrimary"
             android:title="@string/starred_label" />
         <item
             android:id="@+id/nav_drafts"
-            android:icon="@android:drawable/ic_menu_edit"
+            android:icon="@drawable/ic_draft"
             android:title="@string/drafts_label" />
         <item
             android:id="@+id/nav_spam"
-            android:icon="@android:drawable/ic_delete"
+            android:icon="@drawable/ic_report"
             android:title="@string/spam_label" />
         <item
             android:id="@+id/nav_bin"
-            android:icon="@android:drawable/ic_menu_delete"
+            android:icon="@drawable/ic_delete"
+            android:tint="?attr/colorOnPrimary"
             android:title="@string/bin_label" />
 
     </group>

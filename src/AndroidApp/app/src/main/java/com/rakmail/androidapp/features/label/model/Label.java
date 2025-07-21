@@ -6,13 +6,14 @@ import java.util.List;
 public class Label {
     private String id;
     private String name;
-    private List<String> mails;    // ← hold mail‑IDs from the API
+    private List<String> mails;
 
-    public Label() { }            // required by Retrofit/Gson
+    public Label() { }
 
-    public Label(String id, String name) {
-        this.id   = id;
+    public Label(String id, String name, List<String> mails) {
+        this.id = id;
         this.name = name;
+        this.mails = mails;
     }
 
     public String getId() {
@@ -23,12 +24,10 @@ public class Label {
         return name;
     }
 
-    /** This is the key—Retrofit/Gson will populate this from the JSON `mails` field */
-    public List<String> getMailsIds() {
+    public List<String> getMailIds() {
         return mails;
     }
 
-    // Optional setters if you ever need them:
     public void setId(String id) {
         this.id = id;
     }
@@ -37,7 +36,4 @@ public class Label {
         this.name = name;
     }
 
-    public void setMails(List<String> mails) {
-        this.mails = mails;
-    }
 }

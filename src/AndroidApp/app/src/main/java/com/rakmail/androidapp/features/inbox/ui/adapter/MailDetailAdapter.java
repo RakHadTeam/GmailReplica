@@ -10,7 +10,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.rakmail.androidapp.R;
-import com.rakmail.androidapp.features.inbox.model.Mail;
+import com.rakmail.androidapp.features.mail.model.Mail;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -19,16 +19,20 @@ import java.util.Locale;
 public class MailDetailAdapter extends BaseMailAdapter<MailDetailAdapter.ViewHolder> {
     public void setMail(Mail mail) {
         items.clear();
-        if (mail != null) items.add(mail);
+        selectedIds.clear();
+        if (mail != null) {
+            items.add(mail);
+            selectedIds.add(mail.getId());
+        }
         notifyDataSetChanged();
     }
 
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View v = LayoutInflater.from(parent.getContext())
+        View view = LayoutInflater.from(parent.getContext())
             .inflate(R.layout.item_mail_detail, parent, false);
-        return new ViewHolder(v);
+        return new ViewHolder(view);
     }
 
     @Override
@@ -38,13 +42,15 @@ public class MailDetailAdapter extends BaseMailAdapter<MailDetailAdapter.ViewHol
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        Mail m = items.get(position);
+        Mail mail = items.get(position);
         if (holder.subject != null)
-            holder.subject.setText(m.getSubject() != null ? m.getSubject() : "(no subject)");
+            holder.subject.setText(mail.getSubject() != null ? mail.getSubject() : "(no subject)");
         if (holder.sender != null)
-            holder.sender.setText(m.getSenderName() != null ? m.getSenderName() : "(no sender)");
+            holder.sender.setText(mail.getSenderName() != null ? mail.getSenderName() : "(no sender)");
+        if (holder.senderEmail != null)
+            holder.senderEmail.setText(mail.getSenderEmail() != null ? "<" + mail.getSenderEmail() + ">" : "");
         if (holder.date != null) {
-            String rawDate = m.getCreatedAt();
+            String rawDate = mail.getCreatedAt();
             String formattedDate = rawDate;
             if (rawDate != null && !rawDate.isEmpty()) {
                 try {
@@ -53,37 +59,28 @@ public class MailDetailAdapter extends BaseMailAdapter<MailDetailAdapter.ViewHol
                     if (date != null) {
                         formattedDate = new SimpleDateFormat("MMM dd, yyyy HH:mm", Locale.getDefault()).format(date);
                     }
-                } catch (Exception e) {
-                    // fallback: show raw date
-                }
+                } catch (Exception ignored) {}
             }
             holder.date.setText(formattedDate != null ? formattedDate : "");
         }
-        if (holder.preview != null) {
-            holder.preview.setText(
-                m.getBody() != null && m.getBody().length() > 80
-                    ? m.getBody().substring(0, 80) + "…"
-                    : (m.getBody() != null ? m.getBody() : "")
-            );
-        }
         if (holder.body != null) {
-            holder.body.setText(m.getBody() != null ? m.getBody() : "");
+            holder.body.setText(mail.getBody() != null ? mail.getBody() : "");
         }
-        loadSenderImage(m.getSenderPicture(), holder.avatar);
+        loadSenderImage(mail.getSenderPicture(), holder.avatar);
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {
         ImageView avatar;
-        TextView subject, sender, date, preview, body;
+        TextView subject, sender, senderEmail, date, body;
 
-        ViewHolder(View v) {
-            super(v);
-            avatar = v.findViewById(R.id.mailAvatar);
-            subject = v.findViewById(R.id.mailSubject);
-            sender = v.findViewById(R.id.mailSender);
-            date = v.findViewById(R.id.mailDate);
-            preview = v.findViewById(R.id.mailPreview);
-            body = v.findViewById(R.id.mailBody);
+        ViewHolder(View view) {
+            super(view);
+            avatar = view.findViewById(R.id.mailAvatar);
+            subject = view.findViewById(R.id.mailSubject);
+            sender = view.findViewById(R.id.mailSender);
+            senderEmail = view.findViewById(R.id.mailSenderEmail);
+            date = view.findViewById(R.id.mailDate);
+            body = view.findViewById(R.id.mailBody);
         }
     }
 }

@@ -3,7 +3,7 @@ package com.rakmail.androidapp.core.api;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.rakmail.androidapp.core.auth.AuthInterceptor;
-import com.rakmail.androidapp.core.auth.AuthPreferences;
+import com.rakmail.androidapp.core.prefs.AuthPreferences;
 
 import java.util.concurrent.TimeUnit;
 

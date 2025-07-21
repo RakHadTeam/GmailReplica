@@ -10,7 +10,7 @@ import android.widget.Button;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.rakmail.androidapp.R;
-import com.rakmail.androidapp.core.auth.AuthPreferences;
+import com.rakmail.androidapp.core.prefs.AuthPreferences;
 import com.rakmail.androidapp.features.inbox.ui.MainActivity;
 import com.rakmail.androidapp.features.user.ui.signin.SigninActivity;
 import com.rakmail.androidapp.features.user.ui.signup.SignupActivity;

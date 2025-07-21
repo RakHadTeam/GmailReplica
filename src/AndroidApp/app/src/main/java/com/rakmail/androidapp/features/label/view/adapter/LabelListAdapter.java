@@ -20,81 +20,66 @@ import java.util.Set;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
-public class LabelListAdapter
-    extends RecyclerView.Adapter<LabelListAdapter.ViewHolder> {
-
-    private final List<Label> items = new ArrayList<>();
+public class LabelListAdapter extends RecyclerView.Adapter<LabelListAdapter.ViewHolder> {
+    private final List<Label> labels = new ArrayList<>();
     private final BiConsumer<String, Boolean> onToggle;
     private final Consumer<String> onDelete;
+    private final Set<String> checkedLabelIds = new HashSet<>();
 
-    // ← keep track of which label IDs are currently checked
-    private final Set<String> checkedLabels = new HashSet<>();
-
-    public LabelListAdapter(BiConsumer<String, Boolean> onToggle,
-                            Consumer<String> onDelete) {
+    public LabelListAdapter(BiConsumer<String, Boolean> onToggle, Consumer<String> onDelete) {
         this.onToggle = onToggle;
         this.onDelete = onDelete;
     }
 
-    /** Replace the list of labels in the UI */
-    public void submitList(List<Label> list) {
-        items.clear();
-        items.addAll(list);
+    public void submitList(List<Label> labelList) {
+        labels.clear();
+        labels.addAll(labelList);
         notifyDataSetChanged();
     }
 
-    /** You can call this from your Fragment to pre‑check some labels if needed */
-    public void setCheckedLabels(Set<String> initial) {
-        checkedLabels.clear();
-        if (initial != null) checkedLabels.addAll(initial);
+    public void setCheckedLabels(Set<String> initialChecked) {
+        checkedLabelIds.clear();
+        if (initialChecked != null) checkedLabelIds.addAll(initialChecked);
         notifyDataSetChanged();
     }
 
-    @NonNull @Override
+    @NonNull
+    @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View v = LayoutInflater.from(parent.getContext())
+        View view = LayoutInflater.from(parent.getContext())
             .inflate(R.layout.item_label, parent, false);
-        return new ViewHolder(v);
-    }
-
-    @Override public int getItemCount() {
-        return items.size();
+        return new ViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ViewHolder holder, int pos) {
-        Label l = items.get(pos);
-        holder.labelName.setText(l.getName());
+    public int getItemCount() {
+        return labels.size();
+    }
 
-        // 1) Remove old listener
+    @Override
+    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+        Label label = labels.get(position);
+        holder.labelName.setText(label.getName());
         holder.checkboxLabel.setOnCheckedChangeListener(null);
-
-        // 2) Initialize checked state from our Set
-        boolean checked = checkedLabels.contains(l.getId());
-        holder.checkboxLabel.setChecked(checked);
-
-        // 3) Re‑attach listener to update Set + fire your onToggle callback
-        holder.checkboxLabel.setOnCheckedChangeListener((cb, isChecked) -> {
-            if (isChecked) checkedLabels.add(l.getId());
-            else          checkedLabels.remove(l.getId());
-
-            // inform fragment/viewmodel to apply/remove on your mails
-            onToggle.accept(l.getId(), isChecked);
+        boolean isChecked = checkedLabelIds.contains(label.getId());
+        holder.checkboxLabel.setChecked(isChecked);
+        holder.checkboxLabel.setOnCheckedChangeListener((cb, checked) -> {
+            if (checked) checkedLabelIds.add(label.getId());
+            else checkedLabelIds.remove(label.getId());
+            onToggle.accept(label.getId(), checked);
         });
-
-        // delete button unchanged
-        holder.deleteButton.setOnClickListener(v -> onDelete.accept(l.getId()));
+        holder.deleteButton.setOnClickListener(v -> onDelete.accept(label.getId()));
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {
-        final CheckBox    checkboxLabel;
-        final TextView    labelName;
+        final CheckBox checkboxLabel;
+        final TextView labelName;
         final ImageButton deleteButton;
-        ViewHolder(View v) {
-            super(v);
-            checkboxLabel = v.findViewById(R.id.checkboxLabel);
-            labelName     = v.findViewById(R.id.labelName);
-            deleteButton  = v.findViewById(R.id.deleteButton);
+        ViewHolder(View view) {
+            super(view);
+            checkboxLabel = view.findViewById(R.id.checkboxLabel);
+            labelName = view.findViewById(R.id.labelName);
+            deleteButton = view.findViewById(R.id.deleteButton);
         }
     }
 }

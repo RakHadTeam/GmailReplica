@@ -9,7 +9,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.rakmail.androidapp.core.auth.AuthEventViewModel;
-import com.rakmail.androidapp.core.auth.AuthPreferences;
 import com.rakmail.androidapp.databinding.ActivityMainBinding;
 import com.rakmail.androidapp.features.inbox.ui.manager.MailListManager;
 import com.rakmail.androidapp.features.inbox.ui.manager.MailRefreshManager;
@@ -18,18 +17,19 @@ import com.rakmail.androidapp.features.inbox.ui.manager.NavigationManager;
 import com.rakmail.androidapp.features.inbox.ui.manager.UIActionsManager;
 import com.rakmail.androidapp.features.inbox.ui.manager.ViewModelManager;
 import com.rakmail.androidapp.features.inbox.viewmodel.InboxViewModel;
+import com.rakmail.androidapp.features.mail.viewmodel.MailViewModel;
 import com.rakmail.androidapp.features.label.view.drawer.LabelDrawerManager;
 import com.rakmail.androidapp.features.label.viewmodel.LabelViewModel;
 
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
-    private static final long REFRESH_INTERVAL_MS = 10_000;
+    private static final long REFRESH_INTERVAL_MS = 100_000;
 
     private ActivityMainBinding binding;
     private InboxViewModel inboxViewModel;
     private LabelViewModel labelViewModel;
 
-    private final AuthPreferences authPreferences = AuthPreferences.getInstance();
+    private MailViewModel mailViewModel;
     private LabelDrawerManager labelDrawerManager;
     private MailListManager mailListManager;
     private MailRefreshManager mailRefreshManager;
@@ -49,25 +49,31 @@ public class MainActivity extends AppCompatActivity {
         viewModelManager.setOnMailsChangedListener(mails -> mailListManager.getAdapter().setMails(mails));
         inboxViewModel = viewModelManager.getInboxViewModel();
         labelViewModel = viewModelManager.getLabelViewModel();
+        mailViewModel = viewModelManager.getMailViewModel();
+        inboxViewModel.observeLabelChanges(labelViewModel);
         labelDrawerManager = new LabelDrawerManager(labelViewModel, inboxViewModel, binding.navView, this);
         labelDrawerManager.setupLabelMenu();
         navigationManager = new NavigationManager(binding, this, labelDrawerManager);
         navigationManager.setupToolbar();
-        navigationManager.setOnLabelSelectedListener(title -> setTitle(title));
+        navigationManager.setOnLabelSelectedListener(title -> {
+            setTitle(title);
+            mailListManager.onCurrentLabelChanged();
+        });
         navigationManager.setupNavigationDrawer();
         mailListManager = new MailListManager(binding, inboxViewModel, this);
-        uiActionsManager = new UIActionsManager(binding, inboxViewModel, this);
+        uiActionsManager = new UIActionsManager(binding, mailViewModel, this);
         uiActionsManager.setupSwipeToRefresh();
         uiActionsManager.setupComposeButton();
 
         mailListManager.setOnMailSelectionChangeListener(selectedIds -> invalidateOptionsMenu());
 
-        mailRefreshManager = new MailRefreshManager(inboxViewModel, REFRESH_INTERVAL_MS);
+        mailRefreshManager = new MailRefreshManager(mailViewModel, REFRESH_INTERVAL_MS);
 
         authEventViewModel = new ViewModelProvider(this).get(AuthEventViewModel.class);
         authEventViewModel.observeUnauthorizedEvent(this, this);
 
-        menuManager = new MenuManager(this, labelViewModel, mailListManager.getAdapter());
+        menuManager = new MenuManager(this, labelViewModel, mailViewModel, mailListManager.getAdapter());
+        menuManager.observeLabelChanges();
     }
 
     @Override

@@ -14,83 +14,81 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <!-- AppBar + Toolbar -->
-        <com.google.android.material.appbar.AppBarLayout
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+            android:layout_height="match_parent"
+            android:orientation="vertical">
 
             <com.google.android.material.appbar.MaterialToolbar
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
                 android:background="?attr/colorPrimary"
-                android:title="@string/inbox"
-                android:titleTextColor="@android:color/white"
-                app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
-        </com.google.android.material.appbar.AppBarLayout>
 
-        <LinearLayout
-            android:id="@+id/selectionBar"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:background="#333"
-            android:padding="8dp"
-            android:visibility="gone"
-            android:layout_marginTop="?attr/actionBarSize"
-            android:elevation="4dp">
+                android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+                app:popupTheme="@style/ThemeOverlay.AppCompat.DayNight" />
 
-            <TextView
-                android:id="@+id/selectionCount"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:textColor="@android:color/white"
-                android:text="0 selected" />
-
-            <ImageView
-                android:id="@+id/btnDelete"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:padding="8dp"
-                android:src="@android:drawable/ic_menu_delete"
-                android:contentDescription="Delete" />
-
-            <ImageView
-                android:id="@+id/btnMark"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:padding="8dp"
-                android:src="@android:drawable/ic_menu_edit"
-                android:contentDescription="Mark" />
-
-            <ImageView
-                android:id="@+id/btnLabel"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:padding="8dp"
-                android:src="@android:drawable/ic_menu_manage"
-                android:contentDescription="Labels" />
-        </LinearLayout>
-
-        <!-- Recycler‑list + Swipe‑to‑Refresh -->
-        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-            android:id="@+id/swipeRefresh"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior">
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/recyclerMails"
+            <LinearLayout
+                android:id="@+id/selectionBar"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:paddingTop="0dp"
-                android:paddingBottom="8dp"
-                android:clipToPadding="false"
-                tools:listitem="@layout/item_mail_row" />
-        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:background="#333"
+                android:padding="8dp"
+                android:visibility="gone"
+                android:elevation="4dp">
 
+                <TextView
+                    android:id="@+id/selectionCount"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:textColor="@android:color/white"
+                    android:text="0 selected" />
+
+                <ImageView
+                    android:id="@+id/btnDelete"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="8dp"
+                    android:src="@android:drawable/ic_menu_delete"
+                    android:contentDescription="Delete" />
+
+                <ImageView
+                    android:id="@+id/btnMark"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="8dp"
+                    android:src="@android:drawable/ic_menu_edit"
+                    android:contentDescription="Mark" />
+
+                <ImageView
+                    android:id="@+id/btnLabel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="8dp"
+                    android:src="@android:drawable/ic_menu_manage"
+                    android:contentDescription="Labels" />
+            </LinearLayout>
+
+            <!-- Recycler‑list + Swipe‑to‑Refresh -->
+            <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+                android:id="@+id/swipeRefresh"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recyclerMails"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:paddingTop="0dp"
+                    android:paddingBottom="8dp"
+                    android:clipToPadding="false"
+                    tools:listitem="@layout/item_mail_row" />
+            </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+        </LinearLayout>
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
     <!-- ───────────  NAVIGATION DRAWER  ─────────── -->

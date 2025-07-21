@@ -8,4 +8,11 @@
     <style name="ShapeAppearance.App.Avatar" parent="ShapeAppearance.MaterialComponents.SmallComponent">
         <item name="cornerSize">50%</item>
     </style>
+    <style name="PopupMenuTextAppearance" parent="TextAppearance.AppCompat.Body1">
+        <item name="android:textColor">?android:textColorPrimary</item>
+    </style>
+    <style name="AppPopupMenu" parent="Widget.AppCompat.PopupMenu.Overflow">
+        <item name="android:textColor">?android:textColorPrimary</item>
+        <item name="android:itemTextAppearance">@style/PopupMenuTextAppearance</item>
+    </style>
 </resources>

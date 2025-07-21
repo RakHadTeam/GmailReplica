@@ -42,4 +42,6 @@
     <string name="sign_in_to_rakmail">Sign In to RakMail</string>
     <string name="sign_up_to_rakmail">Sign up to RakMail!</string>
     <string name="inbox">Inbox</string>
+    <string name="menu_mark_as">Mark as %s</string>
+    <string name="menu_unmark_as">Unmark as %s</string>
 </resources>

@@ -4,22 +4,22 @@ import android.content.Context;
 import android.widget.Toast;
 
 import com.rakmail.androidapp.databinding.ActivityMainBinding;
-import com.rakmail.androidapp.features.inbox.viewmodel.InboxViewModel;
+import com.rakmail.androidapp.features.mail.viewmodel.MailViewModel;
 
 public class UIActionsManager {
     private final ActivityMainBinding binding;
-    private final InboxViewModel inboxViewModel;
+    private final MailViewModel mailViewModel;
     private final Context context;
 
-    public UIActionsManager(ActivityMainBinding binding, InboxViewModel inboxViewModel, Context context) {
+    public UIActionsManager(ActivityMainBinding binding, MailViewModel mailViewModel, Context context) {
         this.binding = binding;
-        this.inboxViewModel = inboxViewModel;
+        this.mailViewModel = mailViewModel;
         this.context = context;
     }
 
     public void setupSwipeToRefresh() {
         binding.swipeRefresh.setOnRefreshListener(() -> {
-            inboxViewModel.fetchMails();
+            mailViewModel.fetchMails();
         });
     }
 

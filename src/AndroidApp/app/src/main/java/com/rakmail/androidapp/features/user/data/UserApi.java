@@ -17,18 +17,17 @@ import retrofit2.http.Part;
 import retrofit2.http.Path;
 
 public interface UserApi {
-
     @Multipart
     @POST("/api/users")
     Call<User> signup(
-        @Part("fullname") RequestBody fullname,
+        @Part("fullname") RequestBody fullName,
         @Part("email")    RequestBody email,
         @Part("password") RequestBody password,
         @Part MultipartBody.Part picture
     );
 
     @POST("/api/tokens")
-    Call<TokenResponse> signIn(@Body SigninRequest body);
+    Call<TokenResponse> signIn(@Body SigninRequest request);
 
     @GET("/api/users/{id}")
     Call<User> getUserById(@Path("id") String id);
@@ -37,7 +36,7 @@ public interface UserApi {
     @PATCH("/api/users/{id}")
     Call<Void> updateUserProfile(
         @Path("id") String userId,
-        @Part("fullname") RequestBody fullname,
+        @Part("fullname") RequestBody fullName,
         @Part MultipartBody.Part picture
     );
 

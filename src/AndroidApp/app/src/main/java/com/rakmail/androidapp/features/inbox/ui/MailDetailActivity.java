@@ -5,10 +5,12 @@ import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.rakmail.androidapp.features.inbox.model.Mail;
+import com.rakmail.androidapp.R;
+import com.rakmail.androidapp.features.mail.model.Mail;
 import com.rakmail.androidapp.features.inbox.ui.adapter.MailDetailAdapter;
 import com.rakmail.androidapp.features.inbox.ui.manager.MenuManager;
 import com.rakmail.androidapp.features.inbox.viewmodel.MailDetailViewModel;
+import com.rakmail.androidapp.features.mail.viewmodel.MailViewModel;
 import com.rakmail.androidapp.features.label.viewmodel.LabelViewModel;
 
 public class MailDetailActivity extends AppCompatActivity {
@@ -30,8 +32,9 @@ public class MailDetailActivity extends AppCompatActivity {
         binding.mailDetailRecyclerView.setAdapter(mailDetailAdapter);
         binding.mailDetailRecyclerView.setLayoutManager(new androidx.recyclerview.widget.LinearLayoutManager(this));
         LabelViewModel labelViewModel = new ViewModelProvider(this).get(LabelViewModel.class);
-        com.rakmail.androidapp.features.inbox.viewmodel.InboxViewModel inboxViewModel = null; // Not needed for single mail
-        menuManager = new MenuManager(this, labelViewModel, null);
+        MailViewModel mailViewModel = new ViewModelProvider(this).get(MailViewModel.class);
+        menuManager = new MenuManager(this, labelViewModel, mailViewModel,  mailDetailAdapter);
+        menuManager.observeLabelChanges();
 
         vm.getMail().observe(this, m -> {
             if (m == null) {
@@ -50,7 +53,10 @@ public class MailDetailActivity extends AppCompatActivity {
             vm.load(id);
         }
 
-        setSupportActionBar(binding.toolbar);
+        // Setup Toolbar as ActionBar (guard against duplicate ActionBar)
+        if (getSupportActionBar() == null && binding.toolbar != null) {
+            setSupportActionBar(binding.toolbar);
+        }
         binding.toolbar.setNavigationOnClickListener(v -> finish());
     }
 
@@ -68,7 +74,9 @@ public class MailDetailActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(android.view.MenuItem item) {
         if (menuManager.onOptionsItemSelected(item)) {
-            return true;
+            if (item.getItemId() == R.id.action_delete) {
+                finish();
+            }
         }
         return super.onOptionsItemSelected(item);
     }

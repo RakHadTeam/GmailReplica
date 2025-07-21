@@ -6,37 +6,22 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.MutableLiveData;
 
-import com.rakmail.androidapp.core.auth.AuthPreferences;
+import com.rakmail.androidapp.core.prefs.AuthPreferences;
 import com.rakmail.androidapp.features.user.data.UserRepository;
 
-/**
- * ViewModel for handling user sign-in.
- */
 public class SigninViewModel extends AndroidViewModel {
-
-    public final MutableLiveData<Boolean> success = new MutableLiveData<>();
-    public final MutableLiveData<String> error = new MutableLiveData<>();
+    public final MutableLiveData<Boolean> signInSuccess = new MutableLiveData<>();
+    public final MutableLiveData<String> signInError = new MutableLiveData<>();
 
     private final UserRepository userRepository;
     private final AuthPreferences authPreferences;
 
-    /**
-     * Constructs a SigninViewModel with injected dependencies.
-     *
-     * @param app Application context
-     */
     public SigninViewModel(@NonNull Application app) {
         super(app);
         this.userRepository = UserRepository.getInstance();
         this.authPreferences = AuthPreferences.getInstance();
     }
 
-    /**
-     * Attempts to sign in with the provided credentials.
-     * Updates LiveData for success or error.
-     * @param email User email
-     * @param password User password
-     */
     public void signIn(String email, String password) {
         userRepository.signIn(email, password, new UserRepository.SignInCallback() {
             @Override
@@ -45,12 +30,12 @@ public class SigninViewModel extends AndroidViewModel {
                 if (jwt != null) {
                     authPreferences.saveJwt(jwt);
                 }
-                success.postValue(true);
+                signInSuccess.postValue(true);
             }
 
             @Override
             public void onFailure(String msg) {
-                error.postValue(msg);
+                signInError.postValue(msg);
             }
         });
     }

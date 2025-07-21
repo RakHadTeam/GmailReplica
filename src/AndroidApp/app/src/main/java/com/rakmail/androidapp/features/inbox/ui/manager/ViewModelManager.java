@@ -7,26 +7,23 @@ import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.rakmail.androidapp.databinding.ActivityMainBinding;
-import com.rakmail.androidapp.features.inbox.data.MailRepository;
+import com.rakmail.androidapp.features.mail.model.Mail;
 import com.rakmail.androidapp.features.inbox.viewmodel.InboxViewModel;
-import com.rakmail.androidapp.features.inbox.viewmodel.InboxViewModelFactory;
-import com.rakmail.androidapp.features.label.repository.LabelRepository;
+import com.rakmail.androidapp.features.mail.viewmodel.MailViewModel;
 import com.rakmail.androidapp.features.label.viewmodel.LabelViewModel;
-import com.rakmail.androidapp.features.user.data.UserRepository;
 
 public class ViewModelManager {
     private final InboxViewModel inboxViewModel;
+
+    private final MailViewModel mailViewModel;
     private final LabelViewModel labelViewModel;
     private OnMailsChangedListener mailsChangedListener;
 
     public ViewModelManager(ActivityMainBinding binding, Context context, LifecycleOwner lifecycleOwner) {
-        MailRepository mailRepository = MailRepository.getInstance();
-        LabelRepository labelRepository = LabelRepository.getInstance();
-        UserRepository userRepository = UserRepository.getInstance();
-        InboxViewModelFactory factory = new InboxViewModelFactory(mailRepository, labelRepository, userRepository);
-        inboxViewModel = new ViewModelProvider((androidx.fragment.app.FragmentActivity) context, factory).get(InboxViewModel.class);
+        inboxViewModel = new ViewModelProvider((androidx.fragment.app.FragmentActivity) context).get(InboxViewModel.class);
         labelViewModel = new ViewModelProvider((androidx.fragment.app.FragmentActivity) context).get(LabelViewModel.class);
-
+        mailViewModel = new ViewModelProvider((androidx.fragment.app.FragmentActivity) context).get(MailViewModel.class);
+        inboxViewModel.setMailViewModel(mailViewModel);
         inboxViewModel.getVisibleMails().observe(lifecycleOwner, mails -> {
             if (mailsChangedListener != null) {
                 mailsChangedListener.onMailsChanged(mails);
@@ -44,7 +41,7 @@ public class ViewModelManager {
             }
         });
         labelViewModel.fetchLabels();
-        inboxViewModel.fetchMails();
+        mailViewModel.fetchMails();
     }
 
     public void setOnMailsChangedListener(OnMailsChangedListener listener) {
@@ -59,7 +56,11 @@ public class ViewModelManager {
         return labelViewModel;
     }
 
+    public MailViewModel getMailViewModel() {
+        return mailViewModel;
+    }
+
     public interface OnMailsChangedListener {
-        void onMailsChanged(java.util.List<com.rakmail.androidapp.features.inbox.model.Mail> mails);
+        void onMailsChanged(java.util.List<Mail> mails);
     }
 }

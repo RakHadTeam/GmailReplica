@@ -10,7 +10,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.rakmail.androidapp.R;
 import com.rakmail.androidapp.core.util.BitmapUtils;
-import com.rakmail.androidapp.features.inbox.model.Mail;
+import com.rakmail.androidapp.features.mail.model.Mail;
 
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -23,59 +23,54 @@ public abstract class BaseMailAdapter<VH extends RecyclerView.ViewHolder> extend
     protected static final String BASE_IMAGE_URL = "http://10.0.2.2:80/";
     protected final List<Mail> items = new ArrayList<>();
     protected final Set<String> selectedIds = new HashSet<>();
-    protected OnSelectionChangeListener selListener;
-    protected OnDeleteMailListener delListener;
+    protected OnSelectionChangeListener selectionChangeListener;
+    protected OnDeleteMailListener deleteMailListener;
 
     public void setMails(List<Mail> mails) {
         items.clear();
         items.addAll(mails);
         selectedIds.clear();
         notifyDataSetChanged();
-        if (selListener != null) selListener.onSelectionChanged(selectedIds);
+        if (selectionChangeListener != null) selectionChangeListener.onSelectionChanged(selectedIds);
     }
 
-    public void setOnSelectionChangeListener(OnSelectionChangeListener l) {
-        selListener = l;
+    public void setOnSelectionChangeListener(OnSelectionChangeListener listener) {
+        selectionChangeListener = listener;
     }
 
-    public void setOnDeleteMailListener(OnDeleteMailListener l) {
-        delListener = l;
-    }
-
-    public void clearSelection() {
-        toggleSelection(null, null, true);
-    }
-
-    public void deleteSelected() {
-        if (delListener != null) {
-            for (String id : selectedIds) delListener.onDelete(id);
-        }
-        items.removeIf(m -> selectedIds.contains(m.getId()));
-        clearSelection();
-    }
-
-    public void markSelected() {
-        for (Mail m : items)
-            if (selectedIds.contains(m.getId())) m.setSubject("★ " + m.getSubject());
-        clearSelection();
+    public void setOnDeleteMailListener(OnDeleteMailListener listener) {
+        deleteMailListener = listener;
     }
 
     public Set<String> getSelectedMailIds() {
         return new HashSet<>(selectedIds);
     }
 
-    protected void toggleSelection(Mail m, RecyclerView.ViewHolder h, boolean clearAll) {
-        if (clearAll) {
-            selectedIds.clear();
-            notifyDataSetChanged();
-        } else if (m != null) {
-            if (!selectedIds.remove(m.getId())) selectedIds.add(m.getId());
-            notifyItemChanged(h.getAdapterPosition());
+    protected void toggleSelection(Mail mail, RecyclerView.ViewHolder holder) {
+        if (mail != null) {
+            boolean wasSelected = selectedIds.contains(mail.getId());
+            if (wasSelected) {
+                selectedIds.remove(mail.getId());
+            } else {
+                selectedIds.add(mail.getId());
+            }
+            if (holder != null) {
+                notifyItemChanged(holder.getAdapterPosition());
+            }
+            if (selectionChangeListener != null) selectionChangeListener.onSelectionChanged(selectedIds);
         }
-        if (selListener != null) selListener.onSelectionChanged(selectedIds);
     }
 
-    // Utility for loading images
+    public void clearSelection() {
+        selectedIds.clear();
+        notifyDataSetChanged();
+        if (selectionChangeListener != null) selectionChangeListener.onSelectionChanged(selectedIds);
+    }
+
+    public void onNavigationChanged() {
+        clearSelection();
+    }
+
     protected void loadSenderImage(String picturePath, ImageView avatar) {
         if (picturePath != null && !picturePath.isEmpty()) {
             avatar.setImageResource(R.drawable.ic_account_circle);

@@ -7,17 +7,23 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import com.rakmail.androidapp.core.auth.AuthPreferences;
+import com.rakmail.androidapp.core.prefs.AuthPreferences;
 import com.rakmail.androidapp.features.settings.data.BlacklistRepository;
 import com.rakmail.androidapp.features.user.data.UserRepository;
 
+/**
+ * ViewModel for managing user settings and blacklist operations.
+ */
 public class SettingsViewModel extends ViewModel {
+    // LiveData fields
     private final MutableLiveData<String> userName = new MutableLiveData<>("");
     private final MutableLiveData<Uri> profilePictureUri = new MutableLiveData<>();
-    private final BlacklistRepository blacklistRepository = BlacklistRepository.getInstance();
-    private final UserRepository userRepository = UserRepository.getInstance();
     private final MutableLiveData<Boolean> isSaving = new MutableLiveData<>(false);
     private final MutableLiveData<String> saveError = new MutableLiveData<>("");
+
+    // Repositories
+    private final BlacklistRepository blacklistRepository = BlacklistRepository.getInstance();
+    private final UserRepository userRepository = UserRepository.getInstance();
     private final AuthPreferences authPreferences = AuthPreferences.getInstance();
 
     public LiveData<String> getUserName() {
@@ -36,6 +42,9 @@ public class SettingsViewModel extends ViewModel {
         return saveError;
     }
 
+    /**
+     * Saves user settings (name and profile image).
+     */
     public void saveUserSettings(String newName, Uri profileImageUri, android.content.Context context) {
         isSaving.setValue(true);
         saveError.setValue("");
@@ -63,10 +72,16 @@ public class SettingsViewModel extends ViewModel {
         }).start();
     }
 
+    /**
+     * Adds a URL to the blacklist.
+     */
     public void addBlacklistUrl(String url, BlacklistRepository.BlacklistCallback callback) {
         blacklistRepository.addUrl(url, callback);
     }
 
+    /**
+     * Removes a URL from the blacklist.
+     */
     public void removeBlacklistUrl(String url, BlacklistRepository.BlacklistCallback callback) {
         blacklistRepository.removeUrl(url, callback);
     }

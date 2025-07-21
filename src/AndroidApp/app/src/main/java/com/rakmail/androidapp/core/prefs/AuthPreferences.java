@@ -1,4 +1,4 @@
-package com.rakmail.androidapp.core.auth;
+package com.rakmail.androidapp.core.prefs;
 
 import android.content.Context;
 import android.content.SharedPreferences;

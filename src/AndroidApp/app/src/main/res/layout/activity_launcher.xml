@@ -3,14 +3,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#F5F7FA">
+    >
 
     <androidx.cardview.widget.CardView
         android:id="@+id/cardView"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_margin="32dp"
-        android:backgroundTint="#FFFFFF"
         app:layout_constraintTop_toTopOf="parent"
         app:cardCornerRadius="24dp"
         app:layout_constraintStart_toStartOf="parent"
@@ -31,7 +30,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"
                 android:text="@string/rakmail"
-                android:textColor="@color/primary"
+                android:textColor="@color/primaryColor"
                 android:textSize="28sp"
                 android:textStyle="bold" />
 
@@ -41,7 +40,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="24dp"
                 android:text="@string/welcome_to_the_best_mail_app"
-                android:textColor="#6B7A90"
+                android:textColor="?android:textColorSecondary"
                 android:textSize="16sp" />
 
             <Button
@@ -54,7 +53,7 @@
                 android:fontFamily="sans-serif-medium"
                 android:padding="12dp"
                 android:text="@string/sign_in"
-                android:textColor="#FFFFFF" />
+                android:textColor="?android:textColorPrimary" />
 
             <Button
                 android:id="@+id/signupButton"
@@ -66,7 +65,7 @@
                 android:fontFamily="sans-serif-medium"
                 android:padding="12dp"
                 android:text="@string/sign_up"
-                android:textColor="#FFFFFF" />
+                android:textColor="?android:textColorPrimary" />
 
         </LinearLayout>
     </androidx.cardview.widget.CardView>

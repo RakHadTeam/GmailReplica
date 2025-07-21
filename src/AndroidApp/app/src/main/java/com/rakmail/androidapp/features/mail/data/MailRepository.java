@@ -1,7 +1,7 @@
-package com.rakmail.androidapp.features.inbox.data;
+package com.rakmail.androidapp.features.mail.data;
 
 import com.rakmail.androidapp.core.api.ApiClient;
-import com.rakmail.androidapp.features.inbox.model.Mail;
+import com.rakmail.androidapp.features.mail.model.Mail;
 
 import java.io.IOException;
 import java.util.List;
@@ -9,7 +9,7 @@ import java.util.List;
 import retrofit2.Response;
 
 /**
- * Repository handling Mail data retrieval from the API.
+ * Repository handling Mail data retrieval and operations from the API.
  */
 public class MailRepository {
     private final MailApi api;
@@ -32,10 +32,11 @@ public class MailRepository {
 
     /**
      * Synchronously fetches mails from the server.
+     *
      * @return List of Mail objects
      * @throws IOException if network or parsing fails
      */
-    public List<Mail> getMails() throws IOException {
+    public List<Mail> fetchMailsSync() throws IOException {
         Response<List<Mail>> res = api.getMails().execute();
         if (res.isSuccessful() && res.body() != null) {
             return res.body();
@@ -46,9 +47,13 @@ public class MailRepository {
 
     /**
      * Synchronously fetch a single mail by ID.
+     *
+     * @param id Mail ID
+     * @return Mail object or null if not found
+     * @throws IOException if network or parsing fails
      */
     public Mail getMailById(String id) throws IOException {
-        for (Mail m : getMails()) {
+        for (Mail m : fetchMailsSync()) {
             if (m.getId().equals(id)) return m;
         }
         return null;
@@ -56,6 +61,9 @@ public class MailRepository {
 
     /**
      * Asynchronously delete a mail by ID.
+     *
+     * @param id       Mail ID
+     * @param callback Callback for result
      */
     public void deleteMailById(String id, MailRepository.Callback callback) {
         new Thread(() -> {
@@ -74,8 +82,12 @@ public class MailRepository {
         }).start();
     }
 
+    /**
+     * Callback for mail operations.
+     */
     public interface Callback {
         void onSuccess();
+
         void onError(String message);
     }
 }

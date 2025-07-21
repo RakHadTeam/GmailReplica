@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -17,15 +18,20 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.DialogFragment;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.rakmail.androidapp.R;
+import com.rakmail.androidapp.core.prefs.UserPreferences;
 import com.rakmail.androidapp.features.settings.viewmodel.SettingsViewModel;
 
+/**
+ * DialogFragment for user settings, including profile and blacklist management.
+ */
 public class SettingsFragment extends DialogFragment {
-    private SettingsViewModel viewModel;
+    // UI elements
     private EditText editName;
     private ImageView imageProfile;
     private Button btnChangePicture;
@@ -35,8 +41,10 @@ public class SettingsFragment extends DialogFragment {
     private Button btnRemoveUrl;
     private Button btnSaveUser;
     private TextView textSaveError;
-
+    private Switch switchDarkMode;
     private ActivityResultLauncher<Intent> imagePickerLauncher;
+
+    private SettingsViewModel viewModel;
 
     public static SettingsFragment newInstance() {
         return new SettingsFragment();
@@ -50,6 +58,7 @@ public class SettingsFragment extends DialogFragment {
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
         View view = requireActivity().getLayoutInflater().inflate(R.layout.fragment_settings, null);
+        // Initialize UI elements
         editName = view.findViewById(R.id.editName);
         imageProfile = view.findViewById(R.id.imageProfile);
         btnChangePicture = view.findViewById(R.id.btnChangePicture);
@@ -59,51 +68,20 @@ public class SettingsFragment extends DialogFragment {
         btnRemoveUrl = view.findViewById(R.id.btnRemoveUrl);
         btnSaveUser = view.findViewById(R.id.btnSaveUser);
         textSaveError = view.findViewById(R.id.textSaveError);
+        switchDarkMode = view.findViewById(R.id.switchDarkMode);
 
         viewModel = new ViewModelProvider(this).get(SettingsViewModel.class);
 
         btnChangePicture.setOnClickListener(v -> pickImage());
-        btnAddUrl.setOnClickListener(v -> {
-            String url = editBlacklistAddUrl.getText().toString().trim();
-            if (!TextUtils.isEmpty(url)) {
-                viewModel.addBlacklistUrl(url, success -> {
-                    if (success) {
-                        Toast.makeText(requireContext(), url + " added to blacklist", Toast.LENGTH_SHORT).show();
-                    } else {
-                        Toast.makeText(requireContext(), "Failed to add " + url + " to blacklist", Toast.LENGTH_SHORT).show();
-                    }
-                });
-                editBlacklistAddUrl.setText("");
-            } else {
-                Toast.makeText(requireContext(), "Enter a URL to add", Toast.LENGTH_SHORT).show();
-            }
-        });
-        btnRemoveUrl.setOnClickListener(v -> {
-            String url = editBlacklistRemoveUrl.getText().toString().trim();
-            if (!TextUtils.isEmpty(url)) {
-                viewModel.removeBlacklistUrl(url, success -> {
-                    if (success) {
-                        Toast.makeText(requireContext(), url + " removed from blacklist", Toast.LENGTH_SHORT).show();
-                    } else {
-                        Toast.makeText(requireContext(), "Failed to remove " + url + " from blacklist", Toast.LENGTH_SHORT).show();
-                    }
-                });
-                editBlacklistRemoveUrl.setText("");
-            } else {
-                Toast.makeText(requireContext(), "Enter a URL to remove", Toast.LENGTH_SHORT).show();
-            }
-        });
-        btnSaveUser.setOnClickListener(v -> {
-            String newName = editName.getText().toString().trim();
-            Uri newPicture = (imageProfile.getTag() instanceof Uri) ? (Uri) imageProfile.getTag() : viewModel.getProfilePictureUri().getValue();
-            boolean nameChanged = !TextUtils.isEmpty(newName) && !newName.equals(viewModel.getUserName().getValue());
-            boolean pictureChanged = newPicture != null && !newPicture.equals(viewModel.getProfilePictureUri().getValue());
-            if (nameChanged || pictureChanged) {
-                viewModel.saveUserSettings(newName, newPicture, requireContext());
-                Toast.makeText(requireContext(), "Saving user settings...", Toast.LENGTH_SHORT).show();
-            } else {
-                Toast.makeText(requireContext(), "No changes to save", Toast.LENGTH_SHORT).show();
-            }
+        btnAddUrl.setOnClickListener(v -> handleAddUrl());
+        btnRemoveUrl.setOnClickListener(v -> handleRemoveUrl());
+        btnSaveUser.setOnClickListener(v -> handleSaveUser());
+
+        boolean darkModeEnabled = UserPreferences.getInstance(requireContext()).isDarkModeEnabled();
+        switchDarkMode.setChecked(darkModeEnabled);
+        switchDarkMode.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            UserPreferences.getInstance(requireContext()).setDarkModeEnabled(isChecked);
+            AppCompatDelegate.setDefaultNightMode(isChecked ? AppCompatDelegate.MODE_NIGHT_YES : AppCompatDelegate.MODE_NIGHT_NO);
         });
 
         imagePickerLauncher = registerForActivityResult(
@@ -150,5 +128,42 @@ public class SettingsFragment extends DialogFragment {
     private void pickImage() {
         Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
         imagePickerLauncher.launch(intent);
+    }
+
+    private void handleAddUrl() {
+        String url = editBlacklistAddUrl.getText().toString().trim();
+        if (!TextUtils.isEmpty(url)) {
+            viewModel.addBlacklistUrl(url, success -> {
+                Toast.makeText(requireContext(), success ? url + " added to blacklist" : "Failed to add " + url + " to blacklist", Toast.LENGTH_SHORT).show();
+            });
+            editBlacklistAddUrl.setText("");
+        } else {
+            Toast.makeText(requireContext(), "Enter a URL to add", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void handleRemoveUrl() {
+        String url = editBlacklistRemoveUrl.getText().toString().trim();
+        if (!TextUtils.isEmpty(url)) {
+            viewModel.removeBlacklistUrl(url, success -> {
+                Toast.makeText(requireContext(), success ? url + " removed from blacklist" : "Failed to remove " + url + " from blacklist", Toast.LENGTH_SHORT).show();
+            });
+            editBlacklistRemoveUrl.setText("");
+        } else {
+            Toast.makeText(requireContext(), "Enter a URL to remove", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void handleSaveUser() {
+        String newName = editName.getText().toString().trim();
+        Uri newPicture = (imageProfile.getTag() instanceof Uri) ? (Uri) imageProfile.getTag() : viewModel.getProfilePictureUri().getValue();
+        boolean nameChanged = !TextUtils.isEmpty(newName) && !newName.equals(viewModel.getUserName().getValue());
+        boolean pictureChanged = newPicture != null && !newPicture.equals(viewModel.getProfilePictureUri().getValue());
+        if (nameChanged || pictureChanged) {
+            viewModel.saveUserSettings(newName, newPicture, requireContext());
+            Toast.makeText(requireContext(), "Saving user settings...", Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(requireContext(), "No changes to save", Toast.LENGTH_SHORT).show();
+        }
     }
 }

@@ -1,5 +1,7 @@
 package com.rakmail.androidapp.core.auth;
 
+import com.rakmail.androidapp.core.prefs.AuthPreferences;
+
 import java.io.IOException;
 
 import okhttp3.Interceptor;

@@ -6,7 +6,8 @@
     android:layout_height="wrap_content"
     android:layout_margin="20dp"
     app:cardCornerRadius="12dp"
-    app:cardElevation="6dp">
+    app:cardElevation="6dp"
+>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -42,8 +43,9 @@
                     android:id="@+id/mailSender"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/secondary"
+                    android:textColor="?android:textColorPrimary"
                     android:textSize="16sp"
+                    android:text="sender"
                     android:textStyle="bold" />
 
                 <TextView
@@ -52,8 +54,9 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="5dp"
                     android:ellipsize="end"
+                    android:text="email"
+                    android:textColor="?android:textColorSecondary"
                     android:maxLines="1"
-                    android:textColor="@color/secondary"
                     android:textSize="13sp" />
 
 
@@ -64,7 +67,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="2dp"
-                android:textColor="@color/secondary"
+                android:text="Jul 20, 2023"
+                android:textColor="?android:textColorSecondary"
                 android:textSize="12sp" />
         </LinearLayout>
 
@@ -75,8 +79,9 @@
             android:layout_marginStart="4dp"
             android:layout_marginEnd="4dp"
             android:layout_marginBottom="8dp"
-            android:textColor="@color/dark"
+            android:textColor="?android:textColorPrimary"
             android:textSize="20sp"
+            android:text="Subject of the email goes here"
             android:textStyle="bold" />
 
         <View
@@ -93,20 +98,11 @@
             android:layout_marginStart="4dp"
             android:layout_marginEnd="4dp"
             android:layout_marginBottom="24dp"
+            android:text="This is the body of the email. It can contain multiple lines of text and should be easy to read."
             android:lineSpacingExtra="4dp"
-            android:textColor="@color/dark"
+            android:textColor="?android:textColorPrimary"
             android:textSize="16sp" />
 
-        <TextView
-            android:id="@+id/mailPreview"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:ellipsize="end"
-            android:maxLines="2"
-            android:textColor="@color/dark"
-            android:textSize="14sp"
-            android:visibility="gone" />
 
     </LinearLayout>
 </androidx.cardview.widget.CardView>

@@ -26,10 +26,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="24dp"
-            android:backgroundTint="@color/purple_500"
+            android:backgroundTint="@color/primaryColor"
             android:elevation="2dp"
             android:text="Change Profile Picture"
-            android:textColor="@android:color/white" />
+            android:textColor="?android:textColorPrimary" />
 
         <EditText
             android:id="@+id/editName"
@@ -38,6 +38,7 @@
             android:layout_marginBottom="8dp"
             android:background="@drawable/bg_edittext_rounded"
             android:hint="Your Name"
+            android:textColorHint="?android:textColorSecondary"
             android:inputType="textPersonName"
             android:padding="12dp"
             android:textSize="16sp" />
@@ -47,10 +48,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
-            android:backgroundTint="@color/purple_500"
+            android:backgroundTint="@color/primaryColor"
             android:elevation="2dp"
+            android:textColorHint="?android:textColorSecondary"
             android:text="Save Changes"
-            android:textColor="@android:color/white" />
+            android:textColor="?android:textColorPrimary" />
 
         <TextView
             android:id="@+id/textSaveError"
@@ -58,7 +60,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:layout_marginBottom="8dp"
-            android:textColor="@android:color/holo_red_dark"
+            android:textColor="@color/dangerColor"
             android:textSize="14sp"
             android:visibility="gone" />
 
@@ -67,7 +69,7 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
             android:text="Blacklist URLs"
-            android:textColor="@color/black"
+            android:textColor="?android:textColorPrimary"
             android:textSize="18sp"
             android:textStyle="bold" />
 
@@ -78,6 +80,7 @@
             android:layout_marginBottom="8dp"
             android:background="@drawable/bg_edittext_rounded"
             android:hint="Add URL to blacklist"
+            android:textColorHint="?android:textColorSecondary"
             android:inputType="textUri"
             android:padding="12dp"
             android:textSize="16sp" />
@@ -87,10 +90,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
-            android:backgroundTint="@color/purple_500"
+            android:backgroundTint="@color/primaryColor"
             android:elevation="2dp"
             android:text="Add URL"
-            android:textColor="@android:color/white" />
+            android:textColor="?android:textColorPrimary" />
 
         <EditText
             android:id="@+id/editBlacklistRemoveUrl"
@@ -99,6 +102,7 @@
             android:layout_marginBottom="8dp"
             android:background="@drawable/bg_edittext_rounded"
             android:hint="Remove URL from blacklist"
+            android:textColorHint="?android:textColorSecondary"
             android:inputType="textUri"
             android:padding="12dp"
             android:textSize="16sp" />
@@ -108,10 +112,17 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
-            android:backgroundTint="@color/purple_500"
+            android:backgroundTint="@color/primaryColor"
             android:elevation="2dp"
             android:text="Remove URL"
-            android:textColor="@android:color/white" />
+            android:textColor="?android:textColorPrimary" />
+
+        <Switch
+            android:id="@+id/switchDarkMode"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Dark Mode"
+            android:layout_marginBottom="16dp" />
 
 
     </LinearLayout>

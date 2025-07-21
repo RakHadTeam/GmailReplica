@@ -42,7 +42,7 @@ public class UserRepository {
         return INSTANCE;
     }
 
-    public void signup(String fullname, String email, String password, File profileImageFile, SignupCallback cb) {
+    public void signup(String fullName, String email, String password, File profileImageFile, SignupCallback callback) {
         MultipartBody.Part imagePart = null;
         if (profileImageFile != null) {
             RequestBody fileBody = RequestBody.create(
@@ -55,8 +55,7 @@ public class UserRepository {
                 fileBody
             );
         }
-
-        RequestBody fn = RequestBody.create(MediaType.parse("text/plain"), fullname);
+        RequestBody fn = RequestBody.create(MediaType.parse("text/plain"), fullName);
         RequestBody em = RequestBody.create(MediaType.parse("text/plain"), email);
         RequestBody pwd = RequestBody.create(MediaType.parse("text/plain"), password);
 
@@ -64,31 +63,31 @@ public class UserRepository {
             @Override public void onResponse(@NonNull Call<User> c,
                                              @NonNull Response<User> r) {
                 if (r.isSuccessful() && r.body() != null)
-                    cb.onSuccess(r.body());
+                    callback.onSuccess(r.body());
                 else
-                    cb.onFailure("Signup failed: " + r.code());
+                    callback.onFailure("Signup failed: " + r.code());
             }
             @Override public void onFailure(@NonNull Call<User> c,
                                             @NonNull Throwable t) {
-                cb.onFailure(t.getMessage());
+                callback.onFailure(t.getMessage());
             }
         });
     }
 
-    public void signIn(String email, String password, SignInCallback cb) {
-        SigninRequest body = new SigninRequest(email, password);
+    public void signIn(String email, String password, SignInCallback callback) {
+        SigninRequest request = new SigninRequest(email, password);
 
-        api.signIn(body).enqueue(new Callback<>() {
+        api.signIn(request).enqueue(new Callback<>() {
             @Override public void onResponse(@NonNull Call<TokenResponse> c,
                                              @NonNull Response<TokenResponse> r) {
                 if (r.isSuccessful() && r.body() != null)
-                    cb.onSuccess(r.body().token);
+                    callback.onSuccess(r.body().getToken());
                 else
-                    cb.onFailure("Login failed: " + r.code());
+                    callback.onFailure("Login failed: " + r.code());
             }
             @Override public void onFailure(@NonNull Call<TokenResponse> c,
                                             @NonNull Throwable t) {
-                cb.onFailure(t.getMessage());
+                callback.onFailure(t.getMessage());
             }
         });
     }
@@ -98,6 +97,7 @@ public class UserRepository {
             @Override public void onResponse(@NonNull Call<User> call,
                                              @NonNull Response<User> response) {
                 if (response.isSuccessful() && response.body() != null) {
+                    Log.d("USERREPO", "Fetched user: " + response.body());
                     cb.onSuccess(response.body());
                 } else {
                     cb.onFailure("Failed to fetch user: " + response.code());
