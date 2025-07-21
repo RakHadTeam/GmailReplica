@@ -28,6 +28,7 @@ import com.rakmail.androidapp.features.label.viewmodel.LabelViewModel;
 import com.rakmail.androidapp.features.user.data.repository.UserRepository;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
@@ -228,32 +229,54 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        int itemId = item.getItemId();
-        if (itemId == R.id.action_manage_labels) {
-            if (adapter != null && !adapter.getSelectedMailIds().isEmpty()) {
+        int id = item.getItemId();
+
+        if (id == R.id.action_manage_labels) {
+            if (!adapter.getSelectedMailIds().isEmpty()) {
                 LabelManagerDialogFragment
                     .newInstance(new ArrayList<>(adapter.getSelectedMailIds()))
                     .show(getSupportFragmentManager(), "labelManager");
-            } else {
-//                Toast.makeText(this, getString(R.string.no_mail_selected_for_labels), Toast.LENGTH_SHORT).show();
             }
             return true;
         }
-        if (itemId == R.id.action_delete) {
-            // Todo: Implement delete action
-            // check if its binned already
-            // if true, delete the mails directly using MailApi
-            // if false, toggle label "Bin" with applyExplicit true
-            // use adapter.getSelectedMailIds() to get selected mails
-            // for each
-            // toggle with labelId "Bin" and applyExplicit true
-            // using labelViewModel.toggleLabel("Bin", mailId, true);
 
+        if (id == R.id.action_restore) {
+            List<String> ids = new ArrayList<>(adapter.getSelectedMailIds());
+            if (ids.isEmpty()) return true;
+            for (String mid : ids) labelViewModel.toggleLabel("Bin", mid, false);
+            adapter.clearSelection();
+            invalidateOptionsMenu();
+            return true;
         }
 
-        // Handle other menu items if any
+        if (id == R.id.action_delete) {
+            List<String> ids = new ArrayList<>(adapter.getSelectedMailIds());
+            if (ids.isEmpty()) return true;
+            Label current = labelViewModel.getLabelById(inboxViewModel.getCurrentLabelId());
+            boolean inBin = current != null && "Bin".equals(current.getName());
+            if (inBin) {
+                for (String mid : ids) inboxViewModel.deleteMailById(mid);
+            } else {
+                for (String mid : ids) labelViewModel.toggleLabel("Bin", mid, true);
+            }
+            adapter.clearSelection();
+            invalidateOptionsMenu();
+            return true;
+        }
+
+        if (id == R.id.action_star) {
+            List<String> ids = new ArrayList<>(adapter.getSelectedMailIds());
+            if (ids.isEmpty()) return true;
+            for (String mid : ids) labelViewModel.toggleLabel("Starred", mid, true);
+            adapter.clearSelection();
+            invalidateOptionsMenu();
+            return true;
+        }
+
         return super.onOptionsItemSelected(item);
     }
+
+
 
     @Override
     protected void onDestroy() {
