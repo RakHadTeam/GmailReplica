@@ -51,5 +51,9 @@
             android:theme="@style/Theme.AndroidApp.NoActionBar"
             android:exported="false" />
 
+        <activity android:name=".features.inbox.ui.ComposeMailActivity"
+            android:parentActivityName=".features.inbox.ui.MainActivity"
+            android:theme="@style/Theme.AndroidApp.NoActionBar" />
+
     </application>
 </manifest>

@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.rakmail.androidapp.R;
 import com.rakmail.androidapp.features.mail.model.Mail;
+import com.rakmail.androidapp.features.inbox.ui.ComposeMailActivity;
 import com.rakmail.androidapp.features.inbox.ui.MailDetailActivity;
 
 import java.text.SimpleDateFormat;
@@ -44,7 +45,10 @@ public class MailAdapter extends BaseMailAdapter<MailAdapter.ViewHolder> {
 
     @NonNull
     @Override
-    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public ViewHolder onCreateViewHolder(
+        @NonNull ViewGroup parent,
+        int viewType
+    ) {
         View view = LayoutInflater.from(parent.getContext())
             .inflate(R.layout.item_mail_row, parent, false);
         return new ViewHolder(view);
@@ -56,76 +60,132 @@ public class MailAdapter extends BaseMailAdapter<MailAdapter.ViewHolder> {
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+    public void onBindViewHolder(
+        @NonNull ViewHolder holder,
+        int position
+    ) {
         Mail mail = items.get(position);
 
-        if (holder.subject != null)
-            holder.subject.setText(mail.getSubject() != null ? mail.getSubject() : "(no subject)");
-        if (holder.sender != null)
-            holder.sender.setText(mail.getSenderName() != null ? mail.getSenderName() : "(no sender)");
-        if (holder.date != null) {
-            String rawDate = mail.getCreatedAt();
-            String formattedDate = rawDate;
-            if (rawDate != null && !rawDate.isEmpty()) {
-                try {
-                    SimpleDateFormat isoFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.getDefault());
-                    Date date = isoFormat.parse(rawDate);
-                    if (date != null) {
-                        formattedDate = new SimpleDateFormat("MMM dd, yyyy HH:mm", Locale.getDefault()).format(date);
-                    }
-                } catch (Exception e) {
-                    formattedDate = "";
+        // Subject
+        holder.subject.setText(
+            mail.getSubject() != null
+                ? mail.getSubject()
+                : "(no subject)"
+        );
+
+        // Sender name
+        holder.sender.setText(
+            mail.getSenderName() != null
+                ? mail.getSenderName()
+                : "(no sender)"
+        );
+
+        // Date formatting
+        String rawDate = mail.getCreatedAt();
+        String formattedDate = "";
+        if (rawDate != null && !rawDate.isEmpty()) {
+            try {
+                SimpleDateFormat isoFormat =
+                    new SimpleDateFormat(
+                        "yyyy-MM-dd'T'HH:mm:ss",
+                        Locale.getDefault()
+                    );
+                Date date = isoFormat.parse(rawDate);
+                if (date != null) {
+                    formattedDate = new SimpleDateFormat(
+                        "MMM dd, yyyy HH:mm",
+                        Locale.getDefault()
+                    ).format(date);
                 }
-            }
-            holder.date.setText(formattedDate != null ? formattedDate : "");
+            } catch (Exception ignored) { }
         }
-        if (holder.preview != null) {
-            String previewText = "";
-            if (mail.getBody() != null && !mail.getBody().isEmpty()) {
-                previewText = mail.getBody().length() > 80 ? mail.getBody().substring(0, 80) + "…" : mail.getBody();
-            }
-            holder.preview.setText(previewText);
+        holder.date.setText(formattedDate);
+
+        // Preview (first 80 chars)
+        String body = mail.getBody() != null ? mail.getBody() : "";
+        if (body.length() > 80) {
+            holder.preview.setText(body.substring(0, 80) + "…");
+        } else {
+            holder.preview.setText(body);
         }
+
+        // Selection highlight
         if (isSelected(mail.getId())) {
-            holder.itemView.setBackgroundColor(ContextCompat.getColor(holder.itemView.getContext(), R.color.selected_item_color));
+            holder.itemView.setBackgroundColor(
+                ContextCompat.getColor(
+                    holder.itemView.getContext(),
+                    R.color.selected_item_color
+                )
+            );
             holder.itemView.setElevation(8f);
         } else {
             holder.itemView.setBackgroundColor(Color.TRANSPARENT);
             holder.itemView.setElevation(0f);
         }
+
+        // Click handling: drafts → Compose, others → Detail
         holder.itemView.setOnClickListener(v -> {
+            Context ctx = v.getContext();
             if (selectedIds.isEmpty()) {
-                Context context = v.getContext();
-                Intent intent = new Intent(context, MailDetailActivity.class);
-                intent.putExtra(MailDetailActivity.EXTRA_MAIL, mail);
-                context.startActivity(intent);
+                if (mail.isDraft()) {
+                    Intent intent = new Intent(
+                        ctx,
+                        ComposeMailActivity.class
+                    );
+                    intent.putExtra(
+                        ComposeMailActivity.EXTRA_DRAFT_ID,
+                        mail.getId()
+                    );
+                    intent.putExtra(
+                        ComposeMailActivity.EXTRA_DRAFT_RECIPIENT,
+                        mail.getRecipientEmail()
+                    );
+                    intent.putExtra(
+                        ComposeMailActivity.EXTRA_DRAFT_SUBJECT,
+                        mail.getSubject()
+                    );
+                    intent.putExtra(
+                        ComposeMailActivity.EXTRA_DRAFT_BODY,
+                        mail.getBody()
+                    );
+                    ctx.startActivity(intent);
+                } else {
+                    Intent intent = new Intent(
+                        ctx,
+                        MailDetailActivity.class
+                    );
+                    intent.putExtra(
+                        MailDetailActivity.EXTRA_MAIL,
+                        mail
+                    );
+                    ctx.startActivity(intent);
+                }
             } else {
                 toggleSelection(mail, holder);
             }
         });
+
+        // Long‑press to multi‑select
         holder.itemView.setOnLongClickListener(v -> {
             toggleSelection(mail, holder);
             return true;
         });
+
+        // Load avatar asynchronously (from BaseMailAdapter)
         loadSenderImage(mail.getSenderPicture(), holder.avatar);
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {
-        private final ImageView avatar;
-        private final TextView subject, preview, sender, date;
+        final ImageView avatar;
+        final TextView subject, preview, sender, date;
+
         ViewHolder(View view) {
             super(view);
-            avatar = view.findViewById(R.id.mailAvatar);
+            avatar  = view.findViewById(R.id.mailAvatar);
             subject = view.findViewById(R.id.mailSubject);
             preview = view.findViewById(R.id.mailPreview);
-            sender = view.findViewById(R.id.mailSender);
-            date = view.findViewById(R.id.mailDate);
+            sender  = view.findViewById(R.id.mailSender);
+            date    = view.findViewById(R.id.mailDate);
         }
-
-        public ImageView getAvatar() { return avatar; }
-        public TextView getSubject() { return subject; }
-        public TextView getPreview() { return preview; }
-        public TextView getSender() { return sender; }
-        public TextView getDate() { return date; }
     }
 }

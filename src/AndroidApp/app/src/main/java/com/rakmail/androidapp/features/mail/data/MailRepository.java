@@ -6,11 +6,9 @@ import com.rakmail.androidapp.features.mail.model.Mail;
 import java.io.IOException;
 import java.util.List;
 
+import retrofit2.Call;
 import retrofit2.Response;
 
-/**
- * Repository handling Mail data retrieval and operations from the API.
- */
 public class MailRepository {
     private final MailApi api;
     private static volatile MailRepository INSTANCE;
@@ -31,26 +29,18 @@ public class MailRepository {
     }
 
     /**
-     * Synchronously fetches mails from the server.
-     *
-     * @return List of Mail objects
-     * @throws IOException if network or parsing fails
+     * Synchronous fetch of all mails.
      */
     public List<Mail> fetchMailsSync() throws IOException {
         Response<List<Mail>> res = api.getMails().execute();
         if (res.isSuccessful() && res.body() != null) {
             return res.body();
-        } else {
-            throw new IOException("Failed to load mails: " + res.code());
         }
+        throw new IOException("Failed to load mails: " + res.code());
     }
 
     /**
-     * Synchronously fetch a single mail by ID.
-     *
-     * @param id Mail ID
-     * @return Mail object or null if not found
-     * @throws IOException if network or parsing fails
+     * Synchronous fetch of a single mail by ID.
      */
     public Mail getMailById(String id) throws IOException {
         for (Mail m : fetchMailsSync()) {
@@ -60,34 +50,53 @@ public class MailRepository {
     }
 
     /**
-     * Asynchronously delete a mail by ID.
-     *
-     * @param id       Mail ID
-     * @param callback Callback for result
+     * Asynchronous delete.
      */
-    public void deleteMailById(String id, MailRepository.Callback callback) {
+    public void deleteMailById(String id, Callback cb) {
         new Thread(() -> {
             try {
                 Response<Void> res = api.deleteMail(id).execute();
                 if (res.isSuccessful()) {
-                    callback.onSuccess();
-                } else if (res.code() == 401 || res.code() == 403) {
-                    callback.onError("Unauthorized");
+                    cb.onSuccess();
                 } else {
-                    callback.onError("Failed to delete mail: " + res.code());
+                    cb.onError("Delete failed: " + res.code());
                 }
             } catch (IOException e) {
-                callback.onError("Exception: " + e.getMessage());
+                cb.onError(e.getMessage());
             }
         }).start();
     }
 
     /**
-     * Callback for mail operations.
+     * Asynchronous send or save (draft).
+     * If draftId==null -> POST, else PATCH.
+     */
+    public void sendOrSaveMail(Mail mail, String draftId, Callback cb) {
+        Call<Void> call = (draftId == null)
+            ? api.sendMail(mail)
+            : api.updateMail(draftId, mail);
+
+        call.enqueue(new retrofit2.Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> resp) {
+                if (resp.isSuccessful()) {
+                    cb.onSuccess();
+                } else {
+                    cb.onError("Error " + resp.code());
+                }
+            }
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+                cb.onError(t.getMessage());
+            }
+        });
+    }
+
+    /**
+     * Your own callback interface, distinct from Retrofit’s.
      */
     public interface Callback {
         void onSuccess();
-
         void onError(String message);
     }
 }

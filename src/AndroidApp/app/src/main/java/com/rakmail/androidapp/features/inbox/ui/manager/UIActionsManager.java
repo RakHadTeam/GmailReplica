@@ -1,34 +1,45 @@
 package com.rakmail.androidapp.features.inbox.ui.manager;
 
 import android.content.Context;
-import android.widget.Toast;
+import android.content.Intent;
 
+import com.rakmail.androidapp.R;
 import com.rakmail.androidapp.databinding.ActivityMainBinding;
 import com.rakmail.androidapp.features.mail.viewmodel.MailViewModel;
+import com.rakmail.androidapp.features.inbox.ui.ComposeMailActivity;
 
+/**
+ * Encapsulates wiring up common UI actions for the inbox screen.
+ */
 public class UIActionsManager {
     private final ActivityMainBinding binding;
     private final MailViewModel mailViewModel;
     private final Context context;
 
-    public UIActionsManager(ActivityMainBinding binding, MailViewModel mailViewModel, Context context) {
+    public UIActionsManager(
+        ActivityMainBinding binding,
+        MailViewModel mailViewModel,
+        Context context
+    ) {
         this.binding = binding;
         this.mailViewModel = mailViewModel;
         this.context = context;
     }
 
+    /** Hook up swipe‑to‑refresh to reload mails. */
     public void setupSwipeToRefresh() {
-        binding.swipeRefresh.setOnRefreshListener(() -> {
-            mailViewModel.fetchMails();
-        });
+        binding.swipeRefresh.setOnRefreshListener(mailViewModel::fetchMails);
     }
 
+    /** Hook up the Compose button in the drawer header to open ComposeMailActivity. */
     public void setupComposeButton() {
-        binding.navView.getHeaderView(0).findViewById(com.rakmail.androidapp.R.id.btnCompose)
+        binding
+            .navView
+            .getHeaderView(0)
+            .findViewById(R.id.btnCompose)
             .setOnClickListener(v -> {
-                Toast.makeText(context, "Compose mail clicked (TODO)", Toast.LENGTH_SHORT).show();
-                // TODO: open Compose activity / fragment
+                Intent intent = new Intent(context, ComposeMailActivity.class);
+                context.startActivity(intent);
             });
     }
 }
-
