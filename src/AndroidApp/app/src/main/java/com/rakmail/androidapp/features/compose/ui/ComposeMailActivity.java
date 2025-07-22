@@ -1,4 +1,4 @@
-package com.rakmail.androidapp.features.inbox.ui;
+package com.rakmail.androidapp.features.compose.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -10,8 +10,8 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.rakmail.androidapp.databinding.ActivityComposeMailBinding;
 import com.rakmail.androidapp.features.mail.model.Mail;
-import com.rakmail.androidapp.features.inbox.viewmodel.ComposeMailViewModel;
-import com.rakmail.androidapp.features.inbox.viewmodel.ComposeMailViewModelFactory;
+import com.rakmail.androidapp.features.compose.viewmodel.ComposeMailViewModel;
+import com.rakmail.androidapp.features.compose.viewmodel.ComposeMailViewModelFactory;
 import com.rakmail.androidapp.core.util.Resource;
 
 public class ComposeMailActivity extends AppCompatActivity {

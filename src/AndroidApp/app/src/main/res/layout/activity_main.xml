@@ -23,9 +23,42 @@
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
                 android:background="?attr/colorPrimary"
-
                 android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-                app:popupTheme="@style/ThemeOverlay.AppCompat.DayNight" />
+                app:popupTheme="@style/ThemeOverlay.AppCompat.DayNight">
+
+                <LinearLayout
+                    android:id="@+id/searchBarContainer"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal"
+                    android:gravity="end|center_vertical">
+                    <EditText
+                        android:id="@+id/searchInput"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:hint="Search..."
+                        android:visibility="gone"
+                        android:background="@android:color/transparent"
+                        android:inputType="text"
+                        android:textColor="?android:textColorPrimary"
+                        android:textColorHint="@android:color/darker_gray"
+                        android:cursorVisible="true"
+                        android:focusable="true"
+                        android:focusableInTouchMode="true"
+                        android:imeOptions="actionSearch"
+                        android:singleLine="true"
+                        android:paddingLeft="8dp"
+                        android:paddingRight="8dp"/>
+                    <ImageView
+                        android:id="@+id/btnSearch"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:padding="8dp"
+                        android:src="@drawable/ic_search"
+                        android:contentDescription="Search"/>
+                </LinearLayout>
+            </com.google.android.material.appbar.MaterialToolbar>
 
             <LinearLayout
                 android:id="@+id/selectionBar"
@@ -86,6 +119,17 @@
                     android:clipToPadding="false"
                     tools:listitem="@layout/item_mail_row" />
             </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/btnCompose"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom|end"
+                android:layout_margin="24dp"
+                android:src="@drawable/ic_edit"
+                android:contentDescription="Compose"
+                app:backgroundTint="@color/primaryColor"
+                app:tint="@android:color/white" />
         </LinearLayout>
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 

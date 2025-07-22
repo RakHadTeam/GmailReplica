@@ -1,7 +1,8 @@
 import multer from "multer";
 import path from "path";
-import { UserAlreadyExistsError } from "../../../core/errors/AppError.js";
+import { AlreadyExistsError } from "../../../core/errors/AppError.js";
 import { createUser } from "../../../services/user/createUser.js";
+import StatusCode from "../../../core/StatusCode.js";
 
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
@@ -38,14 +39,14 @@ export async function postUsers(req, res) {
     try {
         const userId = await createUser(newUser);
         return res
-            .status(201)
+            .status(StatusCode.CREATED)
             .json({ message: "User created successfully", userId });
     } catch (error) {
-        if (error instanceof UserAlreadyExistsError) {
-            return res.status(409).json({ error: "User already exists" });
+        if (error instanceof AlreadyExistsError) {
+            return res.status(StatusCode.CONFLICT).json({ error: "User already exists" });
         } else {
             console.error("Error creating user:", error);
-            return res.status(500).json({ error: "Internal server error" });
+            return res.status(StatusCode.INTERNAL_SERVER_ERROR).json({ error: "Internal server error" });
         }
     }
 }

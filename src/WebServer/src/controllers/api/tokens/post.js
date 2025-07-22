@@ -1,5 +1,6 @@
 import { UnauthorizedError } from "../../../core/errors/AppError.js";
 import { generateToken } from "../../../core/jwt.js";
+import StatusCode from "../../../core/StatusCode.js";
 import { validateCredentials } from "../../../services/token.service.js";
 
 export async function postTokens(req, res) {
@@ -17,11 +18,11 @@ export async function postTokens(req, res) {
             httpOnly: true,
             maxAge: 1000 * 60 * 60 * 24, // 1 day
         });
-        return res.status(200).json({ token });
+        return res.status(StatusCode.OK).json({ token });
     } catch (error) {
         if (error instanceof UnauthorizedError) {
-            return res.status(401).json({ error: "Invalid email or password" });
+            return res.status(StatusCode.UNAUTHORIZED).json({ error: "Invalid email or password" });
         }
-        return res.status(500).json({ error: "Internal server error" });
+        return res.status(StatusCode.INTERNAL_SERVER_ERROR).json({ error: "Internal server error" });
     }
 }

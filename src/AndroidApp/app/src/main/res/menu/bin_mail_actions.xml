@@ -3,6 +3,7 @@
 
     <item
         android:id="@+id/action_restore"
+        app:tint="@color/colorOnPrimary"
         android:icon="@drawable/ic_restore_from_trash"
         android:title="Restore"
         app:showAsAction="ifRoom" />
@@ -10,23 +11,25 @@
     <item
         android:id="@+id/action_delete"
         android:icon="@drawable/ic_delete"
-        android:tint="?attr/colorOnPrimary"
+        app:tint="@color/colorOnPrimary"
         android:title="Delete"
         app:showAsAction="ifRoom" />
 
     <item
         android:id="@+id/action_star"
         android:icon="@drawable/ic_star_outline"
-        android:tint="?attr/colorOnPrimary"
+        app:tint="@color/colorOnPrimary"
         android:title="Star"
         app:showAsAction="ifRoom" />
     <item
         android:id="@+id/action_spam"
+        app:tint="@color/colorOnPrimary"
         android:icon="@drawable/ic_report"
         android:title="Mark as Spam"
         app:showAsAction="ifRoom" />
     <item
         android:id="@+id/action_manage_labels"
+        app:tint="@color/colorOnPrimary"
         android:icon="@drawable/ic_label"
         android:title="Manage Labels"
         app:showAsAction="ifRoom" />

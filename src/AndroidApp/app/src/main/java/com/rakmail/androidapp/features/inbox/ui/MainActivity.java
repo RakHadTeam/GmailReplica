@@ -8,6 +8,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.rakmail.androidapp.R;
 import com.rakmail.androidapp.core.auth.AuthEventViewModel;
 import com.rakmail.androidapp.databinding.ActivityMainBinding;
 import com.rakmail.androidapp.features.inbox.ui.manager.MailListManager;
@@ -20,6 +21,7 @@ import com.rakmail.androidapp.features.inbox.viewmodel.InboxViewModel;
 import com.rakmail.androidapp.features.mail.viewmodel.MailViewModel;
 import com.rakmail.androidapp.features.label.view.drawer.LabelDrawerManager;
 import com.rakmail.androidapp.features.label.viewmodel.LabelViewModel;
+import com.rakmail.androidapp.features.search.ui.SearchActivity;
 
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
@@ -60,10 +62,11 @@ public class MainActivity extends AppCompatActivity {
             mailListManager.onCurrentLabelChanged();
         });
         navigationManager.setupNavigationDrawer();
-        mailListManager = new MailListManager(binding, inboxViewModel, this);
+        mailListManager = new MailListManager(binding, this);
         uiActionsManager = new UIActionsManager(binding, mailViewModel, this);
         uiActionsManager.setupSwipeToRefresh();
         uiActionsManager.setupComposeButton();
+        uiActionsManager.setupSearchButton();
 
         mailListManager.setOnMailSelectionChangeListener(selectedIds -> invalidateOptionsMenu());
 

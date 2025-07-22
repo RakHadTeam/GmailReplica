@@ -2,6 +2,7 @@ import fs from "fs";
 import { NotFoundError } from "../../../core/errors/AppError.js";
 import { getUserById } from "../../../services/user/getUserById.js";
 import { updateUserById } from "../../../services/user/updateUserById.js";
+import StatusCode from "../../../core/StatusCode.js";
 
 export async function patchUserByIdHandler(req, res) {
     const { id } = req.params;
@@ -35,13 +36,13 @@ export async function patchUserByIdHandler(req, res) {
 
     try {
         await updateUserById(id, updatedFields);
-        return res.status(204).send();
+        return res.status(StatusCode.NO_CONTENT).send();
     } catch (error) {
         if (error instanceof NotFoundError) {
-            return res.status(404).json({ error: "User not found" });
+            return res.status(StatusCode.NOT_FOUND).json({ error: "User not found" });
         } else {
             console.error("Error updating user:", error);
-            return res.status(500).json({ error: "Internal server error" });
+            return res.status(StatusCode.INTERNAL_SERVER_ERROR).json({ error: "Internal server error" });
         }
     }
 }

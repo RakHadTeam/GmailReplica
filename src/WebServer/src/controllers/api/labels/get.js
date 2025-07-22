@@ -1,4 +1,5 @@
 import { NotFoundError } from "../../../core/errors/AppError.js";
+import StatusCode from "../../../core/StatusCode.js";
 import { getAllLabels } from "../../../services/label/getAllLabels.js";
 
 export async function getLabels(req, res) {
@@ -6,10 +7,10 @@ export async function getLabels(req, res) {
 
     try {
         const allLabels = await getAllLabels(userId);
-        res.status(200).json(allLabels);
+        res.status(StatusCode.OK).json(allLabels);
     } catch (error) {
         if (error instanceof NotFoundError)
-            res.status(404).json({ error: error.message });
-        else res.status(500).json({ error: "Internal server error" });
+            res.status(StatusCode.NOT_FOUND).json({ error: error.message });
+        else res.status(StatusCode.INTERNAL_SERVER_ERROR).json({ error: "Internal server error" });
     }
 }

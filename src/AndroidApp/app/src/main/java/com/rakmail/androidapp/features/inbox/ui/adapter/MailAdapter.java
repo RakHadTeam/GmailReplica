@@ -15,8 +15,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.rakmail.androidapp.R;
 import com.rakmail.androidapp.features.mail.model.Mail;
-import com.rakmail.androidapp.features.inbox.ui.ComposeMailActivity;
-import com.rakmail.androidapp.features.inbox.ui.MailDetailActivity;
+import com.rakmail.androidapp.features.compose.ui.ComposeMailActivity;
+import com.rakmail.androidapp.features.maildetail.ui.MailDetailActivity;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;

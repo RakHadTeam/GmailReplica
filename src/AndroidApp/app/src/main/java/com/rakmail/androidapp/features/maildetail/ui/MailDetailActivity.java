@@ -1,4 +1,4 @@
-package com.rakmail.androidapp.features.inbox.ui;
+package com.rakmail.androidapp.features.maildetail.ui;
 
 import android.os.Bundle;
 
@@ -8,7 +8,7 @@ import androidx.lifecycle.ViewModelProvider;
 import com.rakmail.androidapp.R;
 import com.rakmail.androidapp.features.inbox.ui.adapter.MailDetailAdapter;
 import com.rakmail.androidapp.features.inbox.ui.manager.MenuManager;
-import com.rakmail.androidapp.features.inbox.viewmodel.MailDetailViewModel;
+import com.rakmail.androidapp.features.maildetail.viewmodel.MailDetailViewModel;
 import com.rakmail.androidapp.features.label.viewmodel.LabelViewModel;
 import com.rakmail.androidapp.features.mail.model.Mail;
 import com.rakmail.androidapp.features.mail.viewmodel.MailViewModel;

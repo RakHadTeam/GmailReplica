@@ -1,4 +1,5 @@
 import { MailValidationError } from "../../../../core/errors/AppError.js";
+import StatusCode from "../../../../core/StatusCode.js";
 import { updateMailById } from "../../../../services/mail/updateMailById.js";
 
 export async function patchMail(req, res) {
@@ -15,13 +16,13 @@ export async function patchMail(req, res) {
             draft,
         });
 
-        return res.status(204).location(`/api/mails/${id}`).send();
+        return res.status(StatusCode.NO_CONTENT).location(`/api/mails/${id}`).send();
     } catch (err) {
         if (err instanceof MailValidationError)
-            return res.status(400).json({ error: err.message });
+            return res.status(StatusCode.BAD_REQUEST).json({ error: err.message });
         else {
             console.error("Error updating mail:", err);
-            return res.status(500).json({ error: "Internal server error" });
+            return res.status(StatusCode.INTERNAL_SERVER_ERROR).json({ error: "Internal server error" });
         }
     }
 }

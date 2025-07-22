@@ -10,6 +10,7 @@ import com.rakmail.androidapp.features.label.data.LabelRepository;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 
 public class LabelViewModel extends ViewModel {
     private final LabelRepository repo = LabelRepository.getInstance();
@@ -45,14 +46,14 @@ public class LabelViewModel extends ViewModel {
         searchTerm.setValue(term != null ? term : "");
     }
 
-    public void create(String name, Runnable onError) {
+    public void create(String name, Consumer<String> onError) {
         repo.createLabel(name, () -> {
             fetchLabels();
             notifyLabelChanged();
         }, onError);
     }
 
-    public void delete(String labelId, Runnable onError) {
+    public void delete(String labelId, Consumer<String> onError) {
         repo.deleteLabel(labelId, () -> {
             labels.postValue(repo.getLabels());
             notifyLabelChanged();

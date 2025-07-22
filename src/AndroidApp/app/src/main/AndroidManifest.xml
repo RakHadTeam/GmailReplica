@@ -35,7 +35,7 @@
 
         <!-- Mail detail screen -->
         <activity
-            android:name=".features.inbox.ui.MailDetailActivity"
+            android:name=".features.maildetail.ui.MailDetailActivity"
             android:exported="false"
             android:parentActivityName=".features.inbox.ui.MainActivity"
             android:theme="@style/Theme.AndroidApp" >
@@ -51,8 +51,14 @@
             android:theme="@style/Theme.AndroidApp.NoActionBar"
             android:exported="false" />
 
-        <activity android:name=".features.inbox.ui.ComposeMailActivity"
+        <activity android:name=".features.compose.ui.ComposeMailActivity"
             android:parentActivityName=".features.inbox.ui.MainActivity"
+            android:theme="@style/Theme.AndroidApp.NoActionBar" />
+
+        <!-- Search screen -->
+        <activity
+            android:name=".features.search.ui.SearchActivity"
+            android:exported="false"
             android:theme="@style/Theme.AndroidApp.NoActionBar" />
 
     </application>

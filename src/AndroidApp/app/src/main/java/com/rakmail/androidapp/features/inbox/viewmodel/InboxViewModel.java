@@ -32,11 +32,13 @@ public class InboxViewModel extends ViewModel {
     private final ExecutorService executorService =
         Executors.newSingleThreadExecutor();
     private String currentLabelId = "";
+    private final MutableLiveData<String> searchQuery = new MutableLiveData<>("");
 
     public void setMailViewModel(MailViewModel mailViewModel) {
         this.mailViewModel = mailViewModel;
         if (mailViewModel != null) {
             mailViewModel.getMails().observeForever(mails -> filterMails());
+            searchQuery.observeForever(q -> filterMails());
         }
     }
 
@@ -62,6 +64,18 @@ public class InboxViewModel extends ViewModel {
         return currentLabelId;
     }
 
+    public LiveData<String> getSearchQuery() {
+        return searchQuery;
+    }
+
+    public void setSearchQuery(String query) {
+        searchQuery.postValue(query != null ? query : "");
+    }
+
+    public InboxViewModel() {
+        // Removed searchQuery.observeForever(q -> filterMails()); from here
+    }
+
     private void filterMails() {
         try {
             List<Mail> rawMails = mailViewModel.getMails().getValue();
@@ -72,6 +86,16 @@ public class InboxViewModel extends ViewModel {
             List<String> binIds = (binLabel != null && binLabel.getMailIds() != null)
                 ? binLabel.getMailIds()
                 : Collections.emptyList();
+
+            String q = searchQuery.getValue() != null ? searchQuery.getValue() : "";
+            // If search query is set, filter by it
+            if (!q.isEmpty()) {
+                rawMails = rawMails.stream()
+                    .filter(mail -> mail.getSubject().toLowerCase().contains(q.toLowerCase())
+                        || mail.getSenderName().toLowerCase().contains(q.toLowerCase())
+                        || mail.getBody().toLowerCase().contains(q.toLowerCase()))
+                    .collect(Collectors.toList());
+            }
 
             // If "All" (empty string) view, show all non‐excluded
             if (currentLabelId.isEmpty()) {

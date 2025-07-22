@@ -7,6 +7,7 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 
 import com.rakmail.androidapp.core.api.ApiClient;
+import com.rakmail.androidapp.core.api.StatusCode;
 import com.rakmail.androidapp.features.user.model.SigninRequest;
 import com.rakmail.androidapp.features.user.model.TokenResponse;
 import com.rakmail.androidapp.features.user.model.User;
@@ -64,8 +65,19 @@ public class UserRepository {
                                              @NonNull Response<User> r) {
                 if (r.isSuccessful() && r.body() != null)
                     callback.onSuccess(r.body());
-                else
-                    callback.onFailure("Signup failed: " + r.code());
+                else {
+                    String errorMsg = null;
+                    try {
+                        if (r.errorBody() != null) {
+                            String errorString = r.errorBody().string();
+                            org.json.JSONObject errorJson = new org.json.JSONObject(errorString);
+                            errorMsg = errorJson.optString("error", "Signup failed: " + r.code());
+                        }
+                    } catch (Exception e) {
+                        errorMsg = "Signup failed: " + r.code();
+                    }
+                    callback.onFailure(errorMsg);
+                }
             }
             @Override public void onFailure(@NonNull Call<User> c,
                                             @NonNull Throwable t) {
@@ -82,8 +94,19 @@ public class UserRepository {
                                              @NonNull Response<TokenResponse> r) {
                 if (r.isSuccessful() && r.body() != null)
                     callback.onSuccess(r.body().getToken());
-                else
-                    callback.onFailure("Login failed: " + r.code());
+                else {
+                    String errorMsg = null;
+                    try {
+                        if (r.errorBody() != null) {
+                            String errorString = r.errorBody().string();
+                            org.json.JSONObject errorJson = new org.json.JSONObject(errorString);
+                            errorMsg = errorJson.optString("error", "Sign-in failed: " + r.code());
+                        }
+                    } catch (Exception e) {
+                        errorMsg = "Sign-in failed: " + r.code();
+                    }
+                    callback.onFailure(errorMsg);
+                }
             }
             @Override public void onFailure(@NonNull Call<TokenResponse> c,
                                             @NonNull Throwable t) {
@@ -100,7 +123,17 @@ public class UserRepository {
                     Log.d("USERREPO", "Fetched user: " + response.body());
                     cb.onSuccess(response.body());
                 } else {
-                    cb.onFailure("Failed to fetch user: " + response.code());
+                    String errorMsg = null;
+                    try {
+                        if (response.errorBody() != null) {
+                            String errorString = response.errorBody().string();
+                            org.json.JSONObject errorJson = new org.json.JSONObject(errorString);
+                            errorMsg = errorJson.optString("error", "Failed to fetch user: " + response.code());
+                        }
+                    } catch (Exception e) {
+                        errorMsg = "Failed to fetch user: " + response.code();
+                    }
+                    cb.onFailure(errorMsg);
                 }
             }
 
@@ -141,8 +174,17 @@ public class UserRepository {
                 if (response.isSuccessful()) {
                     cb.onSuccess();
                 } else {
-                    Log.d("USERREPO", response.message());
-                    cb.onFailure("Failed to update settings: " + response.code());
+                    String errorMsg = null;
+                    try {
+                        if (response.errorBody() != null) {
+                            String errorString = response.errorBody().string();
+                            org.json.JSONObject errorJson = new org.json.JSONObject(errorString);
+                            errorMsg = errorJson.optString("error", "Failed to update settings: " + response.code());
+                        }
+                    } catch (Exception e) {
+                        errorMsg = "Failed to update settings: " + response.code();
+                    }
+                    cb.onFailure(errorMsg);
                 }
             }
 

@@ -64,7 +64,7 @@ public class LabelManagerDialogFragment extends DialogFragment {
         labelViewModel = new ViewModelProvider(this).get(LabelViewModel.class);
         LabelListAdapter labelListAdapter = new LabelListAdapter(
             (labelId, checked) -> mailIdList.forEach(mailId -> labelViewModel.toggle(labelId, mailId, checked)),
-            labelId -> labelViewModel.delete(labelId, () -> showError("Delete failed"))
+            labelId -> labelViewModel.delete(labelId, (String err) -> showError(err))
         );
         binding.labelList.setLayoutManager(new LinearLayoutManager(getContext()));
         binding.labelList.setAdapter(labelListAdapter);
@@ -106,7 +106,7 @@ public class LabelManagerDialogFragment extends DialogFragment {
         binding.addButton.setOnClickListener(v -> {
             String name = binding.newLabelInput.getText().toString().trim();
             if (!name.isEmpty()) {
-                labelViewModel.create(name, () -> showError("Create failed"));
+                labelViewModel.create(name, (String err) -> showError(err));
                 Log.d("LabelManager", "Creating label: " + name);
                 binding.newLabelInput.setText("");
             } else {

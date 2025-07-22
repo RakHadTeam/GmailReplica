@@ -98,7 +98,7 @@ public class LabelRepository {
         return null;
     }
 
-    public void createLabel(String name, Runnable onComplete, Runnable onError) {
+    public void createLabel(String name, Runnable onComplete, java.util.function.Consumer<String> onError) {
         Executors.newSingleThreadExecutor().execute(() -> {
             try {
                 Response<Label> res = api.createLabel(Collections.singletonMap("name", name)).execute();
@@ -106,16 +106,26 @@ public class LabelRepository {
                     labels.add(res.body());
                     if (onComplete != null) onComplete.run();
                 } else {
-                    if (onError != null) onError.run();
+                    String errorMsg = null;
+                    try {
+                        if (res.errorBody() != null) {
+                            String errorString = res.errorBody().string();
+                            org.json.JSONObject errorJson = new org.json.JSONObject(errorString);
+                            errorMsg = errorJson.optString("error", "Create label failed: " + res.code());
+                        }
+                    } catch (Exception e) {
+                        errorMsg = "Create label failed: " + res.code();
+                    }
+                    if (onError != null) onError.accept(errorMsg);
                 }
             } catch (IOException ex) {
                 Log.e(TAG, "createLabel failed", ex);
-                if (onError != null) onError.run();
+                if (onError != null) onError.accept(ex.getMessage());
             }
         });
     }
 
-    public void deleteLabel(String labelId, Runnable onComplete, Runnable onError) {
+    public void deleteLabel(String labelId, Runnable onComplete, java.util.function.Consumer<String> onError) {
         Executors.newSingleThreadExecutor().execute(() -> {
             try {
                 Response<Void> response = api.deleteLabel(labelId).execute();
@@ -123,11 +133,21 @@ public class LabelRepository {
                     fetchLabelsSync();
                     if (onComplete != null) onComplete.run();
                 } else {
-                    if (onError != null) onError.run();
+                    String errorMsg = null;
+                    try {
+                        if (response.errorBody() != null) {
+                            String errorString = response.errorBody().string();
+                            org.json.JSONObject errorJson = new org.json.JSONObject(errorString);
+                            errorMsg = errorJson.optString("error", "Delete label failed: " + response.code());
+                        }
+                    } catch (Exception e) {
+                        errorMsg = "Delete label failed: " + response.code();
+                    }
+                    if (onError != null) onError.accept(errorMsg);
                 }
             } catch (IOException ex) {
                 Log.e(TAG, "deleteLabel failed", ex);
-                if (onError != null) onError.run();
+                if (onError != null) onError.accept(ex.getMessage());
             }
         });
     }

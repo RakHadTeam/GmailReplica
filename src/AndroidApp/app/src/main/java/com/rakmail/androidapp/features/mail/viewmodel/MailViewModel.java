@@ -128,4 +128,14 @@ public class MailViewModel extends ViewModel {
         super.onCleared();
         executorService.shutdownNow();
     }
+
+    public List<Mail> searchMails(String query) {
+        try {
+            List<Mail> rawMails =  mailRepository.searchMailsSync(query);
+            return enrichMailList(rawMails);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return java.util.Collections.emptyList();
+        }
+    }
 }
