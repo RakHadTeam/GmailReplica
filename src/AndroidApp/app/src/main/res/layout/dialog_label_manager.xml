@@ -19,18 +19,22 @@
         android:textStyle="bold"
         android:layout_marginBottom="16dp"/>
 
-    <EditText
-        android:id="@+id/newLabelInput"
+    <com.google.android.material.textfield.TextInputLayout
+        style="@style/Widget.TextInputLayout.MyPrimary"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="@string/new_label"
         android:layout_marginBottom="8dp"
-        android:background="@drawable/bg_edittext_rounded"
-        android:inputType="text"
-        android:padding="12dp"
-        android:textSize="18sp" />
+        android:hint="@string/new_label">
 
-    <Button
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/newLabelInput"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="text"
+            android:textSize="18sp" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/addButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -39,20 +43,23 @@
         android:layout_gravity="end"
         android:layout_marginTop="8dp"
         android:layout_marginBottom="8dp"
-        android:backgroundTint="@color/primaryColor"
-        android:textColor="@android:color/white" />
+        style="@style/Widget.MaterialButton.MyPrimary" />
 
-    <EditText
-        android:id="@+id/searchInput"
+    <com.google.android.material.textfield.TextInputLayout
+        style="@style/Widget.TextInputLayout.MyPrimary"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="@string/search_labels"
-        android:textSize="18sp"
         android:layout_marginTop="8dp"
         android:layout_marginBottom="8dp"
-        android:inputType="text"
-        android:background="@drawable/bg_edittext_rounded"
-        android:padding="12dp" />
+        android:hint="@string/search_labels">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/searchInput"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="text"
+            android:textSize="18sp" />
+    </com.google.android.material.textfield.TextInputLayout>
 
     <TextView
         android:id="@+id/error"
@@ -63,14 +70,12 @@
         android:visibility="gone"
         android:textSize="14sp" />
 
-    <!-- Add a divider for better separation -->
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_marginBottom="8dp"
         android:background="@color/dividerColor" />
 
-    <!-- Labels list placeholder -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/labelList"
         android:layout_width="match_parent"

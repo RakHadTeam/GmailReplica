@@ -2,22 +2,16 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
->
+    android:layout_height="match_parent">
 
-    <Button
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/returnButton"
-        android:layout_width="80dp"
+        style="@style/Widget.MaterialButton.MyPrimary"
         android:layout_height="40dp"
         android:layout_marginStart="24dp"
         android:layout_marginTop="24dp"
-        android:elevation="4dp"
-        android:fontFamily="sans-serif-medium"
-        android:padding="4dp"
-        android:strokeWidth="2.0"
-        android:strokeColor="@color/primaryColor"
         android:text="Return"
-        android:textColor="?android:textColorPrimary"
+        android:layout_width="100dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -36,8 +30,8 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center_horizontal"
             android:orientation="vertical"
+            android:gravity="center_horizontal"
             android:padding="32dp">
 
             <TextView
@@ -46,7 +40,6 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"
                 android:text="@string/sign_in_to_rakmail"
-                android:textColor="@color/primaryColor"
                 android:textSize="24sp"
                 android:textStyle="bold" />
 
@@ -61,44 +54,44 @@
                 android:textSize="14sp"
                 android:visibility="gone" />
 
-            <EditText
-                android:id="@+id/emailEditText"
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/emailInputLayout"
+                style="@style/Widget.TextInputLayout.MyPrimary"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="12dp"
-                android:background="@drawable/bg_edittext_rounded"
-                android:elevation="2dp"
-                android:hint="@string/email"
-                android:inputType="textEmailAddress"
-                android:padding="12dp"
-                android:textColor="?android:textColorPrimary"
-                android:textColorHint="?android:textColorSecondary" />
+                android:hint="@string/email">
 
-            <EditText
-                android:id="@+id/passwordEditText"
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/emailEditText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="textEmailAddress" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/passwordInputLayout"
+                style="@style/Widget.TextInputLayout.MyPrimary"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="20dp"
-                android:background="@drawable/bg_edittext_rounded"
-                android:elevation="2dp"
-                android:hint="@string/password"
-                android:inputType="textPassword"
-                android:padding="12dp"
-                android:textColor="?android:textColorPrimary"
-                android:textColorHint="?android:textColorSecondary" />
+                android:hint="@string/password">
 
-            <Button
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/passwordEditText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="textPassword" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/signinButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:layout_marginBottom="8dp"
-                android:backgroundTint="@color/primaryColor"
-                android:elevation="4dp"
-                android:fontFamily="sans-serif-medium"
-                android:padding="12dp"
                 android:text="@string/sign_in"
-                android:textColor="?android:textColorPrimary" />
+                style="@style/Widget.MaterialButton.MyPrimary" />
 
         </LinearLayout>
     </androidx.cardview.widget.CardView>

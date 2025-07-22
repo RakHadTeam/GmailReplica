@@ -5,32 +5,28 @@
     android:id="@+id/compose_root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="0dp"
-    android:background="?attr/colorSurface">
+    android:fitsSystemWindows="true"
+    android:padding="0dp">
 
-    <!-- App Bar with close icon and title -->
     <com.google.android.material.appbar.MaterialToolbar
         android:id="@+id/topAppBar"
         android:layout_width="0dp"
         android:layout_height="?attr/actionBarSize"
-        android:background="?attr/colorPrimary"
-        android:title="New Message"
-        android:titleTextColor="?attr/colorOnPrimary"
+        android:background="@color/primaryColor"
+        android:titleTextColor="@color/colorOnPrimary"
+        app:title="New Mail"
         app:navigationIcon="@drawable/ic_close"
         app:popupTheme="@style/ThemeOverlay.MaterialComponents.Light"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
-    <!-- Recipient field -->
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/layout_to"
-        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        style="@style/Widget.TextInputLayout.MyPrimary"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:hint="To"
-        app:boxBackgroundMode="outline"
-        app:boxStrokeColor="?attr/colorPrimary"
+        android:hint="@string/to"
         app:layout_constraintTop_toBottomOf="@id/topAppBar"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -41,19 +37,17 @@
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/et_recipient"
             android:layout_width="match_parent"
+            android:backgroundTint="@color/bgInputColor"
             android:layout_height="wrap_content"
             android:inputType="textEmailAddress"/>
     </com.google.android.material.textfield.TextInputLayout>
 
-    <!-- Subject field -->
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/layout_subject"
-        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        style="@style/Widget.TextInputLayout.MyPrimary"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:hint="Subject"
-        app:boxBackgroundMode="outline"
-        app:boxStrokeColor="?attr/colorPrimary"
+        android:hint="@string/subject"
         app:layout_constraintTop_toBottomOf="@id/layout_to"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -63,19 +57,17 @@
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/et_subject"
+            android:backgroundTint="@color/bgInputColor"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
     </com.google.android.material.textfield.TextInputLayout>
 
-    <!-- Body field -->
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/layout_body"
-        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        style="@style/Widget.TextInputLayout.MyPrimary"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:hint="Compose email"
-        app:boxBackgroundMode="outline"
-        app:boxStrokeColor="?attr/colorPrimary"
+        android:hint="@string/body"
         app:layout_constraintTop_toBottomOf="@id/layout_subject"
         app:layout_constraintBottom_toTopOf="@+id/btn_send"
         app:layout_constraintStart_toStartOf="parent"
@@ -94,32 +86,29 @@
             android:inputType="textMultiLine"/>
     </com.google.android.material.textfield.TextInputLayout>
 
-    <!-- Delete button (outline style) -->
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btn_delete"
-        style="@style/Widget.MaterialComponents.Button.TextButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Delete"
+        style="@style/Widget.MaterialButton.MyPrimary"
+        android:text="@string/delete"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         android:layout_marginStart="16dp"
         android:layout_marginBottom="16dp"/>
 
-    <!-- Send button (default contained style) -->
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btn_send"
-        style="@style/Widget.MaterialComponents.Button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Send"
+        style="@style/Widget.MaterialButton.MyPrimary"
+        android:text="@string/send"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="16dp"/>
 
-    <!-- Centered loading spinner -->
     <ProgressBar
         android:id="@+id/progress"
         android:layout_width="48dp"
