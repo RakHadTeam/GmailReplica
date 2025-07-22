@@ -4,8 +4,9 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import com.rakmail.androidapp.features.inbox.data.MailRepository;
-import com.rakmail.androidapp.features.inbox.model.Mail;
+import com.rakmail.androidapp.features.mail.data.MailRepository;
+import com.rakmail.androidapp.features.mail.model.Mail;
+import com.rakmail.androidapp.features.label.data.LabelRepository;
 
 import java.io.IOException;
 
@@ -16,10 +17,12 @@ public class MailDetailViewModel extends ViewModel {
 
     private final MailRepository repository = MailRepository.getInstance();
     private final MutableLiveData<Mail> mail = new MutableLiveData<>();
+    private final LabelRepository labelRepository = LabelRepository.getInstance();
 
     public LiveData<Mail> getMail() {
         return mail;
     }
+
 
     public void setMail(Mail m) {
         mail.setValue(m);

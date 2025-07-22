@@ -1,26 +1,25 @@
 package com.rakmail.androidapp.features.inbox.ui;
 
-import android.net.Uri;
 import android.os.Bundle;
-import android.text.format.DateFormat;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.rakmail.androidapp.R;
-import com.rakmail.androidapp.features.inbox.model.Mail;
+import com.rakmail.androidapp.features.mail.model.Mail;
+import com.rakmail.androidapp.features.inbox.ui.adapter.MailDetailAdapter;
+import com.rakmail.androidapp.features.inbox.ui.manager.MenuManager;
 import com.rakmail.androidapp.features.inbox.viewmodel.MailDetailViewModel;
-
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Locale;
+import com.rakmail.androidapp.features.mail.viewmodel.MailViewModel;
+import com.rakmail.androidapp.features.label.viewmodel.LabelViewModel;
 
 public class MailDetailActivity extends AppCompatActivity {
 
     public static final String EXTRA_MAIL = "extra_mail";
     private MailDetailViewModel vm;
     private com.rakmail.androidapp.databinding.ActivityMailDetailBinding binding;
+    private MailDetailAdapter mailDetailAdapter;
+    private MenuManager menuManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,38 +28,20 @@ public class MailDetailActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
 
         vm = new ViewModelProvider(this).get(MailDetailViewModel.class);
+        mailDetailAdapter = new MailDetailAdapter();
+        binding.mailDetailRecyclerView.setAdapter(mailDetailAdapter);
+        binding.mailDetailRecyclerView.setLayoutManager(new androidx.recyclerview.widget.LinearLayoutManager(this));
+        LabelViewModel labelViewModel = new ViewModelProvider(this).get(LabelViewModel.class);
+        MailViewModel mailViewModel = new ViewModelProvider(this).get(MailViewModel.class);
+        menuManager = new MenuManager(this, labelViewModel, mailViewModel,  mailDetailAdapter);
+        menuManager.observeLabelChanges();
 
         vm.getMail().observe(this, m -> {
             if (m == null) {
                 finish();
                 return;
             }
-
-            binding.mailSubject.setText(m.getSubject() == null ? "(no subject)" : m.getSubject());
-            binding.mailSender.setText(m.getSenderName() == null ? "(no sender)" : m.getSenderName() + " <" + (m.getSenderEmail() == null ? "no-email" : m.getSenderEmail()) + ">");
-            // parse ISO-8601 timestamp
-            String raw = m.getCreatedAt();
-            Date date;
-            try {
-                SimpleDateFormat iso = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.US);
-                iso.setLenient(true);
-                date = iso.parse(raw);
-            } catch (ParseException e) {
-                date = new Date(); // fallback to now
-            }
-            binding.mailDate.setText(DateFormat.format("dd MMM yyyy  HH:mm", date));
-            binding.mailBody.setText(m.getBody() == null ? "" : m.getBody());
-            // Profile picture
-            if (m.getSenderPicture() != null && !m.getSenderPicture().isEmpty()) {
-                try {
-                    Uri uri = Uri.parse(m.getSenderPicture());
-                    binding.mailProfilePicture.setImageURI(uri);
-                } catch (Exception e) {
-                    binding.mailProfilePicture.setImageResource(R.drawable.ic_account_circle);
-                }
-            } else {
-                binding.mailProfilePicture.setImageResource(R.drawable.ic_account_circle);
-            }
+            mailDetailAdapter.setMail(m);
         });
 
         // inject initial mail
@@ -72,7 +53,32 @@ public class MailDetailActivity extends AppCompatActivity {
             vm.load(id);
         }
 
+        // Setup Toolbar as ActionBar (guard against duplicate ActionBar)
+        if (getSupportActionBar() == null && binding.toolbar != null) {
+            setSupportActionBar(binding.toolbar);
+        }
         binding.toolbar.setNavigationOnClickListener(v -> finish());
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(android.view.Menu menu) {
+        return menuManager.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        // Removed old observer for getMail, now handled by isStarred/isBinned observers
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(android.view.MenuItem item) {
+        if (menuManager.onOptionsItemSelected(item)) {
+            if (item.getItemId() == R.id.action_delete) {
+                finish();
+            }
+        }
+        return super.onOptionsItemSelected(item);
     }
 
 

@@ -1,4 +1,3 @@
-// app/src/main/java/com/rakmail/androidapp/features/label/view/fragment/LabelManagerDialogFragment.java
 package com.rakmail.androidapp.features.label.view.fragment;
 
 import android.os.Bundle;
@@ -34,147 +33,102 @@ import retrofit2.Response;
 public class LabelManagerDialogFragment extends DialogFragment {
     private static final String ARG_MAIL_IDS = "mail_ids";
 
-    private DialogLabelManagerBinding b;
-    private LabelViewModel vm;
-    private List<String> mailIds;
+    private DialogLabelManagerBinding binding;
+    private LabelViewModel labelViewModel;
+    private List<String> mailIdList;
 
     public static LabelManagerDialogFragment newInstance(ArrayList<String> mailIds) {
-        LabelManagerDialogFragment frag = new LabelManagerDialogFragment();
+        LabelManagerDialogFragment fragment = new LabelManagerDialogFragment();
         Bundle args = new Bundle();
         args.putStringArrayList(ARG_MAIL_IDS, mailIds);
-        frag.setArguments(args);
-        return frag;
+        fragment.setArguments(args);
+        return fragment;
     }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mailIds = getArguments() != null
-            ? getArguments().getStringArrayList(ARG_MAIL_IDS)
-            : new ArrayList<>();
+        mailIdList = getArguments() != null ? getArguments().getStringArrayList(ARG_MAIL_IDS) : new ArrayList<>();
     }
 
-    @Nullable @Override
-    public View onCreateView(@NonNull LayoutInflater inflater,
-                             @Nullable ViewGroup container,
-                             @Nullable Bundle savedInstanceState) {
-        b = DialogLabelManagerBinding.inflate(inflater, container, false);
+    @Nullable
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        binding = DialogLabelManagerBinding.inflate(inflater, container, false);
         requireDialog().setCanceledOnTouchOutside(true);
-        return b.getRoot();
+        return binding.getRoot();
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        // 1) Set up ViewModel
-        vm = new ViewModelProvider(this).get(LabelViewModel.class);
-
-        // 2) Create adapter with onToggle + onDelete callbacks
-        LabelListAdapter adapter = new LabelListAdapter(
-            (labelId, checked) -> {
-                // apply/remove for each selected mail
-                for (String mailId : mailIds) {
-                    vm.toggle(labelId, mailId, checked);
-                }
-            },
-            labelId -> vm.delete(labelId, () -> showError("Delete failed"))
+        labelViewModel = new ViewModelProvider(this).get(LabelViewModel.class);
+        LabelListAdapter labelListAdapter = new LabelListAdapter(
+            (labelId, checked) -> mailIdList.forEach(mailId -> labelViewModel.toggle(labelId, mailId, checked)),
+            labelId -> labelViewModel.delete(labelId, () -> showError("Delete failed"))
         );
-
-        // 3) Wire up RecyclerView
-        b.labelList.setLayoutManager(new LinearLayoutManager(getContext()));
-        b.labelList.setAdapter(adapter);
-
-        // 4) Compute “initialChecked” in background via Label API
+        binding.labelList.setLayoutManager(new LinearLayoutManager(getContext()));
+        binding.labelList.setAdapter(labelListAdapter);
         new Thread(() -> {
-            Set<String> initialChecked = new HashSet<>();
+            Set<String> initiallyCheckedLabels = new HashSet<>();
             try {
-                LabelApi api = ApiClient.get().create(LabelApi.class);
-                Response<List<Label>> resp = api.fetchLabels().execute();
-                List<Label> all = resp.body() != null ? resp.body() : Collections.emptyList();
-
-                for (Label lab : all) {
-                    String rawName = lab.getName();
-                    if (rawName == null) continue;
-                    String nm = rawName.toLowerCase();
-                    // skip special labels
-                    if (nm.equals("starred") ||
-                        nm.equals("spam")    ||
-                        nm.equals("bin")     ||
-                        nm.equals("sent")) {
-                        continue;
-                    }
-                    // only check if this label applies to ALL selected mails
-                    List<String> labMails = lab.getMailsIds();
-                    if (labMails == null) continue;
-                    boolean coversAll = true;
-                    for (String mid : mailIds) {
-                        if (!labMails.contains(mid)) {
-                            coversAll = false;
-                            break;
-                        }
-                    }
-                    if (coversAll) {
-                        initialChecked.add(lab.getId());
-                    }
+                LabelApi labelApi = ApiClient.getInstance().create(LabelApi.class);
+                Response<List<Label>> response = labelApi.getLabels().execute();
+                List<Label> allLabels = response.body() != null ? response.body() : Collections.emptyList();
+                for (Label label : allLabels) {
+                    if (LabelViewModel.isSystemLabel(label.getName())) continue;
+                    List<String> labelMailIds = label.getMailIds();
+                    if (labelMailIds == null) continue;
+                    boolean coversAll = mailIdList.stream().allMatch(labelMailIds::contains);
+                    if (coversAll) initiallyCheckedLabels.add(label.getId());
                 }
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            requireActivity().runOnUiThread(() -> adapter.setCheckedLabels(initialChecked));
+            requireActivity().runOnUiThread(() -> labelListAdapter.setCheckedLabels(initiallyCheckedLabels));
         }).start();
-
-        // 5) Observe labels, filter out special ones, and submit to adapter
-        vm.visibleLabels().observe(getViewLifecycleOwner(), labels -> {
-            Log.d("labelFrag", "labels changed: " + labels);
-            List<Label> filtered = new ArrayList<>();
+        labelViewModel.visibleLabels().observe(getViewLifecycleOwner(), labels -> {
+            List<Label> filteredLabels = new ArrayList<>();
             if (labels != null) {
-                for (Label l : labels) {
-                    String raw = l.getName();
-                    if (raw == null) continue;
-                    String lower = raw.toLowerCase();
-                    if (lower.equals("starred") ||
-                        lower.equals("spam")    ||
-                        lower.equals("bin")     ||
-                        lower.equals("sent")) {
-                        continue;
-                    }
-                    filtered.add(l);
+                for (Label label : labels) {
+                    Log.d("LabelManager", "Label: " + label.getName() + ", ID: " + label.getId());
+                    if (!LabelViewModel.isSystemLabel(label.getName())) filteredLabels.add(label);
                 }
             }
-            adapter.submitList(filtered);
+            labelListAdapter.submitList(filteredLabels);
         });
-
-        // 6) Search box drives ViewModel
-        b.searchInput.addTextChangedListener(new TextWatcher() {
-            @Override public void beforeTextChanged(CharSequence s, int st, int c, int a) { }
-            @Override public void afterTextChanged(Editable e) { }
+        binding.searchInput.addTextChangedListener(new TextWatcher() {
+            @Override public void beforeTextChanged(CharSequence s, int st, int c, int a) {}
+            @Override public void afterTextChanged(Editable e) {}
             @Override public void onTextChanged(CharSequence s, int st, int bCount, int c) {
-                vm.setSearchTerm(s != null ? s.toString() : "");
+                labelViewModel.setSearchTerm(s != null ? s.toString() : "");
             }
         });
-
-        // 7) “Add label” button
-        b.addButton.setOnClickListener(v -> {
-            String name = b.newLabelInput.getText().toString().trim();
+        binding.addButton.setOnClickListener(v -> {
+            String name = binding.newLabelInput.getText().toString().trim();
             if (!name.isEmpty()) {
-                vm.create(name, () -> showError("Create failed"));
-                b.newLabelInput.setText("");
+                labelViewModel.create(name, () -> showError("Create failed"));
+                Log.d("LabelManager", "Creating label: " + name);
+                binding.newLabelInput.setText("");
+            } else {
+                showError("Label name cannot be empty");
             }
         });
     }
 
-    private void showError(String msg) {
+    private void showError(String message) {
         if (getActivity() == null) return;
         getActivity().runOnUiThread(() -> {
-            b.error.setText(msg);
-            b.error.setVisibility(View.VISIBLE);
+            binding.error.setText(message);
+            binding.error.setVisibility(View.VISIBLE);
         });
     }
 
-    @Override public void onStart() {
+    @Override
+    public void onStart() {
         super.onStart();
         if (getDialog() != null && getDialog().getWindow() != null) {
-            int w = (int)(getResources().getDisplayMetrics().widthPixels * 0.9);
-            getDialog().getWindow().setLayout(w, ViewGroup.LayoutParams.WRAP_CONTENT);
+            int width = (int)(getResources().getDisplayMetrics().widthPixels * 0.9);
+            getDialog().getWindow().setLayout(width, ViewGroup.LayoutParams.WRAP_CONTENT);
         }
     }
 }

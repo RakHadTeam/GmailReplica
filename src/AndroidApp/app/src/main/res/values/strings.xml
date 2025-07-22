@@ -36,4 +36,12 @@
     <string name="mail_deleted_success">Mail Deleted!</string>
     <string name="mail_deleted_error">Error Deleting Mail</string>
     <string name="delete_btn">Delete</string>
+    <string name="welcome_to_the_best_mail_app">Welcome to the best mail app!</string>
+    <string name="rakmail">RakMail</string>
+    <string name="sign_in">Sign In</string>
+    <string name="sign_in_to_rakmail">Sign In to RakMail</string>
+    <string name="sign_up_to_rakmail">Sign up to RakMail!</string>
+    <string name="inbox">Inbox</string>
+    <string name="menu_mark_as">Mark as %s</string>
+    <string name="menu_unmark_as">Unmark as %s</string>
 </resources>

@@ -1,97 +1,105 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="4dp"
-    android:foreground="?attr/selectableItemBackground"
-    app:cardElevation="2dp"
-    app:cardCornerRadius="8dp"
-    android:clickable="true"
-    android:focusable="true">
+    android:orientation="vertical">
 
-    <RelativeLayout
+    <!-- Mail row content -->
+    <androidx.cardview.widget.CardView
+        xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:minHeight="72dp"
-        android:padding="12dp">
+        android:layout_margin="4dp"
+        android:foreground="?attr/selectableItemBackground"
+        app:cardElevation="2dp"
+        app:cardCornerRadius="8dp"
+>
 
-        <!-- Avatar -->
-        <ImageView
-            android:id="@+id/mailAvatar"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_alignParentStart="true"
-            android:layout_centerVertical="true"
-            android:src="@drawable/ic_account_circle"
-            android:contentDescription="Avatar"
-            android:tint="@android:color/darker_gray" />
-
-        <!-- Sender -->
-        <TextView
-            android:id="@+id/mailSender"
-            android:layout_width="wrap_content"
+        <RelativeLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_toEndOf="@id/mailAvatar"
-            android:layout_marginStart="12dp"
-            android:text="Sender Name"
-            android:textStyle="bold"
-            android:textSize="16sp"
-            android:ellipsize="end"
-            android:maxLines="1" />
+            android:minHeight="72dp"
+            android:padding="12dp">
 
-        <!-- Date -->
-        <TextView
-            android:id="@+id/mailDate"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_alignTop="@id/mailSender"
-            android:text="27 Jun"
-            android:textSize="12sp"
-            android:textColor="#888888" />
+            <!-- Avatar -->
+            <ImageView
+                android:id="@+id/mailAvatar"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_alignParentStart="true"
+                android:layout_centerVertical="true"
+                android:src="@drawable/ic_account_circle"
+                android:contentDescription="Avatar"
+                 />
 
-        <!-- Subject -->
-        <TextView
-            android:id="@+id/mailSubject"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/mailSender"
-            android:layout_toEndOf="@id/mailAvatar"
-            android:layout_marginStart="12dp"
-            android:layout_marginTop="4dp"
-            android:text="Subject line here"
-            android:textStyle="bold"
-            android:textSize="14sp"
-            android:maxLines="1"
-            android:ellipsize="end" />
+            <!-- Sender -->
+            <TextView
+                android:id="@+id/mailSender"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toEndOf="@id/mailAvatar"
+                android:layout_marginStart="12dp"
+                android:text="Sender Name"
+                android:textStyle="bold"
+                android:textColor="?android:textColorPrimary"
+                android:textSize="16sp"
+                android:ellipsize="end"
+                android:maxLines="1" />
 
-        <!-- Preview -->
-        <TextView
-            android:id="@+id/mailPreview"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/mailSubject"
-            android:layout_toEndOf="@id/mailAvatar"
-            android:layout_marginStart="12dp"
-            android:layout_marginTop="2dp"
-            android:text="Email preview content goes here..."
-            android:textSize="13sp"
-            android:textColor="#666666"
-            android:maxLines="1"
-            android:ellipsize="end" />
+            <!-- Date -->
+            <TextView
+                android:id="@+id/mailDate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_alignTop="@id/mailSender"
+                android:text="27 Jun"
+                android:textSize="12sp"
+                android:textColor="?android:textColorSecondary" />
 
-        <!-- Star -->
-        <ImageView
-            android:id="@+id/mailStar"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:layout_alignParentEnd="true"
-            android:layout_below="@id/mailDate"
-            android:layout_marginTop="8dp"
-            android:src="@drawable/ic_star_outline"
-            android:tint="@android:color/darker_gray"
-            android:contentDescription="Star" />
+            <!-- Subject -->
+            <TextView
+                android:id="@+id/mailSubject"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/mailSender"
+                android:layout_toEndOf="@id/mailAvatar"
+                android:layout_marginStart="12dp"
+                android:layout_marginTop="4dp"
+                android:text="Subject line here"
+                android:textStyle="bold"
+                android:textSize="14sp"
+                android:textColor="?android:textColorPrimary"
+                android:maxLines="1"
+                android:ellipsize="end" />
 
-    </RelativeLayout>
-</androidx.cardview.widget.CardView>
+            <!-- Preview -->
+            <TextView
+                android:id="@+id/mailPreview"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/mailSubject"
+                android:layout_toEndOf="@id/mailAvatar"
+                android:layout_marginStart="12dp"
+                android:layout_marginTop="2dp"
+                android:text="Email preview content goes here..."
+                android:textSize="13sp"
+                android:textColor="?android:textColorSecondary"
+                android:maxLines="1"
+                android:ellipsize="end" />
+
+            <!-- Star -->
+            <ImageView
+                android:id="@+id/mailStar"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_alignParentEnd="true"
+                android:layout_below="@id/mailDate"
+                android:layout_marginTop="8dp"
+                android:src="@drawable/ic_star_outline"
+                android:contentDescription="Star" />
+
+        </RelativeLayout>
+    </androidx.cardview.widget.CardView>
+</LinearLayout>

@@ -23,10 +23,13 @@ import java.io.IOException;
 import java.io.InputStream;
 
 public class SignupActivity extends AppCompatActivity {
-
-    private EditText fullNameInput, emailInput, passwordInput;
-    private Button signupButton, selectImageButton;
-    private ImageView profileImage;
+    private EditText fullNameInput;
+    private EditText emailInput;
+    private EditText passwordInput;
+    private Button signupButton;
+    private Button selectImageButton;
+    private Button returnButton;
+    private ImageView profileImageView;
     private SignupViewModel viewModel;
     private Uri selectedImageUri = null;
 
@@ -34,7 +37,7 @@ public class SignupActivity extends AppCompatActivity {
         registerForActivityResult(new ActivityResultContracts.GetContent(), uri -> {
             if (uri != null) {
                 selectedImageUri = uri;
-                profileImage.setImageURI(uri);
+                profileImageView.setImageURI(uri);
             }
         });
 
@@ -42,32 +45,36 @@ public class SignupActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_signup);
-
-        fullNameInput = findViewById(R.id.fullNameInput);
-        emailInput = findViewById(R.id.emailInput);
-        passwordInput = findViewById(R.id.passwordInput);
+        getWindow().getDecorView().setSystemUiVisibility(
+            android.view.View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+        );
+        fullNameInput = findViewById(R.id.fullNameEditText);
+        emailInput = findViewById(R.id.emailEditText);
+        passwordInput = findViewById(R.id.passwordEditText);
         signupButton = findViewById(R.id.signupButton);
         selectImageButton = findViewById(R.id.selectImageButton);
-        profileImage = findViewById(R.id.profileImage);
-
+        profileImageView = findViewById(R.id.profileImageView);
+        returnButton = findViewById(R.id.returnButton);
         viewModel = new ViewModelProvider(this).get(SignupViewModel.class);
-
         selectImageButton.setOnClickListener(v -> imagePickerLauncher.launch("image/*"));
+        signupButton.setOnClickListener(v -> handleSignup());
+        returnButton.setOnClickListener(v -> finish());
+        observeViewModel();
+    }
 
-        signupButton.setOnClickListener(v -> {
-            String fullName = fullNameInput.getText().toString().trim();
-            String email = emailInput.getText().toString().trim();
-            String password = passwordInput.getText().toString();
+    private void handleSignup() {
+        String fullName = fullNameInput.getText().toString().trim();
+        String email = emailInput.getText().toString().trim();
+        String password = passwordInput.getText().toString();
+        if (fullName.isEmpty() || email.isEmpty() || password.isEmpty()) {
+            Toast.makeText(this, "All fields are required", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        File imageFile = selectedImageUri != null ? getFileFromUri(selectedImageUri) : null;
+        viewModel.signup(fullName, email, password, imageFile);
+    }
 
-            if (fullName.isEmpty() || email.isEmpty() || password.isEmpty()) {
-                Toast.makeText(this, "All fields are required", Toast.LENGTH_SHORT).show();
-                return;
-            }
-
-            File imageFile = selectedImageUri != null ? getFileFromUri(selectedImageUri) : null;
-            viewModel.signup(fullName, email, password, imageFile);
-        });
-
+    private void observeViewModel() {
         viewModel.signupSuccess.observe(this, success -> {
             if (Boolean.TRUE.equals(success)) {
                 startActivity(new Intent(this, MainActivity.class));

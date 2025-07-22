@@ -4,14 +4,13 @@ public class User {
     private final String id;
     private final String fullname;
     private final String email;
-    private final String profilePictureUrl;
-    public String picture;
+    private final String picture;
 
-    public User(String id, String fullname, String email, String profilePictureUrl) {
+    public User(String id, String fullName, String email, String profilePictureUrl) {
         this.id = id;
-        this.fullname = fullname;
+        this.fullname = fullName;
         this.email = email;
-        this.profilePictureUrl = profilePictureUrl;
+        this.picture = profilePictureUrl;
     }
 
     public String getId() {
@@ -24,10 +23,6 @@ public class User {
 
     public String getEmail() {
         return email;
-    }
-
-    public String getProfilePictureUrl() {
-        return profilePictureUrl;
     }
 
     public String getPicture() {

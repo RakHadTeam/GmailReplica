@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="primaryColor">#094AAB</color>
+    <color name="dangerColor">#B3261E</color>
+    <color name="dividerColor">#DDDDDD</color>
+    <color name="popup_menu_text">@android:color/white</color>
+    <color name="selected_item_color">#6D3951FF</color>
+    <color name="colorAccent">#814D4DFF</color>
+    <color name="colorOnPrimary">#FFFFFF</color> <!-- White text on primary -->
+    <color name="secondaryColor">#212121</color> <!-- Very dark gray for secondary -->
+    <color name="colorSecondaryVariant">#424242</color> <!-- Dark gray variant -->
+    <color name="colorOnSecondary">#FFFFFF</color> <!-- White text on secondary -->
+</resources>

@@ -19,7 +19,8 @@
         <!-- Launcher / entry point -->
         <activity
             android:name=".features.launcher.ui.LauncherActivity"
-            android:exported="true">
+            android:exported="true"
+            >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -30,30 +31,25 @@
         <activity
             android:name=".features.inbox.ui.MainActivity"
             android:exported="false"
-            android:theme="@style/Theme.AndroidApp.NoActionBar" />
+            android:theme="@style/Theme.AndroidApp" />
 
         <!-- Mail detail screen -->
         <activity
             android:name=".features.inbox.ui.MailDetailActivity"
             android:exported="false"
             android:parentActivityName=".features.inbox.ui.MainActivity"
-            android:theme="@style/Theme.AndroidApp.NoActionBar">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".features.inbox.ui.MainActivity" />
+            android:theme="@style/Theme.AndroidApp" >
         </activity>
 
         <!-- User signup & signin -->
         <activity
             android:name=".features.user.ui.signup.SignupActivity"
+            android:theme="@style/Theme.AndroidApp.NoActionBar"
             android:exported="false" />
         <activity
             android:name=".features.user.ui.signin.SigninActivity"
+            android:theme="@style/Theme.AndroidApp.NoActionBar"
             android:exported="false" />
-        <activity
-            android:name=".features.sent.ui.SentActivity"
-            android:exported="false"
-            android:theme="@style/Theme.AndroidApp.NoActionBar"/>
 
     </application>
 </manifest>

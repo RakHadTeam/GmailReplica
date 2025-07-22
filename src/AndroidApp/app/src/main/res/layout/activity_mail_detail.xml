@@ -9,7 +9,6 @@
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:theme="@style/ThemeOverlay.AppCompat.Dark"
         app:elevation="4dp">
 
         <com.google.android.material.appbar.MaterialToolbar
@@ -17,9 +16,10 @@
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:background="?attr/colorPrimary"
-            android:title="Mail Detail"
-            android:titleTextColor="@android:color/white"
-            app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
+            android:title="@string/mail_detail_title"
+            app:navigationIcon="@drawable/ic_baseline_arrow_back"
+            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+            app:popupTheme="@style/ThemeOverlay.AppCompat.DayNight"  />
     </com.google.android.material.appbar.AppBarLayout>
 
     <ScrollView
@@ -34,80 +34,23 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:elevation="4dp"
-            android:padding="24dp">
+            android:padding="5dp"
+>
 
-            <TextView
-                android:id="@+id/mailSubject"
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/mailDetailRecyclerView"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="12dp"
-                android:textColor="@color/dark"
-                android:textSize="22sp"
-                android:textStyle="bold" />
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
-                android:gravity="center_vertical"
-                android:orientation="horizontal">
-
-                <ImageView
-                    android:id="@+id/mailProfilePicture"
-                    android:layout_width="48dp"
-                    android:layout_height="48dp"
-                    android:layout_marginEnd="12dp"
-                    android:background="@drawable/bg_profile_circle"
-                    android:contentDescription="@string/profile_picture"
-                    android:scaleType="centerCrop"
-                    android:src="@drawable/ic_account_circle" />
-
-                <TextView
-                    android:id="@+id/mailSender"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="0dp"
-                    android:textColor="@color/secondary"
-                    android:textSize="16sp" />
-            </LinearLayout>
-
-            <TextView
-                android:id="@+id/mailDate"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
-                android:textColor="@color/secondary"
-                android:textSize="14sp" />
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_marginBottom="16dp"
-                android:background="@color/dividerColor" />
-
-            <TextView
-                android:id="@+id/mailBody"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="24dp"
-                android:lineSpacingExtra="4dp"
-                android:textColor="@color/dark"
-                android:textSize="16sp" />
+                android:layout_height="match_parent"
+                android:clipToPadding="false"
+                android:overScrollMode="never"
+                android:padding="0dp"
+                android:scrollbars="none" />
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="end"
-                android:orientation="horizontal">
-
-                <Button
-                    android:id="@+id/deleteButton"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:backgroundTint="@color/errorColor"
-                    android:text="@string/delete_btn"
-                    android:textColor="@android:color/white" />
-            </LinearLayout>
+                android:orientation="horizontal" />
 
         </LinearLayout>
     </ScrollView>

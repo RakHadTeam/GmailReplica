@@ -5,19 +5,28 @@
         android:id="@+id/action_delete"
         android:title="Delete"
         android:icon="@drawable/ic_delete"
+        android:tint="?attr/colorOnPrimary"
         app:showAsAction="ifRoom" />
 
     <item
         android:id="@+id/action_star"
         android:icon="@drawable/ic_star_outline"
+        android:tint="?attr/colorOnPrimary"
         android:title="Star"
         app:showAsAction="ifRoom" />
 
 
     <item
         android:id="@+id/action_manage_labels"
-        android:title="Manage Labels"
+        android:title="Labels"
         android:icon="@drawable/ic_label"
         app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/action_spam"
+        android:icon="@drawable/ic_report"
+        android:title="Mark as Spam"
+        app:showAsAction="ifRoom" />
+
 
 </menu>
