@@ -7,7 +7,6 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 
 import com.rakmail.androidapp.core.api.ApiClient;
-import com.rakmail.androidapp.core.api.StatusCode;
 import com.rakmail.androidapp.features.user.model.SigninRequest;
 import com.rakmail.androidapp.features.user.model.TokenResponse;
 import com.rakmail.androidapp.features.user.model.User;

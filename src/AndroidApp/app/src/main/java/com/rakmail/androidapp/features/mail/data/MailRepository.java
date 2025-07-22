@@ -1,7 +1,6 @@
 package com.rakmail.androidapp.features.mail.data;
 
 import com.rakmail.androidapp.core.api.ApiClient;
-import com.rakmail.androidapp.core.api.StatusCode;
 import com.rakmail.androidapp.features.mail.model.Mail;
 
 import java.io.IOException;
