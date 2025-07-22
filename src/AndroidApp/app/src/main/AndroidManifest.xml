@@ -43,6 +43,12 @@
                 android:value=".features.inbox.ui.MainActivity" />
         </activity>
 
+        <!-- **Compose mail screen** -->
+        <activity
+            android:name=".features.inbox.ui.ComposeMailActivity"
+            android:exported="false"
+            android:theme="@style/Theme.AndroidApp.NoActionBar" />
+
         <!-- User signup & signin -->
         <activity
             android:name=".features.user.ui.signup.SignupActivity"
@@ -56,4 +62,5 @@
             android:theme="@style/Theme.AndroidApp.NoActionBar"/>
 
     </application>
+
 </manifest>

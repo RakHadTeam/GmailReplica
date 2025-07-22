@@ -13,6 +13,7 @@ import com.rakmail.androidapp.features.label.repository.LabelRepository;
 import com.rakmail.androidapp.features.user.data.repository.UserRepository;
 import com.rakmail.androidapp.features.user.model.User;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -35,48 +36,30 @@ public class InboxViewModel extends ViewModel {
     private final MutableLiveData<List<Mail>> visibleMails = new MutableLiveData<>(Collections.emptyList());
     private final MutableLiveData<Boolean> isLoading = new MutableLiveData<>(false);
     private final MutableLiveData<String> errorMessage = new MutableLiveData<>();
-    // Use a single-threaded executor for network operations
     private final ExecutorService executorService = Executors.newSingleThreadExecutor();
     private String currentLabelId = "";
     private volatile boolean isFetchPending = false;
 
-    /**
-     * Constructor for dependency injection.
-     * Pass LabelViewModel to access shared labels LiveData
-     */
     public InboxViewModel(MailRepository mailRepository, LabelRepository labelRepository, UserRepository userRepository) {
         this.mailRepository = mailRepository;
         this.labelRepository = labelRepository;
         this.userRepository = userRepository;
-        fetchMails(); // Fetch mails at startup
-        // Observe mails LiveData and filter whenever mails change
+        fetchMails();
         this.mails.observeForever(mails -> filterMails());
     }
 
-    /**
-     * @return LiveData list of mails for UI observation.
-     */
     public LiveData<List<Mail>> getMails() {
         return mails;
     }
 
-    /**
-     * @return LiveData list of visible mails for UI observation.
-     */
     public LiveData<List<Mail>> getVisibleMails() {
         return visibleMails;
     }
 
-    /**
-     * @return LiveData for loading state.
-     */
     public LiveData<Boolean> getIsLoading() {
         return isLoading;
     }
 
-    /**
-     * @return LiveData for error messages.
-     */
     public LiveData<String> getErrorMessage() {
         return errorMessage;
     }
@@ -96,11 +79,6 @@ public class InboxViewModel extends ViewModel {
         return mail.isDraft();
     }
 
-    /**
-     * Sets the current label and refreshes mails.
-     *
-     * @param labelId Label id
-     */
     public void setCurrentLabelId(String labelId) {
         Log.d(TAG, "setCurrentLabelId() called with: labelId = [" + labelId + "]");
         this.currentLabelId = labelId;
@@ -111,10 +89,6 @@ public class InboxViewModel extends ViewModel {
         return currentLabelId;
     }
 
-    /**
-     * Debounced fetch mails to avoid excessive refreshes.
-     * Fetches mails from repository and updates LiveData.
-     */
     public void fetchMails() {
         if (isFetchPending) return;
         isFetchPending = true;
@@ -122,9 +96,7 @@ public class InboxViewModel extends ViewModel {
             try {
                 isLoading.postValue(true);
                 labelRepository.refresh();
-                // Only fetch mails, don't filter here
                 List<Mail> rawMails = mailRepository.getMails();
-                // Enrich mails with sender details
                 List<Mail> enrichedMails = enrichMailList(rawMails);
                 mails.postValue(enrichedMails);
                 Log.d(TAG, "Fetched " + rawMails.size() + " raw mails.");
@@ -140,12 +112,12 @@ public class InboxViewModel extends ViewModel {
 
     private void filterMails() {
         try {
-            List<Mail> rawMails = mails.getValue(); // Use LiveData value
+            List<Mail> rawMails = mails.getValue();
             if (rawMails == null) rawMails = Collections.emptyList();
             List<String> binIds = Collections.emptyList();
             Label binLabel = labelRepository.getLabelByName("Bin");
             if (binLabel != null) binIds = binLabel.getMailsIds();
-            final List<String> finalBinIds = binIds;
+            List<String> finalBinIds = binIds;
             List<Mail> filteredMails = rawMails.stream()
                 .filter(mail -> {
                     String mailId = mail.getId();
@@ -167,13 +139,6 @@ public class InboxViewModel extends ViewModel {
         }
     }
 
-    /**
-     * Enriches a list of mails by fetching sender details if necessary.
-     * Blocks until all enrichment tasks are complete.
-     *
-     * @param mailsToEnrich List of mails to enrich
-     * @return List of enriched mails
-     */
     private List<Mail> enrichMailList(List<Mail> mailsToEnrich) {
         if (mailsToEnrich.isEmpty()) return Collections.emptyList();
         Log.d(TAG, "Starting enrichment for " + mailsToEnrich.size() + " mails.");
@@ -216,15 +181,9 @@ public class InboxViewModel extends ViewModel {
         return new ArrayList<>(resultList);
     }
 
-    /**
-     * Deletes a mail by its ID and refreshes the mail list upon success.
-     * Posts error message to LiveData if deletion fails.
-     *
-     * @param mailId Mail ID to delete
-     */
     public void deleteMailById(String mailId) {
         isLoading.postValue(true);
-        mailRepository.deleteMailById(mailId, new MailRepository.Callback() {
+        mailRepository.deleteMailById(mailId, new MailRepository.DeleteCallback() {
             @Override
             public void onSuccess() {
                 errorMessage.postValue("");
