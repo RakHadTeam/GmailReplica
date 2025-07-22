@@ -44,4 +44,19 @@
     <string name="inbox">Inbox</string>
     <string name="menu_mark_as">Mark as %s</string>
     <string name="menu_unmark_as">Unmark as %s</string>
+    <string name="to">To</string>
+    <string name="subject">Subject</string>
+    <string name="body">Body</string>
+    <string name="delete">Delete</string>
+    <string name="compose">Compose</string>
+    <string name="your_name">Your Name</string>
+    <string name="change_profile_picture">Change Profile Picture</string>
+    <string name="save_changes">Save Changes</string>
+    <string name="blacklist_urls">Blacklist URLs</string>
+    <string name="add_url_to_blacklist">Add URL to blacklist</string>
+    <string name="add_url">Add URL</string>
+    <string name="remove_url_from_blacklist">Remove URL from blacklist</string>
+    <string name="remove_url">Remove URL</string>
+    <string name="dark_mode">Dark Mode</string>
+    <string name="send">send</string>
 </resources>

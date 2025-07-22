@@ -16,43 +16,43 @@
             android:layout_height="100dp"
             android:layout_marginBottom="12dp"
             android:background="@drawable/bg_profile_circle"
-            android:contentDescription="Profile Picture"
+            android:contentDescription="@string/profile_picture"
             android:elevation="4dp"
             android:scaleType="centerCrop"
             android:src="@drawable/ic_account_circle" />
 
-        <Button
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/btnChangePicture"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="24dp"
-            android:backgroundTint="@color/primaryColor"
+            style="@style/Widget.MaterialButton.MyPrimary"
             android:elevation="2dp"
-            android:text="Change Profile Picture"
-            android:textColor="?android:textColorPrimary" />
+            android:text="@string/change_profile_picture" />
 
-        <EditText
-            android:id="@+id/editName"
+        <com.google.android.material.textfield.TextInputLayout
+            style="@style/Widget.TextInputLayout.MyPrimary"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
-            android:background="@drawable/bg_edittext_rounded"
-            android:hint="Your Name"
-            android:textColorHint="?android:textColorSecondary"
-            android:inputType="textPersonName"
-            android:padding="12dp"
-            android:textSize="16sp" />
+            android:hint="@string/your_name">
 
-        <Button
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/editName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textPersonName"
+                android:textSize="16sp" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/btnSaveUser"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
-            android:backgroundTint="@color/primaryColor"
+            style="@style/Widget.MaterialButton.MyPrimary"
             android:elevation="2dp"
-            android:textColorHint="?android:textColorSecondary"
-            android:text="Save Changes"
-            android:textColor="?android:textColorPrimary" />
+            android:text="@string/save_changes" />
 
         <TextView
             android:id="@+id/textSaveError"
@@ -68,62 +68,63 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
-            android:text="Blacklist URLs"
+            android:text="@string/blacklist_urls"
             android:textColor="?android:textColorPrimary"
             android:textSize="18sp"
             android:textStyle="bold" />
 
-        <EditText
-            android:id="@+id/editBlacklistAddUrl"
+        <com.google.android.material.textfield.TextInputLayout
+            style="@style/Widget.TextInputLayout.MyPrimary"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
-            android:background="@drawable/bg_edittext_rounded"
-            android:hint="Add URL to blacklist"
-            android:textColorHint="?android:textColorSecondary"
-            android:inputType="textUri"
-            android:padding="12dp"
-            android:textSize="16sp" />
+            android:hint="@string/add_url_to_blacklist">
 
-        <Button
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/editBlacklistAddUrl"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textUri"
+                android:textSize="16sp" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/btnAddUrl"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
-            android:backgroundTint="@color/primaryColor"
-            android:elevation="2dp"
-            android:text="Add URL"
-            android:textColor="?android:textColorPrimary" />
+            style="@style/Widget.MaterialButton.MyPrimary"
+            android:text="@string/add_url" />
 
-        <EditText
-            android:id="@+id/editBlacklistRemoveUrl"
+        <com.google.android.material.textfield.TextInputLayout
+            style="@style/Widget.TextInputLayout.MyPrimary"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
-            android:background="@drawable/bg_edittext_rounded"
-            android:hint="Remove URL from blacklist"
-            android:textColorHint="?android:textColorSecondary"
-            android:inputType="textUri"
-            android:padding="12dp"
-            android:textSize="16sp" />
+            android:hint="@string/remove_url_from_blacklist">
 
-        <Button
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/editBlacklistRemoveUrl"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textUri"
+                android:textSize="16sp" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/btnRemoveUrl"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
-            android:backgroundTint="@color/primaryColor"
-            android:elevation="2dp"
-            android:text="Remove URL"
-            android:textColor="?android:textColorPrimary" />
+            style="@style/Widget.MaterialButton.MyPrimary"
+            android:text="@string/remove_url" />
 
-        <Switch
+        <androidx.appcompat.widget.SwitchCompat
             android:id="@+id/switchDarkMode"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Dark Mode"
-            android:layout_marginBottom="16dp" />
-
+            android:layout_marginBottom="16dp"
+            android:text="@string/dark_mode" />
 
     </LinearLayout>
 </ScrollView>

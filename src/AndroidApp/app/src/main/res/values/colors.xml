@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="primaryColor">#3888FF</color>
+    <color name="primaryColor">#3888FF</color> <!-- blue -->
+    <color name="colorPrimaryVariant">#1976D2</color> <!-- darker blue -->
     <color name="dangerColor">#B3261E</color>
     <color name="dividerColor">#DDDDDD</color>
     <color name="popup_menu_text">@android:color/black</color>
     <color name="selected_item_color">#6F3D50FF</color>
     <color name="colorAccent">#944040FF</color>
+    <color name="bgInputColor">#FFFFFF</color>
     <color name="colorOnPrimary">#FFFFFF</color> <!-- White text on primary -->
-    <color name="secondaryColor">#424242</color> <!-- Dark gray for secondary -->
-    <color name="colorSecondaryVariant">#616161</color> <!-- Slightly lighter gray -->
+    <color name="secondaryColor">#424242</color> <!-- Dark gray -->
+    <color name="colorSecondaryVariant">#616161</color> <!-- Lighter gray -->
     <color name="colorOnSecondary">#FFFFFF</color> <!-- White text on secondary -->
-
-
 </resources>
