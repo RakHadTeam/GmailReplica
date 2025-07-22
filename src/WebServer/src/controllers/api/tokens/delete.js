@@ -1,4 +1,4 @@
-import StatusCode from "../../../core/StatusCode";
+import StatusCode from "../../../core/StatusCode.js";
 
 export function deleteTokens(req, res) {
     res.clearCookie("token", {
