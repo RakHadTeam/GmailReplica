@@ -58,7 +58,11 @@ public class MainActivity extends AppCompatActivity {
         navigationManager = new NavigationManager(binding, this, labelDrawerManager);
         navigationManager.setupToolbar();
         navigationManager.setOnLabelSelectedListener(title -> {
-            setTitle(title);
+            binding.toolbar.findViewById(R.id.toolbarTitle);
+            android.widget.TextView toolbarTitle = binding.toolbar.findViewById(R.id.toolbarTitle);
+            if (toolbarTitle != null) {
+                toolbarTitle.setText(title);
+            }
             mailListManager.onCurrentLabelChanged();
         });
         navigationManager.setupNavigationDrawer();

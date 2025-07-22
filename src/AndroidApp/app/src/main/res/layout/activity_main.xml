@@ -26,38 +26,29 @@
                 android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
                 app:popupTheme="@style/ThemeOverlay.AppCompat.DayNight">
 
-                <LinearLayout
-                    android:id="@+id/searchBarContainer"
+                <FrameLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="horizontal"
-                    android:gravity="end|center_vertical">
-                    <EditText
-                        android:id="@+id/searchInput"
-                        android:layout_width="0dp"
+                    android:layout_height="match_parent">
+
+                    <TextView
+                        android:id="@+id/toolbarTitle"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:hint="Search..."
-                        android:visibility="gone"
-                        android:background="@android:color/transparent"
-                        android:inputType="text"
-                        android:textColor="?android:textColorPrimary"
-                        android:textColorHint="@android:color/darker_gray"
-                        android:cursorVisible="true"
-                        android:focusable="true"
-                        android:focusableInTouchMode="true"
-                        android:imeOptions="actionSearch"
-                        android:singleLine="true"
-                        android:paddingLeft="8dp"
-                        android:paddingRight="8dp"/>
+                        android:text="Inbox"
+                        android:textAppearance="@style/TextAppearance.Widget.AppCompat.Toolbar.Title"
+                        android:textColor="@android:color/white"
+                        android:layout_gravity="center_vertical|start"
+                        android:paddingEnd="16dp"/>
+
                     <ImageView
                         android:id="@+id/btnSearch"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:padding="8dp"
                         android:src="@drawable/ic_search"
-                        android:contentDescription="Search"/>
-                </LinearLayout>
+                        android:contentDescription="Search"
+                        android:layout_gravity="end|center_vertical"/>
+                </FrameLayout>
             </com.google.android.material.appbar.MaterialToolbar>
 
             <LinearLayout
