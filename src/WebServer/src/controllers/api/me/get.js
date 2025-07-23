@@ -1,4 +1,5 @@
 import { NotFoundError } from "../../../core/errors/AppError.js";
+import StatusCode from "../../../core/StatusCode.js";
 import { getUserById } from "../../../services/user/getUserById.js";
 
 export async function getMe(req, res) {
@@ -7,14 +8,14 @@ export async function getMe(req, res) {
     try {
         const user = await getUserById(userId);
         res.set("Cache-Control", "no-store")
-            .status(200)
+            .status(StatusCode.OK)
             .json({ userId: user.id });
     } catch (error) {
         if (error instanceof NotFoundError) {
-            return res.status(401).json({ error: "Unauthorized" });
+            return res.status(StatusCode.UNAUTHORIZED).json({ error: "Unauthorized" });
         } else {
             console.error("Error fetching user:", error);
-            return res.status(500).json({ error: "Internal server error" });
+            return res.status(StatusCode.INTERNAL_SERVER_ERROR).json({ error: "Internal server error" });
         }
     }
 }

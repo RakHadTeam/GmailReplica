@@ -13,7 +13,7 @@ class UnauthorizedError extends AppError {}
 
 class ForbiddenError extends AppError {}
 
-class UserAlreadyExistsError extends AppError {}
+class AlreadyExistsError extends AppError {}
 
 class MailValidationError extends AppError {}
 
@@ -23,6 +23,6 @@ export {
     ValidationError,
     UnauthorizedError,
     ForbiddenError,
-    UserAlreadyExistsError,
+    AlreadyExistsError,
     MailValidationError,
 };

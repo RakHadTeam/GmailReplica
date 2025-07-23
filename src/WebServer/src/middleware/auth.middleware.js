@@ -19,5 +19,6 @@ export async function requireAuth(req, res, next) {
         if (err instanceof NotFoundError) {
             return res.status(401).json({ error: "Unauthorized" });
         }
+        return res.status(401).json({ error: "Invalid token" });
     }
 }

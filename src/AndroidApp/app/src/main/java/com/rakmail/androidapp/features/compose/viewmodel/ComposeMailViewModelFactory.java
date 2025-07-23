@@ -1,4 +1,4 @@
-package com.rakmail.androidapp.features.inbox.viewmodel;
+package com.rakmail.androidapp.features.compose.viewmodel;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.ViewModel;

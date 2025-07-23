@@ -1,10 +1,11 @@
+import StatusCode from "../../../core/StatusCode.js";
 import { addURLToBlacklist } from "../../../services/blacklist/addURLToBlacklist.js";
 
 export async function postBlacklist(req, res) {
     const { url } = req.body;
 
     if (!url) {
-        return res.status(400).json({ error: "URL is required" });
+        return res.status(StatusCode.BAD_REQUEST).json({ error: "URL is required" });
     }
 
     try {
@@ -12,6 +13,6 @@ export async function postBlacklist(req, res) {
         return res.status(status).location(`/api/blacklist/${url}`).json();
     } catch (error) {
         console.error("Error adding URL to blacklist:", error);
-        return res.status(500).json({ error: "Internal server error" });
+        return res.status(StatusCode.INTERNAL_SERVER_ERROR).json({ error: "Internal server error" });
     }
 }

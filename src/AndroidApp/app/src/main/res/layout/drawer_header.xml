@@ -17,15 +17,4 @@
         android:textSize="24sp"
         android:textStyle="bold" />
 
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/btnCompose"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="12dp"
-        android:drawableLeft="@drawable/ic_edit"
-        android:text="@string/compose"
-        android:textAllCaps="false"
-        android:textColor="@android:color/white"
-        android:backgroundTint="@color/colorAccent" />
-
 </LinearLayout>

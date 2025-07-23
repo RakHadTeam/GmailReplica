@@ -3,23 +3,20 @@ package com.rakmail.androidapp.features.inbox.ui.manager;
 import android.content.Context;
 
 import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.viewbinding.ViewBinding;
 
-import com.rakmail.androidapp.databinding.ActivityMainBinding;
 import com.rakmail.androidapp.features.inbox.ui.adapter.MailAdapter;
-import com.rakmail.androidapp.features.inbox.viewmodel.InboxViewModel;
 
 import java.util.Set;
 
 public class MailListManager {
     private final MailAdapter adapter;
-    private final ActivityMainBinding binding;
-    private final InboxViewModel inboxViewModel;
+    private final ViewBinding binding;
     private final Context context;
     private OnMailSelectionChangeListener selectionChangeListener;
 
-    public MailListManager(ActivityMainBinding binding, InboxViewModel inboxViewModel, Context context) {
+    public MailListManager(ViewBinding binding, Context context) {
         this.binding = binding;
-        this.inboxViewModel = inboxViewModel;
         this.context = context;
         this.adapter = new MailAdapter();
         setupRecyclerView();
@@ -30,8 +27,13 @@ public class MailListManager {
     }
 
     private void setupRecyclerView() {
-        binding.recyclerMails.setLayoutManager(new LinearLayoutManager(context));
-        binding.recyclerMails.setAdapter(adapter);
+        if (binding instanceof com.rakmail.androidapp.databinding.ActivityMainBinding) {
+            ((com.rakmail.androidapp.databinding.ActivityMainBinding) binding).recyclerMails.setLayoutManager(new LinearLayoutManager(context));
+            ((com.rakmail.androidapp.databinding.ActivityMainBinding) binding).recyclerMails.setAdapter(adapter);
+        } else if (binding instanceof com.rakmail.androidapp.databinding.ActivitySearchBinding) {
+            ((com.rakmail.androidapp.databinding.ActivitySearchBinding) binding).recyclerMails.setLayoutManager(new LinearLayoutManager(context));
+            ((com.rakmail.androidapp.databinding.ActivitySearchBinding) binding).recyclerMails.setAdapter(adapter);
+        }
         adapter.setOnSelectionChangeListener(selectedIds -> {
             if (selectionChangeListener != null) {
                 selectionChangeListener.onSelectionChanged(selectedIds);

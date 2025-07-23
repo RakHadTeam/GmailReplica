@@ -36,7 +36,17 @@ public class MailRepository {
         if (res.isSuccessful() && res.body() != null) {
             return res.body();
         }
-        throw new IOException("Failed to load mails: " + res.code());
+        String errorMsg = null;
+        try {
+            if (res.errorBody() != null) {
+                String errorString = res.errorBody().string();
+                org.json.JSONObject errorJson = new org.json.JSONObject(errorString);
+                errorMsg = errorJson.optString("error", "Failed to load mails: " + res.code());
+            }
+        } catch (Exception e) {
+            errorMsg = "Failed to load mails: " + res.code();
+        }
+        throw new IOException(errorMsg);
     }
 
     /**
@@ -59,7 +69,17 @@ public class MailRepository {
                 if (res.isSuccessful()) {
                     cb.onSuccess();
                 } else {
-                    cb.onError("Delete failed: " + res.code());
+                    String errorMsg = null;
+                    try {
+                        if (res.errorBody() != null) {
+                            String errorString = res.errorBody().string();
+                            org.json.JSONObject errorJson = new org.json.JSONObject(errorString);
+                            errorMsg = errorJson.optString("error", "Delete failed: " + res.code());
+                        }
+                    } catch (Exception e) {
+                        errorMsg = "Delete failed: " + res.code();
+                    }
+                    cb.onError(errorMsg);
                 }
             } catch (IOException e) {
                 cb.onError(e.getMessage());
@@ -82,7 +102,17 @@ public class MailRepository {
                 if (resp.isSuccessful()) {
                     cb.onSuccess();
                 } else {
-                    cb.onError("Error " + resp.code());
+                    String errorMsg = null;
+                    try {
+                        if (resp.errorBody() != null) {
+                            String errorString = resp.errorBody().string();
+                            org.json.JSONObject errorJson = new org.json.JSONObject(errorString);
+                            errorMsg = errorJson.optString("error", "Send/Save failed: " + resp.code());
+                        }
+                    } catch (Exception e) {
+                        errorMsg = "Send/Save failed: " + resp.code();
+                    }
+                    cb.onError(errorMsg);
                 }
             }
             @Override
@@ -90,6 +120,20 @@ public class MailRepository {
                 cb.onError(t.getMessage());
             }
         });
+    }
+
+    public List<Mail> searchMailsSync(String query) {
+        Response<List<Mail>> res = null;
+        try {
+            res = api.searchMails(query != "" ? query : "/").execute();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        if (res.isSuccessful() && res.body() != null) {
+            List<Mail> mails = res.body();
+            return mails;
+        }
+        return List.of(); // Return empty list on failure
     }
 
     /**

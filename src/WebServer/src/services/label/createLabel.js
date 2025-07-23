@@ -1,5 +1,5 @@
 import {
-    UserAlreadyExistsError as AlreadyExistsError,
+    AlreadyExistsError,
     NotFoundError,
 } from "../../core/errors/AppError.js";
 import Label from "../../models/label.model.js";

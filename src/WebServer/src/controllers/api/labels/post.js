@@ -1,3 +1,5 @@
+import { AlreadyExistsError, NotFoundError } from "../../../core/errors/AppError.js";
+import StatusCode from "../../../core/StatusCode.js";
 import { createLabel } from "../../../services/label/createLabel.js";
 
 export async function postLabels(req, res) {
@@ -21,11 +23,11 @@ export async function postLabels(req, res) {
             .json({ id: label.id });
     } catch (error) {
         if (error instanceof AlreadyExistsError) {
-            return res.status(409).json({ error: error.message });
+            return res.status(StatusCode.CONFLICT).json({ error: error.message });
         } else if (error instanceof NotFoundError) {
-            return res.status(404).json({ error: error.message });
+            return res.status(StatusCode.NOT_FOUND).json({ error: error.message });
         } else {
-            return res.status(500).json({ error: "Internal server error" });
+            return res.status(StatusCode.INTERNAL_SERVER_ERROR).json({ error: "Internal server error" });
         }
     }
 }

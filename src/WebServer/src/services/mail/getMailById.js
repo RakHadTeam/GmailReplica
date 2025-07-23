@@ -1,3 +1,4 @@
+import mongoose from "mongoose";
 import { NotFoundError, UnauthorizedError } from "../../core/errors/AppError.js";
 import Mail from "../../models/mail.model.js";
 import { getUserById } from "../user/getUserById.js";
@@ -11,7 +12,9 @@ import { getUserById } from "../user/getUserById.js";
  */
 export async function getMailById(userId, id) {
     const user = await getUserById(userId);
-
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+        throw new NotFoundError("Mail not found");
+    }
     const mail = await Mail.findById(id);
     if (!mail) throw new NotFoundError("Mail not found");
 

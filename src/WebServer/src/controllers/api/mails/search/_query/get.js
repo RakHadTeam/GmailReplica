@@ -1,3 +1,5 @@
+import { NotFoundError } from "../../../../../core/errors/AppError.js";
+import StatusCode from "../../../../../core/StatusCode.js";
 import { searchMails } from "../../../../../services/mail/searchMails.js";
 
 export async function searchMailsHandler(req, res) {
@@ -6,12 +8,11 @@ export async function searchMailsHandler(req, res) {
 
     try {
         const mails = await searchMails(userId, query);
-        return res.status(200).json(mails);
+        return res.status(StatusCode.OK).json(mails);
     } catch (error) {
         if (error instanceof NotFoundError) {
-            return res.status(404).json({ error: error.message });
+            return res.status(StatusCode.NOT_FOUND).json({ error: error.message });
         }
-        console.error("Error searching mails:", error);
-        return res.status(500).json({ error: "Internal server error" });
+        return res.status(StatusCode.INTERNAL_SERVER_ERROR).json({ error: "Internal server error" });
     }
 }

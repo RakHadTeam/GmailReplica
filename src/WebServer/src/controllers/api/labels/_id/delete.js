@@ -1,4 +1,5 @@
 import { NotFoundError } from "../../../../core/errors/AppError.js";
+import StatusCode from "../../../../core/StatusCode.js";
 import { deleteLabelById } from "../../../../services/label/deleteLabelById.js";
 
 export async function deleteLabel(req, res) {
@@ -8,12 +9,12 @@ export async function deleteLabel(req, res) {
 
     try {
         await deleteLabelById(userId, id);
-        return res.status(204).send();
+        return res.status(StatusCode.NO_CONTENT).send();
     } catch (error) {
         if (error instanceof NotFoundError) {
-            return res.status(404).json({ error: error.message });
+            return res.status(StatusCode.NOT_FOUND).json({ error: error.message });
         } else {
-            return res.status(500).json({ error: "Internal server error" });
+            return res.status(StatusCode.INTERNAL_SERVER_ERROR).json({ error: "Internal server error" });
         }
     }
 }

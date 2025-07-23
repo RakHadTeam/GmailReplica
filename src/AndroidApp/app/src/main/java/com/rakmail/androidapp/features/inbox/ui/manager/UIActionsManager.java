@@ -3,10 +3,10 @@ package com.rakmail.androidapp.features.inbox.ui.manager;
 import android.content.Context;
 import android.content.Intent;
 
-import com.rakmail.androidapp.R;
 import com.rakmail.androidapp.databinding.ActivityMainBinding;
 import com.rakmail.androidapp.features.mail.viewmodel.MailViewModel;
-import com.rakmail.androidapp.features.inbox.ui.ComposeMailActivity;
+import com.rakmail.androidapp.features.compose.ui.ComposeMailActivity;
+import com.rakmail.androidapp.features.search.ui.SearchActivity;
 
 /**
  * Encapsulates wiring up common UI actions for the inbox screen.
@@ -34,12 +34,17 @@ public class UIActionsManager {
     /** Hook up the Compose button in the drawer header to open ComposeMailActivity. */
     public void setupComposeButton() {
         binding
-            .navView
-            .getHeaderView(0)
-            .findViewById(R.id.btnCompose)
+            .btnCompose
             .setOnClickListener(v -> {
                 Intent intent = new Intent(context, ComposeMailActivity.class);
                 context.startActivity(intent);
             });
+    }
+
+    public void setupSearchButton() {
+        binding.btnSearch.setOnClickListener(v -> {
+            Intent intent = new Intent(context, SearchActivity.class);
+            context.startActivity(intent);
+        });
     }
 }

@@ -28,4 +28,7 @@ public interface MailApi {
 
     @PATCH("api/mails/{id}")
     Call<Void> updateMail(@Path("id") String id, @Body Mail mail);
+
+    @GET("api/mails/search/{query}")
+    Call<List<Mail>> searchMails(@Path("query") String query);
 }
