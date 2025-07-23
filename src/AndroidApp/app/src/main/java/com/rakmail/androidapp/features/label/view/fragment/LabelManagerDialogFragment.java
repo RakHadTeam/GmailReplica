@@ -14,6 +14,7 @@ import androidx.fragment.app.DialogFragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import com.rakmail.androidapp.R;
 import com.rakmail.androidapp.core.api.ApiClient;
 import com.rakmail.androidapp.databinding.DialogLabelManagerBinding;
 import com.rakmail.androidapp.features.label.data.LabelApi;
@@ -61,10 +62,11 @@ public class LabelManagerDialogFragment extends DialogFragment {
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        labelViewModel = new ViewModelProvider(this).get(LabelViewModel.class);
+        labelViewModel = new ViewModelProvider(requireActivity()).get(LabelViewModel.class);
         LabelListAdapter labelListAdapter = new LabelListAdapter(
             (labelId, checked) -> mailIdList.forEach(mailId -> labelViewModel.toggle(labelId, mailId, checked)),
-            labelId -> labelViewModel.delete(labelId, (String err) -> showError(err))
+            labelId -> labelViewModel.delete(labelId, (String err) -> showError(err)),
+            this::showEditLabelDialog
         );
         binding.labelList.setLayoutManager(new LinearLayoutManager(getContext()));
         binding.labelList.setAdapter(labelListAdapter);
@@ -86,7 +88,7 @@ public class LabelManagerDialogFragment extends DialogFragment {
             }
             requireActivity().runOnUiThread(() -> labelListAdapter.setCheckedLabels(initiallyCheckedLabels));
         }).start();
-        labelViewModel.visibleLabels().observe(getViewLifecycleOwner(), labels -> {
+        labelViewModel.getVisibleLabels().observe(getViewLifecycleOwner(), labels -> {
             List<Label> filteredLabels = new ArrayList<>();
             if (labels != null) {
                 for (Label label : labels) {
@@ -121,6 +123,41 @@ public class LabelManagerDialogFragment extends DialogFragment {
             binding.error.setText(message);
             binding.error.setVisibility(View.VISIBLE);
         });
+    }
+
+    private void showEditLabelDialog(String labelId, String currentName) {
+        android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(requireContext(), R.style.Theme_App_Dialog);
+        builder.setTitle("Edit Label");
+
+        final android.widget.EditText input = new android.widget.EditText(requireContext());
+        input.setInputType(android.text.InputType.TYPE_CLASS_TEXT);
+        input.setText(currentName);
+        input.selectAll();
+        builder.setView(input);
+
+        builder.setPositiveButton("Save", (dialog, which) -> {
+            String newName = input.getText().toString().trim();
+            if (!newName.isEmpty()) {
+                if (!newName.equals(currentName)) {
+                    labelViewModel.update(labelId, newName, this::showError);
+                }
+            } else {
+                showError("Label name cannot be empty");
+            }
+        });
+
+        builder.setNegativeButton("Cancel", (dialog, which) -> dialog.cancel());
+
+        android.app.AlertDialog dialog = builder.create();
+        dialog.show();
+
+        // Show keyboard and focus on input
+        input.requestFocus();
+        android.view.inputmethod.InputMethodManager imm =
+            (android.view.inputmethod.InputMethodManager) requireActivity().getSystemService(android.content.Context.INPUT_METHOD_SERVICE);
+        if (imm != null) {
+            imm.showSoftInput(input, android.view.inputmethod.InputMethodManager.SHOW_IMPLICIT);
+        }
     }
 
     @Override

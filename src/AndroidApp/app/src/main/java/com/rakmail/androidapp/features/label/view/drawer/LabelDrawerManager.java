@@ -27,17 +27,43 @@ public class LabelDrawerManager {
     }
 
     public void setupLabelMenu() {
-        labelViewModel.visibleLabels().observe(lifecycleOwner, labels -> {
-            Log.d(TAG, "Labels updated: " + labels.size());
-            Menu menu = navigationView.getMenu();
-            int customGroupId = R.id.group_custom_labels;
-            menu.removeGroup(customGroupId);
-            for (Label label : labels) {
-                MenuItem item = menu.add(customGroupId, label.getId().hashCode(), Menu.NONE, label.getName());
-                item.setIcon(R.drawable.ic_label);
-                item.setTitleCondensed(label.getId());
+        labelViewModel.getVisibleLabels().observe(lifecycleOwner, this::populateMenu);
+        labelViewModel.getLabelChangedEvent().observe(lifecycleOwner, changed -> {
+            Log.d(TAG, "Label changed event received: " + changed);
+            if (Boolean.TRUE.equals(changed)) {
+                Log.d(TAG, "Processing label change event - refreshing menu");
+                populateMenu(labelViewModel.getVisibleLabels().getValue());
+                labelViewModel.resetLabelChangedEvent();
             }
         });
+
+        // Also observe the main labels LiveData directly for immediate updates
+        labelViewModel.getLabels().observe(lifecycleOwner, allLabels -> {
+            Log.d(TAG, "Raw labels changed, size: " + (allLabels != null ? allLabels.size() : 0));
+            // Trigger filtering which will update visibleLabels
+            if (allLabels != null) {
+                populateMenu(labelViewModel.getVisibleLabels().getValue());
+            }
+        });
+    }
+
+    private void populateMenu(java.util.List<Label> labels) {
+        if (labels == null) return;
+        Log.d(TAG, "Labels updated: " + labels.size());
+        Menu menu = navigationView.getMenu();
+        int customGroupId = R.id.group_custom_labels;
+        menu.removeGroup(customGroupId);
+        for (Label label : labels) {
+            MenuItem item = menu.add(customGroupId, label.getId().hashCode(), Menu.NONE, label.getName());
+            item.setIcon(R.drawable.ic_label);
+            item.setTitleCondensed(label.getId());
+        }
+        navigationView.invalidate();
+        navigationView.requestLayout();
+    }
+
+    public void refreshMenu() {
+        populateMenu(labelViewModel.getVisibleLabels().getValue());
     }
 
     public boolean onNavigationItemSelected(MenuItem item) {

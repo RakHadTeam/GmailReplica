@@ -20,7 +20,7 @@
     <style name="Widget.MaterialButton.MyPrimary" parent="Widget.MaterialComponents.Button">
         <item name="backgroundTint">@color/primaryColor</item>
         <item name="strokeColor">@color/primaryColor</item>
-        <item name="android:textColor">@color/colorOnPrimary</item>
+        <item name="android:textColor">?android:textColorPrimary</item>
         <item name="cornerRadius">8dp</item> <!-- optional -->
         <item name="elevation">4dp</item> <!-- optional -->
     </style>

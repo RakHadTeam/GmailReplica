@@ -18,10 +18,9 @@ import com.rakmail.androidapp.features.inbox.ui.manager.NavigationManager;
 import com.rakmail.androidapp.features.inbox.ui.manager.UIActionsManager;
 import com.rakmail.androidapp.features.inbox.ui.manager.ViewModelManager;
 import com.rakmail.androidapp.features.inbox.viewmodel.InboxViewModel;
-import com.rakmail.androidapp.features.mail.viewmodel.MailViewModel;
 import com.rakmail.androidapp.features.label.view.drawer.LabelDrawerManager;
 import com.rakmail.androidapp.features.label.viewmodel.LabelViewModel;
-import com.rakmail.androidapp.features.search.ui.SearchActivity;
+import com.rakmail.androidapp.features.mail.viewmodel.MailViewModel;
 
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
@@ -55,6 +54,7 @@ public class MainActivity extends AppCompatActivity {
         inboxViewModel.observeLabelChanges(labelViewModel);
         labelDrawerManager = new LabelDrawerManager(labelViewModel, inboxViewModel, binding.navView, this);
         labelDrawerManager.setupLabelMenu();
+
         navigationManager = new NavigationManager(binding, this, labelDrawerManager);
         navigationManager.setupToolbar();
         navigationManager.setOnLabelSelectedListener(title -> {

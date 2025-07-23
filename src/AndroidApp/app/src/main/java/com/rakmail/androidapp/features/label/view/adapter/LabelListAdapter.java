@@ -24,11 +24,13 @@ public class LabelListAdapter extends RecyclerView.Adapter<LabelListAdapter.View
     private final List<Label> labels = new ArrayList<>();
     private final BiConsumer<String, Boolean> onToggle;
     private final Consumer<String> onDelete;
+    private final BiConsumer<String, String> onEdit;
     private final Set<String> checkedLabelIds = new HashSet<>();
 
-    public LabelListAdapter(BiConsumer<String, Boolean> onToggle, Consumer<String> onDelete) {
+    public LabelListAdapter(BiConsumer<String, Boolean> onToggle, Consumer<String> onDelete, BiConsumer<String, String> onEdit) {
         this.onToggle = onToggle;
         this.onDelete = onDelete;
+        this.onEdit = onEdit;
     }
 
     public void submitList(List<Label> labelList) {
@@ -69,16 +71,19 @@ public class LabelListAdapter extends RecyclerView.Adapter<LabelListAdapter.View
             onToggle.accept(label.getId(), checked);
         });
         holder.deleteButton.setOnClickListener(v -> onDelete.accept(label.getId()));
+        holder.editButton.setOnClickListener(v -> onEdit.accept(label.getId(), label.getName()));
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {
         final CheckBox checkboxLabel;
         final TextView labelName;
+        final ImageButton editButton;
         final ImageButton deleteButton;
         ViewHolder(View view) {
             super(view);
             checkboxLabel = view.findViewById(R.id.checkboxLabel);
             labelName = view.findViewById(R.id.labelName);
+            editButton = view.findViewById(R.id.editButton);
             deleteButton = view.findViewById(R.id.deleteButton);
         }
     }

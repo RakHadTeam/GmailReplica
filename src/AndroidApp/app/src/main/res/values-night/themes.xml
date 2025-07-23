@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Base application theme. -->
-    <style name="Theme.AndroidApp" parent="Theme.MaterialComponents.Light.NoActionBar">
+    <!-- Base application theme for dark mode -->
+    <style name="Theme.AndroidApp" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <!-- Primary brand color -->
         <item name="colorPrimary">@color/primaryColor</item>
         <item name="colorPrimaryVariant">@color/colorPrimaryVariant</item>
@@ -12,11 +12,10 @@
         <item name="colorSecondaryVariant">@color/colorSecondaryVariant</item>
         <item name="colorOnSecondary">@color/colorOnSecondary</item>
 
-        <!-- Force white status bar for light mode -->
-        <item name="android:statusBarColor">#FFFFFF</item>
-        <item name="android:windowLightStatusBar">true</item>
+        <!-- Status bar configuration for dark mode -->
+        <item name="android:statusBarColor">?attr/colorSurface</item>
+        <item name="android:windowLightStatusBar">false</item>
         <item name="android:windowDrawsSystemBarBackgrounds">true</item>
-        <item name="android:navigationBarColor">@android:color/white</item>
 
         <!-- Accent color for legacy components -->
         <item name="colorAccent">@color/primaryColor</item>
@@ -41,16 +40,15 @@
         <item name="navigationViewStyle">@style/Widget.App.NavigationView</item>
     </style>
 
-    <style name="Theme.AndroidApp.NoActionBar" parent="Theme.MaterialComponents.Light.NoActionBar">
-        <item name="android:statusBarColor">#FFFFFF</item>
-        <item name="android:windowLightStatusBar">true</item>
+    <style name="Theme.AndroidApp.NoActionBar" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="android:statusBarColor">?attr/colorSurface</item>
+        <item name="android:windowLightStatusBar">false</item>
         <item name="android:windowDrawsSystemBarBackgrounds">true</item>
-        <item name="android:navigationBarColor">@android:color/white</item>
     </style>
 
-    <style name="Theme.AndroidApp.AppBarOverlay" parent="ThemeOverlay.AppCompat.Light" />
+    <style name="Theme.AndroidApp.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
-    <style name="Theme.AndroidApp.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+    <style name="Theme.AndroidApp.PopupOverlay" parent="ThemeOverlay.AppCompat.Dark" />
 
     <style name="Widget.TextInputLayout.PrimaryHint" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
         <item name="hintTextColor">@color/primaryColor</item>
@@ -59,7 +57,7 @@
     <style name="Widget.MaterialComponents.Toolbar.Primary" parent="Widget.MaterialComponents.Toolbar">
         <item name="background">@color/primaryColor</item>
         <item name="titleTextColor">@color/colorOnPrimary</item>
-        <item name="android:theme">@style/ThemeOverlay.AppCompat.ActionBar</item>
+        <item name="android:theme">@style/ThemeOverlay.AppCompat.Dark.ActionBar</item>
         <item name="popupTheme">@style/Theme.AndroidApp.PopupOverlay</item>
     </style>
 
@@ -75,9 +73,11 @@
         <item name="android:textColor">?attr/colorOnSurface</item>
     </style>
 
-    <!-- Custom AlertDialog theme with proper button text colors -->
+    <!-- Custom AlertDialog theme with proper button text colors for dark mode -->
     <style name="Theme.App.Dialog" parent="ThemeOverlay.MaterialComponents.Dialog.Alert">
         <item name="buttonBarButtonStyle">@style/Widget.App.Button.TextButton.Dialog</item>
+        <item name="android:windowBackground">@color/colorSecondaryVariant</item>
+        <item name="android:colorBackground">@android:color/background_dark</item>
     </style>
 
     <style name="Widget.App.Button.TextButton.Dialog" parent="Widget.MaterialComponents.Button.TextButton.Dialog">

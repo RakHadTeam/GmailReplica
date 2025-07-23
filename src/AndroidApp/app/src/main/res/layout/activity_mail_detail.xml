@@ -16,9 +16,9 @@
             android:layout_height="?attr/actionBarSize"
             android:background="?attr/colorPrimary"
             android:title="@string/mail_detail_title"
+            app:navigationIconTint="?android:textColorSecondary"
             app:navigationIcon="@drawable/ic_baseline_arrow_back"
-            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-            app:popupTheme="@style/ThemeOverlay.AppCompat.DayNight"  />
+            app:popupTheme="@style/Theme.AndroidApp.PopupOverlay" />
     </com.google.android.material.appbar.AppBarLayout>
 
     <ScrollView
