@@ -34,3 +34,29 @@ Runs:
 - Full CRUD for mails and labels
 - Search, context menus
 - Fully Dockerized deployment
+
+## Demos
+
+### Screenshots
+Below are some screenshots showcasing the features of the FullStack Mail App:
+
+1. **Home Page**:
+   ![Home Page](demos/home.png)
+
+2. **Dark Mode**:
+   ![Dark Mode](demos/dark_mode.png)
+
+3. **Label Manager**:
+   ![Label Manager](demos/label_manager.png)
+
+4. **Mail Details**:
+   ![Mail Details](demos/mail_details.png)
+
+5. **Search Functionality**:
+   ![Search](demos/search.png)
+
+6. **Settings Page**:
+   ![Settings](demos/settings.png)
+
+7. **Docker Compose Setup**:
+   ![Docker Compose](demos/compose.png)

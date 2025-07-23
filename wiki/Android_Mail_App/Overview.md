@@ -43,4 +43,45 @@ com.rakmail.androidapp/<br>
 - SharedPreferences
 
 ## Demos
-- Screenshots of the app in action, showcasing the main features like inbox, compose screen, and settings in the `wiki/Android_Mail_App/demos` directory.
+
+### Screenshots
+Below are some screenshots showcasing the features of the Android Mail App:
+
+1. **Launcher Screen**:
+   ![Launcher Screen](demos/launcher.png)
+
+2. **Sign In**:
+   ![Sign In](demos/signin.png)
+
+3. **Sign Up**:
+   ![Sign Up](demos/signup.png)
+
+4. **Inbox**:
+   ![Inbox](demos/mails.png)
+
+5. **Mail Details**:
+   ![Mail Details](demos/mail_detail.png)
+
+6. **Compose Mail**:
+   ![Compose Mail](demos/compose.png)
+
+7. **Manage Labels**:
+   ![Manage Labels](demos/manage_labels.png)
+
+8. **Label Filter**:
+   ![Label Filter](demos/label_filter.png)
+
+9. **Search Functionality**:
+   ![Search](demos/search.png)
+
+10. **Settings Panel**:
+    ![Settings Panel](demos/settings_panel.png)
+
+11. **Dark Mode**:
+    ![Dark Mode](demos/dark_mode.png)
+
+12. **Sidebar Navigation**:
+    ![Sidebar Navigation](demos/sidebar.png)
+
+13. **Action Bar Menu**:
+    ![Action Bar Menu](demos/menu_actionbar.png)
