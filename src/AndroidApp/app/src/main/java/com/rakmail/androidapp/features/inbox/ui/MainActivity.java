@@ -74,7 +74,7 @@ public class MainActivity extends AppCompatActivity {
 
         mailListManager.setOnMailSelectionChangeListener(selectedIds -> invalidateOptionsMenu());
 
-        mailRefreshManager = new MailRefreshManager(mailViewModel, REFRESH_INTERVAL_MS);
+        mailRefreshManager = new MailRefreshManager(mailViewModel, labelViewModel, REFRESH_INTERVAL_MS);
 
         authEventViewModel = new ViewModelProvider(this).get(AuthEventViewModel.class);
         authEventViewModel.observeUnauthorizedEvent(this, this);
@@ -113,5 +113,12 @@ public class MainActivity extends AppCompatActivity {
         super.onDestroy();
         mailRefreshManager.stopAutoRefresh();
         binding = null; // Important for ViewBinding to avoid memory leaks in Activities
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        // Refresh the mail list when the activity resumes
+        mailRefreshManager.startAutoRefresh();
     }
 }

@@ -15,6 +15,7 @@ public class AuthEventViewModel extends ViewModel {
         AuthPreferences.setUnauthorizedListener(() -> unauthorizedEvent.postValue(true));
     }
 
+
     public void observeUnauthorizedEvent(Context context, LifecycleOwner lifecycleOwner) {
         unauthorizedEvent.observe(lifecycleOwner, unauthorized -> {
             if (Boolean.TRUE.equals(unauthorized)) {
