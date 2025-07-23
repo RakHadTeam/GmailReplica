@@ -61,7 +61,7 @@ public class LabelManagerDialogFragment extends DialogFragment {
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        labelViewModel = new ViewModelProvider(this).get(LabelViewModel.class);
+        labelViewModel = new ViewModelProvider(requireActivity()).get(LabelViewModel.class);
         LabelListAdapter labelListAdapter = new LabelListAdapter(
             (labelId, checked) -> mailIdList.forEach(mailId -> labelViewModel.toggle(labelId, mailId, checked)),
             labelId -> labelViewModel.delete(labelId, (String err) -> showError(err))
@@ -86,7 +86,7 @@ public class LabelManagerDialogFragment extends DialogFragment {
             }
             requireActivity().runOnUiThread(() -> labelListAdapter.setCheckedLabels(initiallyCheckedLabels));
         }).start();
-        labelViewModel.visibleLabels().observe(getViewLifecycleOwner(), labels -> {
+        labelViewModel.getVisibleLabels().observe(getViewLifecycleOwner(), labels -> {
             List<Label> filteredLabels = new ArrayList<>();
             if (labels != null) {
                 for (Label label : labels) {

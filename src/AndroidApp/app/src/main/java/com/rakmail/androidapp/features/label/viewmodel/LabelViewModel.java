@@ -5,8 +5,8 @@ import androidx.lifecycle.MediatorLiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import com.rakmail.androidapp.features.label.model.Label;
 import com.rakmail.androidapp.features.label.data.LabelRepository;
+import com.rakmail.androidapp.features.label.model.Label;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,19 +26,25 @@ public class LabelViewModel extends ViewModel {
     }
 
     public LabelViewModel() {
-        fetchLabels();
+        // Initialize visibleLabels and sources before fetching
+        visibleLabels.setValue(new ArrayList<>());
         visibleLabels.addSource(labels, l -> filterLabels(l, searchTerm.getValue()));
         visibleLabels.addSource(searchTerm, term -> filterLabels(labels.getValue(), term));
+        // perform initial filtering on default empty list
+        filterLabels(labels.getValue(), searchTerm.getValue());
+        // fetch labels after sources are set so updates notify observers
+        fetchLabels();
     }
 
     public void fetchLabels() {
         repo.fetchLabels(() -> {
+            // run on background thread, so postValue to update LiveData safely
             labels.postValue(repo.getLabels());
             notifyLabelChanged();
         });
     }
 
-    public LiveData<List<Label>> visibleLabels() {
+    public LiveData<List<Label>> getVisibleLabels() {
         return visibleLabels;
     }
 
@@ -72,18 +78,24 @@ public class LabelViewModel extends ViewModel {
     }
 
     public Label getLabelById(String id) {
-        for (Label label : labels.getValue()) {
-            if (label.getId().equals(id)) {
-                return label;
+        List<Label> current = labels.getValue();
+        if (current != null) {
+            for (Label label : current) {
+                if (label.getId().equals(id)) {
+                    return label;
+                }
             }
         }
         return null;
     }
 
     public Label getLabelByName(String name) {
-        for (Label label : labels.getValue()) {
-            if (label.getName().equalsIgnoreCase(name)) {
-                return label;
+        List<Label> current = labels.getValue();
+        if (current != null) {
+            for (Label label : current) {
+                if (label.getName().equalsIgnoreCase(name)) {
+                    return label;
+                }
             }
         }
         return null;
@@ -102,7 +114,7 @@ public class LabelViewModel extends ViewModel {
                 filtered.add(label);
             }
         }
-        visibleLabels.postValue(filtered);
+        visibleLabels.setValue(filtered);
     }
 
     public void notifyLabelChanged() {
