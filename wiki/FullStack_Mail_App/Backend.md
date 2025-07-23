@@ -3,14 +3,14 @@
 The backend is a Node.js + Express server providing a REST API to support the mail application.  
 It handles authentication, mail and label management, and integrates with the TCP-based blacklist server.
 
-## 📋 Features
+## Features
 - User authentication via token
 - Send, receive, update, delete mails
 - Create, update, delete labels
 - Integrates with Blacklist Server to filter URLs
 - Serves frontend static files when built
 
-## 🧰 Technologies
+## Technologies
 - Node.js & Express – REST API and routing
 - JWT – User authentication
 - MongoDB – Optional persistence (default: in-memory)
@@ -22,14 +22,9 @@ It handles authentication, mail and label management, and integrates with the TC
 With Docker:
 docker compose up --build webserver
 
-Or manually:
-cd backend/
-npm install
-node app.js
-
 Requires `.env.production` file (see ../EnvironmentVariables.md).
 
-## 📁 Folder Structure (example)
+## Folder Structure
 - app.js – Main entry point
 - routes/ – API endpoint definitions
 - controllers/ – Business logic
@@ -38,7 +33,7 @@ Requires `.env.production` file (see ../EnvironmentVariables.md).
 - config/ – Environment variables
 - utils/ – Helper functions
 
-## 🔑 Endpoints
+## Endpoints
 
 ### Users
 - POST /users – Register user
@@ -63,6 +58,6 @@ Requires `.env.production` file (see ../EnvironmentVariables.md).
 - POST /blacklist/ – Add URL to blacklist
 - GET /blacklist/:id – Get URL by ID
 
-## 📄 Notes
+## Notes
 - Include Authorization: Bearer <token> header on all requests (after login).
 - Data is stored in memory unless MongoDB is configured.

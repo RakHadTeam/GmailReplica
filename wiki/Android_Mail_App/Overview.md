@@ -36,10 +36,10 @@ com.rakmail.androidapp/<br>
 │   └── user/        # User profile & view models<br>
 └ ── App              # Application class<br>
 
-### 🔗 Technologies
-- Android (Kotlin/Java)
+### Technologies
+- Android (Java)
 - MVVM pattern
-- Retrofit / OkHttp (likely, via `api`)
+- Retrofit / OkHttp
 - SharedPreferences
 
 ## Demos
