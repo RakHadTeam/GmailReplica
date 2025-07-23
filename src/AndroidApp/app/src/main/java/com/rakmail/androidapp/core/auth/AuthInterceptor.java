@@ -34,6 +34,15 @@ public class AuthInterceptor implements Interceptor {
             } else {
                 response = chain.proceed(original);
             }
+
+            // Check if the response indicates unauthorized access
+            if (response.code() == 401) {
+                AuthPreferences.UnauthorizedListener listener = AuthPreferences.getUnauthorizedListener();
+                if (listener != null) {
+                    listener.onUnauthorized();
+                }
+            }
+
         } catch (IOException e) {
             // Handle network errors (including timeouts)
             AuthPreferences.UnauthorizedListener listener = AuthPreferences.getUnauthorizedListener();

@@ -15,6 +15,7 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.rakmail.androidapp.R;
 import com.rakmail.androidapp.features.inbox.ui.MainActivity;
+import com.rakmail.androidapp.features.user.ui.signin.SigninActivity;
 import com.rakmail.androidapp.features.user.viewmodel.signup.SignupViewModel;
 
 import java.io.File;
@@ -23,7 +24,8 @@ import java.io.IOException;
 import java.io.InputStream;
 
 public class SignupActivity extends AppCompatActivity {
-    private EditText fullNameInput;
+    private EditText firstNameInput;
+    private EditText surnameInput;
     private EditText emailInput;
     private EditText passwordInput;
     private Button signupButton;
@@ -48,7 +50,8 @@ public class SignupActivity extends AppCompatActivity {
         getWindow().getDecorView().setSystemUiVisibility(
             android.view.View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
         );
-        fullNameInput = findViewById(R.id.fullNameEditText);
+        firstNameInput = findViewById(R.id.firstNameEditText);
+        surnameInput = findViewById(R.id.surnameEditText);
         emailInput = findViewById(R.id.emailEditText);
         passwordInput = findViewById(R.id.passwordEditText);
         signupButton = findViewById(R.id.signupButton);
@@ -63,21 +66,59 @@ public class SignupActivity extends AppCompatActivity {
     }
 
     private void handleSignup() {
-        String fullName = fullNameInput.getText().toString().trim();
+        String firstName = firstNameInput.getText().toString().trim();
+        String surname = surnameInput.getText().toString().trim();
         String email = emailInput.getText().toString().trim();
         String password = passwordInput.getText().toString();
-        if (fullName.isEmpty() || email.isEmpty() || password.isEmpty()) {
+
+        if (firstName.isEmpty() || surname.isEmpty() || email.isEmpty() || password.isEmpty()) {
             Toast.makeText(this, "All fields are required", Toast.LENGTH_SHORT).show();
             return;
         }
+
+        // Validate password strength
+        if (!isValidPassword(password)) {
+            Toast.makeText(this, "Password must be at least 8 characters and contain both letters and numbers", Toast.LENGTH_LONG).show();
+            return;
+        }
+
+        // Combine first name and surname to create full name for the backend
+        String fullName = firstName + " " + surname;
         File imageFile = selectedImageUri != null ? getFileFromUri(selectedImageUri) : null;
         viewModel.signup(fullName, email, password, imageFile);
+    }
+
+    /**
+     * Validates that password is at least 8 characters and contains both letters and numbers
+     */
+    private boolean isValidPassword(String password) {
+        if (password.length() < 8) {
+            return false;
+        }
+
+        boolean hasLetter = false;
+        boolean hasDigit = false;
+
+        for (char c : password.toCharArray()) {
+            if (Character.isLetter(c)) {
+                hasLetter = true;
+            } else if (Character.isDigit(c)) {
+                hasDigit = true;
+            }
+
+            // Early exit if both conditions are met
+            if (hasLetter && hasDigit) {
+                return true;
+            }
+        }
+
+        return hasLetter && hasDigit;
     }
 
     private void observeViewModel() {
         viewModel.signupSuccess.observe(this, success -> {
             if (Boolean.TRUE.equals(success)) {
-                startActivity(new Intent(this, MainActivity.class));
+                startActivity(new Intent(this, SigninActivity.class));
                 finish();
             }
         });
