@@ -3,6 +3,7 @@ package com.rakmail.androidapp.features.inbox.ui.adapter;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,9 +15,11 @@ import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.rakmail.androidapp.R;
+import com.rakmail.androidapp.core.prefs.AuthPreferences;
 import com.rakmail.androidapp.features.mail.model.Mail;
 import com.rakmail.androidapp.features.compose.ui.ComposeMailActivity;
 import com.rakmail.androidapp.features.maildetail.ui.MailDetailActivity;
+import com.rakmail.androidapp.features.user.data.UserRepository;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -74,11 +77,20 @@ public class MailAdapter extends BaseMailAdapter<MailAdapter.ViewHolder> {
         );
 
         // Sender name
-        holder.sender.setText(
-            mail.getSenderName() != null
-                ? mail.getSenderName()
-                : "(no sender)"
-        );
+        if (mail.getSenderId() != null) {
+            String currentUserId = AuthPreferences.getInstance().getUserId();
+            if (currentUserId != null && mail.getSenderId().equals(currentUserId)) {
+                Log.d("MailAdapter", "Sender is current user: " + mail.getSenderId());
+                holder.sender.setText("me");
+            } else {
+                Log.d("MailAdapter", "Sender is current user: " + mail.getSenderId());
+                holder.sender.setText(mail.getSenderName());
+            }
+        } else {
+            holder.sender.setText(R.string.mail_adapter_no_sender);
+        }
+
+
 
         // Date formatting
         String rawDate = mail.getCreatedAt();

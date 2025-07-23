@@ -1,11 +1,13 @@
 package com.rakmail.androidapp.features.maildetail.ui;
 
 import android.os.Bundle;
+import android.util.Log;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.rakmail.androidapp.R;
+import com.rakmail.androidapp.core.prefs.AuthPreferences;
 import com.rakmail.androidapp.features.inbox.ui.adapter.MailDetailAdapter;
 import com.rakmail.androidapp.features.inbox.ui.manager.MenuManager;
 import com.rakmail.androidapp.features.maildetail.viewmodel.MailDetailViewModel;
@@ -41,7 +43,12 @@ public class MailDetailActivity extends AppCompatActivity {
                 finish();
                 return;
             }
-            setTitle("From: " + m.getSenderName());
+            String currentUserId = AuthPreferences.getInstance().getUserId();
+            if (currentUserId != null && m.getSenderId().equals(currentUserId)) {
+                setTitle("From: me");
+            } else {
+                setTitle("From: " + m.getSenderName());
+            }
             mailDetailAdapter.setMail(m);
         });
 

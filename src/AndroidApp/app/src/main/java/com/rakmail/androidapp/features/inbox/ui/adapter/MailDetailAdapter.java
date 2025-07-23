@@ -1,5 +1,6 @@
 package com.rakmail.androidapp.features.inbox.ui.adapter;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,6 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.rakmail.androidapp.R;
+import com.rakmail.androidapp.core.prefs.AuthPreferences;
 import com.rakmail.androidapp.features.mail.model.Mail;
 
 import java.text.SimpleDateFormat;
@@ -45,8 +47,16 @@ public class MailDetailAdapter extends BaseMailAdapter<MailDetailAdapter.ViewHol
         Mail mail = items.get(position);
         if (holder.subject != null)
             holder.subject.setText(mail.getSubject() != null ? mail.getSubject() : "(no subject)");
-        if (holder.sender != null)
-            holder.sender.setText(mail.getSenderName() != null ? mail.getSenderName() : "(no sender)");
+        if (holder.sender != null) {
+            String currentUserId = AuthPreferences.getInstance().getUserId();
+            if (currentUserId != null && mail.getSenderId().equals(currentUserId)) {
+                Log.d("MailAdapter", "Sender is current user: " + mail.getSenderId());
+                holder.sender.setText("me");
+            } else {
+                Log.d("MailAdapter", "Sender is current user: " + mail.getSenderId());
+                holder.sender.setText(mail.getSenderName());
+            }
+        }
         if (holder.senderEmail != null)
             holder.senderEmail.setText(mail.getSenderEmail() != null ? "<" + mail.getSenderEmail() + ">" : "");
         if (holder.date != null) {

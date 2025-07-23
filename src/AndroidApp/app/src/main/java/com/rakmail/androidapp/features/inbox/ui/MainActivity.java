@@ -10,6 +10,7 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.rakmail.androidapp.R;
 import com.rakmail.androidapp.core.auth.AuthEventViewModel;
+import com.rakmail.androidapp.core.prefs.AuthPreferences;
 import com.rakmail.androidapp.databinding.ActivityMainBinding;
 import com.rakmail.androidapp.features.inbox.ui.manager.MailListManager;
 import com.rakmail.androidapp.features.inbox.ui.manager.MailRefreshManager;
@@ -21,6 +22,7 @@ import com.rakmail.androidapp.features.inbox.viewmodel.InboxViewModel;
 import com.rakmail.androidapp.features.label.view.drawer.LabelDrawerManager;
 import com.rakmail.androidapp.features.label.viewmodel.LabelViewModel;
 import com.rakmail.androidapp.features.mail.viewmodel.MailViewModel;
+import com.rakmail.androidapp.features.user.data.UserRepository;
 
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
@@ -79,6 +81,9 @@ public class MainActivity extends AppCompatActivity {
         authEventViewModel = new ViewModelProvider(this).get(AuthEventViewModel.class);
         authEventViewModel.observeUnauthorizedEvent(this, this);
 
+        // Fetch and save user ID if not already cached
+        fetchAndSaveUserIdIfNeeded();
+
         menuManager = new MenuManager(this, labelViewModel, mailViewModel, mailListManager.getAdapter());
         menuManager.observeLabelChanges();
     }
@@ -120,5 +125,28 @@ public class MainActivity extends AppCompatActivity {
         super.onResume();
         // Refresh the mail list when the activity resumes
         mailRefreshManager.startAutoRefresh();
+    }
+
+    /**
+     * Fetches and saves the user ID if not already cached in AuthPreferences.
+     * This ensures the MailAdapter can display "me" for current user's mails.
+     */
+    private void fetchAndSaveUserIdIfNeeded() {
+        String cachedUserId = AuthPreferences.getInstance().getUserId();
+        if (cachedUserId == null) {
+            // User ID not cached, fetch it asynchronously
+            new Thread(() -> {
+                try {
+                    String userId = UserRepository.getInstance().getUserId();
+                    if (userId != null) {
+                        // Save to AuthPreferences for future use
+                        AuthPreferences.getInstance().saveUserId(userId);
+                        android.util.Log.d(TAG, "User ID fetched and saved: " + userId);
+                    }
+                } catch (Exception e) {
+                    android.util.Log.e(TAG, "Failed to fetch user ID", e);
+                }
+            }).start();
+        }
     }
 }

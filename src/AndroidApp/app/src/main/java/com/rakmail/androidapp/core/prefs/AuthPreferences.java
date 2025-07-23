@@ -8,6 +8,8 @@ public class AuthPreferences {
     private static final String PREFS_NAME = "app_prefs";
     private static final String KEY_IS_SIGNED = "is_signed_in";
     private static final String KEY_ACCESS_JWT = "access_token";
+    private static final String KEY_USER_EMAIL = "user_email";
+    private static final String KEY_USER_ID = "user_id";
 
     private static AuthPreferences instance;
 
@@ -33,12 +35,20 @@ public class AuthPreferences {
         return prefs.getString(KEY_ACCESS_JWT, null);
     }
 
+    public String getUserId() {
+        return prefs.getString(KEY_USER_ID, null);
+    }
+
     public void setSignedIn(boolean b) {
         prefs.edit().putBoolean(KEY_IS_SIGNED, b).apply();
     }
 
     public void saveJwt(String jwt) {
         prefs.edit().putString(KEY_ACCESS_JWT, jwt).apply();
+    }
+
+    public void saveUserId(String userId) {
+        prefs.edit().putString(KEY_USER_ID, userId).apply();
     }
 
     public void clear() {

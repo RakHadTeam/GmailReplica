@@ -41,3 +41,6 @@ com.rakmail.androidapp/<br>
 - MVVM pattern
 - Retrofit / OkHttp (likely, via `api`)
 - SharedPreferences
+
+## Demos
+- Screenshots of the app in action, showcasing the main features like inbox, compose screen, and settings in the `wiki/Android_Mail_App/demos` directory.
