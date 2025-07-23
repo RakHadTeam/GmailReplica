@@ -95,7 +95,7 @@ public class SettingsFragment extends DialogFragment {
             }
         );
 
-        return new AlertDialog.Builder(requireContext())
+        return new AlertDialog.Builder(requireContext(), R.style.Theme_App_Dialog)
             .setTitle("Settings")
             .setView(view)
             .setNegativeButton("Close", (dialog, which) -> dismiss())

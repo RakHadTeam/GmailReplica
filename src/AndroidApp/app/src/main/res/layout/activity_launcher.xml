@@ -29,7 +29,6 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"
                 android:text="@string/rakmail"
-                android:textColor="@color/primaryColor"
                 android:textSize="28sp"
                 android:textStyle="bold" />
 

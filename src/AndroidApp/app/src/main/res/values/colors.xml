@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="primaryColor">#3888FF</color> <!-- blue -->
-    <color name="colorPrimaryVariant">#1976D2</color> <!-- darker blue -->
+    <color name="primaryColor">#A7C7FF</color> <!-- blue -->
+    <color name="colorPrimaryVariant">#4C9EFB</color> <!-- darker blue -->
     <color name="dangerColor">#B3261E</color>
     <color name="dividerColor">#DDDDDD</color>
     <color name="popup_menu_text">@android:color/black</color>
-    <color name="selected_item_color">#6F3D50FF</color>
+    <color name="selected_item_color">#A7C7FF</color>
     <color name="colorAccent">#944040FF</color>
     <color name="bgInputColor">#FFFFFF</color>
     <color name="colorOnPrimary">#FFFFFF</color> <!-- White text on primary -->

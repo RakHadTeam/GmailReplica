@@ -14,6 +14,7 @@ import androidx.fragment.app.DialogFragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import com.rakmail.androidapp.R;
 import com.rakmail.androidapp.core.api.ApiClient;
 import com.rakmail.androidapp.databinding.DialogLabelManagerBinding;
 import com.rakmail.androidapp.features.label.data.LabelApi;
@@ -125,7 +126,7 @@ public class LabelManagerDialogFragment extends DialogFragment {
     }
 
     private void showEditLabelDialog(String labelId, String currentName) {
-        android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(requireContext());
+        android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(requireContext(), R.style.Theme_App_Dialog);
         builder.setTitle("Edit Label");
 
         final android.widget.EditText input = new android.widget.EditText(requireContext());
