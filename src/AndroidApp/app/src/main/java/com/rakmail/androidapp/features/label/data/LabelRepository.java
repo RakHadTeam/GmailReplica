@@ -152,6 +152,33 @@ public class LabelRepository {
         });
     }
 
+    public void updateLabel(String labelId, String newName, Runnable onComplete, java.util.function.Consumer<String> onError) {
+        Executors.newSingleThreadExecutor().execute(() -> {
+            try {
+                Response<Label> response = api.updateLabel(labelId, Collections.singletonMap("name", newName)).execute();
+                if (response.isSuccessful()) {
+                    fetchLabelsSync();
+                    if (onComplete != null) onComplete.run();
+                } else {
+                    String errorMsg = null;
+                    try {
+                        if (response.errorBody() != null) {
+                            String errorString = response.errorBody().string();
+                            org.json.JSONObject errorJson = new org.json.JSONObject(errorString);
+                            errorMsg = errorJson.optString("error", "Update label failed: " + response.code());
+                        }
+                    } catch (Exception e) {
+                        errorMsg = "Update label failed: " + response.code();
+                    }
+                    if (onError != null) onError.accept(errorMsg);
+                }
+            } catch (IOException ex) {
+                Log.e(TAG, "updateLabel failed", ex);
+                if (onError != null) onError.accept(ex.getMessage());
+            }
+        });
+    }
+
     public void toggleLabel(String labelId, String mailId, Boolean applyExplicit, Runnable onComplete) {
         Executors.newSingleThreadExecutor().execute(() -> {
             try {

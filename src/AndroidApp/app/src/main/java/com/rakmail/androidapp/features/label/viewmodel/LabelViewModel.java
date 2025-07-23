@@ -66,6 +66,13 @@ public class LabelViewModel extends ViewModel {
         }, onError);
     }
 
+    public void update(String labelId, String newName, Consumer<String> onError) {
+        repo.updateLabel(labelId, newName, () -> {
+            fetchLabels();
+            notifyLabelChanged();
+        }, onError);
+    }
+
     public void toggle(String labelId, String mailId, Boolean applyExplicit) {
         repo.toggleLabel(labelId, mailId, applyExplicit, () -> {
             labels.postValue(repo.getLabels());
