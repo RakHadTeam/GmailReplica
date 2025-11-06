@@ -1,4 +1,4 @@
-# APProject
+# Gmail Replica
 
 [![CMake Tests](https://github.com/RakHadTeam/APProject/actions/workflows/cmake-tests.yml/badge.svg)](https://github.com/RakHadTeam/APProject/actions/workflows/cmake-tests.yml)
 
@@ -10,7 +10,7 @@ This project was proudly created by:
 - **David Goldstein**
 - **Yahel Cohen**
 
-**APProject** is a full-stack web application designed for sending, receiving, and managing emails. It features a modern interface inspired by Gmail, supports custom labels, spam filtering, theming (including dark mode), and integrates with a TCP-based blacklist server.
+**Gmail Replica** is a full-stack web application designed for sending, receiving, and managing emails. It features a modern interface inspired by Gmail, supports custom labels, spam filtering, theming (including dark mode), and integrates with a TCP-based blacklist server.
 
 ### Features
 - **URL Blacklisting Server**: A server that uses a Bloom Filter to store, check, and delete blacklisted URLs. Refer to the [Server README](wiki/Blacklist_Service/Server.md) for more details.
