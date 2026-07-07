@@ -7,5 +7,5 @@ import { getUserById } from "../user/getUserById.js";
 export async function getLatestMails(userId) {
     const user = await getUserById(userId);
     await user.populate("mails");
-    return user.mails.slice(-50);
+    return user.mails.slice(-50).reverse();
 }
