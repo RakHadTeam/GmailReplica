@@ -53,11 +53,15 @@ export async function updateMailById(userId, mailId, updates) {
 
         let recipientUser = null;
         try {
-            recipientUser = await getUserById(mail.recipient);
+            recipientUser = await getUserById(mail.recipient.toString());
         } catch (error) {
-            throw new MailValidationError(
-                "Recipient user not found for the provided email"
-            );
+            try {
+                recipientUser = await getUserByEmail(mail.recipient);
+            } catch (error) {
+                throw new MailValidationError(
+                    "Recipient user not found for the provided email"
+                );
+            }
         }
 
         // Add mailId to recipientUser.mails using updateOne
@@ -74,7 +78,6 @@ export async function updateMailById(userId, mailId, updates) {
             }
         }
 
-        await mail.updateOne({ draft: false });
         mail.draft = false;
 
         const sender = await getUserById(userId);
@@ -89,6 +92,8 @@ export async function updateMailById(userId, mailId, updates) {
         }
 
     }
+
+    await mail.save();
 
     return mail;
 }
